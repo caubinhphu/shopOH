@@ -1,10 +1,33 @@
+require('dotenv').config();
+
 const express = require('express');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+
+const querySQL = require('./configure/querySQL');
 
 const app = express();
 
-app.get('', (req, res, next) => {
-  res.send('Hello');
+app.set('views', './views');
+app.set('view engine', 'pug');
+
+app.use(express.static('public'));
+app.use(bodyParser.urlencoded( { extended: true } ));
+app.use(bodyParser.json());
+app.use(cookieParser(process.env.SETRECT));
+
+app.get('/', async (req, res, next) => {
+  try {
+    let data = await querySQL('call sp_test()');
+    res.json(data);
+    let data2 = await querySQL('select * from sanpham');
+    res.json(data2);
+  } catch(err) { next(err); }
 });
 
+app.use((err, req, res, next) => {
+  if (err)
+    res.send(err.message);
+});
 
 app.listen(3000, () => console.log('Server is connected'));
