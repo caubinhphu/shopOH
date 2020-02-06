@@ -196,4 +196,6 @@ create table test (
     col1 varchar(10) not null, 
     col2 int not null
 );
+insert into test (col1, col2) values ('một', 1), ('hai', 2);
 
+select * from test;

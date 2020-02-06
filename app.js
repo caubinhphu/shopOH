@@ -6,6 +6,8 @@ const cookieParser = require('cookie-parser');
 
 const querySQL = require('./configure/querySQL');
 
+const customerRoute = require('./routers/customer.router');
+
 const app = express();
 
 app.set('views', './views');
@@ -18,12 +20,11 @@ app.use(cookieParser(process.env.SETRECT));
 
 app.get('/', async (req, res, next) => {
   try {
-    let data = await querySQL('call sp_test()');
-    res.json(data);
-    let data2 = await querySQL('select * from sanpham');
-    res.json(data2);
+    res.send('Shop Ông Hải');
   } catch(err) { next(err); }
 });
+
+app.use('/account', customerRoute);
 
 app.use((err, req, res, next) => {
   if (err)

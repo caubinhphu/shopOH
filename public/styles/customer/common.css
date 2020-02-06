@@ -1,0 +1,250 @@
+*, ::after, ::before {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0 auto;
+}
+
+#header-background {
+  background-color: #f6422e;
+}
+
+#header ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#header ul li, #header ul li a:not(.color-default) {
+  color: white;
+}
+
+#header ul li {
+  padding: 0 10px;
+  border-right: 2px solid hsla(0,0%,100%,.22);
+}
+
+#header ul li:last-child {
+  border: none;
+}
+
+#header ul li:hover, #header ul a:not(.color-default):hover {
+  color: bisque;
+  cursor: pointer;
+}
+
+#header ul li a:hover {
+  text-decoration: none;
+}
+
+#header-top-right ul li:first-child {
+  border: none;
+}
+
+#header-top-left ul li:last-child:hover span {
+  color: white;
+}
+
+#header-dangnhap p, #header-dangky p {
+  cursor: pointer;
+}
+
+.popover__wrapper {
+  position: relative;
+  display: inline-block;
+}
+.popover__content {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  left: -160px;
+  top: 55px;
+  transform: translate(0, 10px);
+  background-color: white;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  width: 450px;
+}
+.popover__content:before {
+  position: absolute;
+  z-index: -1;
+  content: "";
+  right: calc(50% - 10px);
+  top: -15px;
+  border-style: solid;
+  border-width: 0 25px 15px 25px;
+  border-color: transparent transparent white transparent;
+  transition-duration: 0.3s;
+  transition-property: transform;
+}
+.popover__wrapper:hover .popover__content {
+  z-index: 10;
+  opacity: 1;
+  visibility: visible;
+  transform: translate(0, -20px);
+  transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+}
+.popover__message {
+  text-align: center;
+  color: black;
+  font-size: large;
+}
+
+.popover__content__main:hover {
+  background-color: beige;
+}
+
+.popover__content__img {
+  width: 100px;
+  height: auto;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.popover__content__thongbao {
+  margin-left: 10px;
+}
+
+.popover__content__thongbao__title {
+  color: black;
+}
+
+.popover__content__thongbao__content {
+  color: burlywood;
+  font-size: small;
+}
+
+#header-middle ul li {
+  border: none;
+  font-size: small;
+}
+
+.position-root {
+  position: relative;
+}
+
+.position-child {
+  position: absolute;
+  top: -5px;
+  left: -10px;
+  font-size: small;
+}
+
+.position-child-cart {
+  position: absolute;
+  top: -8px;
+  left: 25px;
+}
+
+.popover__wrapper__cart {
+  position: relative;
+}
+
+.popover__wrapper__cart:hover .popover__content__cart {
+  z-index: 10;
+  opacity: 1;
+  visibility: visible;
+  transform: translate(0, -20px);
+  transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+}
+
+.popover__content__cart {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  left: -300px;
+  top: 70px;
+  transform: translate(0, 10px);
+  background-color: white;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  width: 450px;
+}
+.popover__content__cart:before {
+  position: absolute;
+  z-index: -1;
+  content: "";
+  right: calc(25% - 10px);
+  top: -15px;
+  border-style: solid;
+  border-width: 0 25px 15px 25px;
+  border-color: transparent transparent white transparent;
+  transition-duration: 0.3s;
+  transition-property: transform;
+}
+
+.btn-link:hover {
+  text-decoration: none;
+}
+
+.popover__content__main__user a {
+  color: black;
+}
+
+.popover__content__user .popover__content__main__user:last-child a {
+  color: #00bfa5;
+}
+
+.popover__wrapper__user {
+  position: relative;
+}
+
+.popover__wrapper__user:hover .popover__content__user {
+  z-index: 10;
+  opacity: 1;
+  visibility: visible;
+  transform: translate(0, -20px);
+  transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+}
+
+.popover__content__user {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  left: -10px;
+  top: 55px;
+  transform: translate(0, 10px);
+  background-color: white;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  width: 150px;
+}
+.popover__content__user:before {
+  position: absolute;
+  z-index: -1;
+  content: "";
+  right: calc(50% - 10px);
+  top: -15px;
+  border-style: solid;
+  border-width: 0 25px 15px 25px;
+  border-color: transparent transparent white transparent;
+  transition-duration: 0.3s;
+  transition-property: transform;
+}
+
+.popover__wrapper__user img {
+  border-radius: 50%;
+}
+
+.popover__content__main__user:hover {
+  background-color: snow;
+}
+
+#footer {
+  border-top: 4px solid #ee4d2d;
+  color: rgba(0,0,0,.54);
+  background-color: #fbfbfb;
+}
+
+#footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#footer ul li a {
+  color: rgba(0,0,0,.54);
+}
+
+#footer ul li a:hover {
+  color: #ee4d2d;
+  text-decoration: none;
+}
