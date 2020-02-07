@@ -1,0 +1,46 @@
+extends ./common
+
+block style_child
+  link(rel="stylesheet", href="/styles/customer/index.css")
+  link(rel="stylesheet", href="/styles/customer/allproduct.css")
+
+block main
+  #main.p-md-2.p-lg-4
+    #main-product-list.p-2
+      #main-product-list-all-title
+        h1 Tất cả
+        hr
+      #main-product-list-list.d-flex.flex-wrap.justify-content-center
+        .product
+          a(href="x")
+            .bg-white
+              .product-img
+                img(src="/images/product1.jpg")
+              .product-title.p-2
+                span Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01
+              .product-price.p-2.d-flex.justify-content-between
+                div
+                  del.text-secondary ₫
+                  del.text-secondary 100000
+                div
+                  small.text-danger ₫
+                  span.text-danger 100000
+          .product-same.text-center.py-1
+            a.text-white(href="#") Tìm sản phẩm tương tự
+
+    nav.mt-4(aria-label='Page navigation example')
+      ul.pagination.justify-content-center
+        li.page-item
+          a.page-link(href='#', aria-label='Previous')
+            span(aria-hidden='true') &laquo;
+        li.page-item
+          a.page-link(href='#') 1
+        li.page-item
+          a.page-link(href='#') 2
+        li.page-item
+          a.page-link(href='#') 3
+        li.page-item
+          a.page-link(href='#') 4
+        li.page-item
+          a.page-link(href='#', aria-label='Next')
+            span(aria-hidden='true') &raquo;

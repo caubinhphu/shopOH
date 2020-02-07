@@ -20,7 +20,9 @@ app.use(cookieParser(process.env.SETRECT));
 
 app.get('/', async (req, res, next) => {
   try {
-    res.send('Shop Ông Hải');
+    res.render('customer/allproduct', {
+      titleSite: 'ShopOH'
+    })
   } catch(err) { next(err); }
 });
 

@@ -1,3 +1,71 @@
 extends ./common
 
+block style_child
+  link(rel="stylesheet", href="/styles/customer/index.css")
+
 block main
+  #main.p-md-2.p-lg-4
+    #main-top.row.bg-white.p-2
+      #main-carousel.carousel.slide.col-md-8(data-ride='carousel', data-pause='false', data-interval="4000")
+        ol.carousel-indicators
+          li.active(data-target='#main-carousel', data-slide-to='0')
+          li(data-target='#main-carousel', data-slide-to='1')
+          li(data-target='#main-carousel', data-slide-to='2')
+        .carousel-inner
+          .carousel-item.active
+            a(href="#")
+              img.d-block(src='/images/banner2.jpg', alt='...')
+          .carousel-item
+            a(href="#")
+              img.d-block(src='/images/banner2.jpg', alt='...')
+          .carousel-item
+            a(href="#")
+              img.d-block(src='/images/banner2.jpg', alt='...')
+        a.carousel-control-prev(href='#main-carousel', role='button', data-slide='prev')
+          span.carousel-control-prev-icon(aria-hidden='true')
+          span.sr-only Previous
+        a.carousel-control-next(href='#main-carousel', role='button', data-slide='next')
+          span.carousel-control-next-icon(aria-hidden='true')
+          span.sr-only Next
+      #main-category.col-md-4.mt-4.mt-md-0
+        #main-category-title.my-2.text-center
+          b DANH MỤC
+        #main-category-list.d-flex.justify-content-center
+          a(href="#").category.p-2
+            .category-img
+              img(src="/images/category_male.png")
+            .category-text Thời trang nam
+          a(href="#").category.p-2
+            .category-img
+              img(src="/images/category_female.png")
+            .category-text Thời trang nữ
+    
+    #main-product-list.p-2
+      #main-product-list-title.mt-2.bg-white.p-3.d-flex.justify-content-between
+        b GỢI Ý HÔM NAY
+        a(href="#") Xem tất cả &rsaquo;
+      #main-product-list-list.d-flex.flex-wrap.justify-content-center
+        .product
+          a(href="x")
+            .bg-white
+              .product-img
+                img(src="/images/product1.jpg")
+              .product-title.p-2
+                span Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01
+              .product-price.p-2.d-flex.justify-content-between
+                div
+                  del.text-secondary ₫
+                  del.text-secondary 100000
+                div
+                  small.text-danger ₫
+                  span.text-danger 100000
+          .product-same.text-center.py-1
+            a.text-white(href="#") Tìm sản phẩm tương tự
+      .text-center.mt-3
+        a.btn.btn-danger(href="#", role="button") Xem thêm
+
+
+
+
+
+
