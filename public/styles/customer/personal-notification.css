@@ -33,3 +33,14 @@
 .noti-not-see {
   background-color: blanchedalmond;
 }
+
+.no-notification {
+  padding: 50px 0;
+  text-align: center;
+}
+
+.no-notification img {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+}
