@@ -1,0 +1,52 @@
+extends ./personal-common
+
+block style_sub
+  link(rel="stylesheet", href="/styles/customer/personal-profile.css")
+
+block main-personal
+  #personal-right.col-md-8.col-lg-9
+    #personnal-right-top
+      div Hồ sơ của tôi
+      div Quản lý thông tin hồ sơ để bảo mật tài khoản
+    #personnal-right-middle
+      form#form-profile.row.py-4
+        #form-left.col-md-8
+          .form-group.d-flex
+            label(for='name') Tên
+            input#name.form-control(type='text', placehodle="Nhập tên")
+          .form-group.d-flex
+            label Email
+            div 10****@gmail.com
+            button.btn.btn-link(type="button") Thay đổi
+          .form-group.d-flex
+            label Số điện thoại
+            div *********51
+            button.btn.btn-link(type="button") Thay đổi
+          .form-group.d-flex
+            label Tên tài khoản
+            b caubinhphu
+          .form-group.d-flex
+            label Giới tính
+            .custom-control.custom-radio.custom-control-inline
+              input#gender-male.custom-control-input(type="radio", name="radio", value="0")
+              label.custom-control-label(for="gender-male") Nam
+            .custom-control.custom-radio.custom-control-inline
+              input#gender-female.custom-control-input(type="radio", name="radio", value="1")
+              label.custom-control-label(for="gender-female") Nữ
+            .custom-control.custom-radio.custom-control-inline
+              input#gender-diff.custom-control-input(type="radio", name="radio", value="2")
+              label.custom-control-label(for="gender-diff") Khác
+          .form-group.d-flex
+            label(for="ngaysinh") Ngày sinh
+            input#ngaysinh.form-control(type="date", name="date")
+          
+        #form-right.col-md-4.d-flex.flex-column.align-items-center.p-2
+          #form-right-img(style="background-image: url('/images/917385.jpg')")
+          input#file.d-none(type="file", name="file")
+          button.btn.btn-light(type="button") Chọn ảnh
+          .mt-2
+            small.d-block Dụng lượng file tối đa 1 MB
+            small.d-block Định dạng:.JPEG, .PNG
+        .text-center.col.mt-2
+            button.px-4.btn.btn-danger(type='button') Lưu
+    

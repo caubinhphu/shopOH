@@ -1,0 +1,39 @@
+#personal-right {
+  background-color: white;
+  padding: 20px;
+  color: #555;
+  width: 100%;
+  box-shadow: #DDDD 2px 2px 2px;
+}
+
+#personnal-right-top div:first-child {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+#personnal-right-top {
+  border-bottom: 1px solid #DDDD;
+  padding-bottom: 15px;
+}
+
+#form-right-img {
+  width: 100px;
+  height: 100px;
+  margin: 20px 0;
+  border-radius: 50%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  cursor: pointer;
+}
+
+.form-group > label {
+  display: inline-block;
+  text-align: right;
+  width: 20%;
+  margin-right: 15px;
+}
+
+.form-group > input {
+  width: 80%;
+}
