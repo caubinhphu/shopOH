@@ -1,0 +1,27 @@
+extends ./personal-common
+
+block style_sub
+  link(rel="stylesheet", href="/styles/customer/personal-notification.css")
+
+block main-personal
+  #personal-right.col-md-8.col-lg-9
+    #personal-noti-header.text-right.p-2
+      button.btn.btn-link(type="button") Đánh dấu đã đọc tất cả
+    #personal-noti-list
+      .notification.d-flex.p-3
+        .personal-noti-img(style="background-image: url('/images/917385.jpg')")
+        .personal-noti-main.flex-fill
+          .personal-noti-title Tiêu đề thông báo
+          .personal-noti-content Nội dung thông báo
+          .personal-noti-date Ngày đăng thông báo
+        .personal-noti-see
+          a(href="#", role="button").btn.btn-outline-danger Xem cho tiết
+      .notification.d-flex.p-3.noti-not-see
+        .personal-noti-img(style="background-image: url('/images/917385.jpg')")
+        .personal-noti-main.flex-fill
+          .personal-noti-title Tiêu đề thông báo
+          .personal-noti-content Nội dung thông báo
+          .personal-noti-date Ngày đăng thông báo
+        .personal-noti-see
+          a(href="#", role="button").btn.btn-outline-danger Xem cho tiết
+

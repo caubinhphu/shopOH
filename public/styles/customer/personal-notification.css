@@ -1,0 +1,35 @@
+#personal-right {
+  background-color: white;
+  color: #555;
+  width: 100%;
+  box-shadow: #DDDD 2px 2px 2px;
+}
+
+#personal-noti-header {
+  border-bottom: 1px solid #dddd;
+}
+
+#personal > .col-md-8:last-child, #personal > .col-lg-9:last-child {
+  padding: 0;
+}
+
+.personal-noti-title {
+  font-size: 20px;
+}
+
+.personal-noti-img {
+  width: 100px;
+  height: 100px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-right: 15px;
+}
+
+.notification:hover {
+  background-color: #EEEE;
+}
+
+.noti-not-see {
+  background-color: blanchedalmond;
+}

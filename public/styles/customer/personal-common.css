@@ -44,8 +44,11 @@
   padding: 20px 10px;
 }
 
-#personal-top-middle a {
+#personal-top-middle a:not(.personal-active) {
   color: #555;
+}
+
+#personal-top-middle a {
   display: block;
   line-height: 40px;
 }
@@ -75,6 +78,14 @@
 }
 
 #personal-top-middle:hover i {
+  color: #555;
+}
+
+.personal-active {
+  color: #ee4d2d;
+}
+
+.personal-active i {
   color: #555;
 }
 
