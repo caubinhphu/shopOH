@@ -20,7 +20,7 @@ app.use(cookieParser(process.env.SETRECT));
 
 app.get('/', async (req, res, next) => {
   try {
-    res.render('customer/personal-address', {
+    res.render('customer/product', {
       titleSite: 'ShopOH'
     })
   } catch(err) { next(err); }

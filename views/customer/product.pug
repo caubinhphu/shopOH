@@ -5,7 +5,7 @@ block style_child
 
 block main
   .product.p-5
-    .product-info.bg-white.mt-4.d-flex.px-2.py-4
+    .product-info.bg-white.mt-4.d-flex.px-2.py-4.flex-column.flex-md-row
       .product-info-left
         .product-image
           .product-info-img-main
@@ -41,15 +41,87 @@ block main
           .product-promotion
             span.badge.badge-danger 0% GIẢM
         .product-select-option
-          .procudt-transport-fee
+          .procudt-transport-fee.d-flex.align-items-center
             .product-select.label Phí vận chuyển
             .product-select-content
               span đ0
-          .procudt-color
-            .product-select.label Màu sắc
+          .procudt-color.d-flex.align-items-center
+            .product-select.label Chọn màu
             .product-select-content
-              button.btn-()
-            
+              button.btn.btn-outline-dark.product-selected(type="button") Đỏ
+              button.btn.btn-outline-dark(type="button") Vàng
+              button.btn.btn-outline-dark(type="button") Đen
+              button.btn.btn-outline-dark(type="button") Xanh
+          .procudt-size.d-flex.align-items-center
+            .product-select.label Chọn size
+            .product-select-content
+              button.btn.btn-outline-dark.product-selected(type="button") S
+              button.btn.btn-outline-dark(type="button") M
+              button.btn.btn-outline-dark(type="button") L
+              button.btn.btn-outline-dark(type="button") XL
+          .procudt-quantity.d-flex.align-items-center
+            .product-select.label Số lượng
+            .product-select-content
+              .product-quantity-input
+                .input-group
+                  .input-group-prepend
+                      button.btn.btn-outline-dark(type='button') -
+                  input.w-25.form-control(type='text', value="1")
+                  .input-group-append
+                      button.btn.btn-outline-dark(type='button') +
+              .product-quantity-rest.ml-2.d-inline-block
+                span 0 sản phẩm có sẵn
+        .procudt-add-cart.mt-4
+          button.btn.btn-outline-danger.mx-4(type="button")
+            i.fas.fa-cart-plus
+            span &nbsp;Thêm vào giở hàng
+          button.btn.btn-danger(type="button") Mua ngay
+              
+    .product-detail.bg-white.p-4.mt-4
+      .product-detail-title CHI TIẾT SẢN PHẨM
+      .product-detail-list
+        .product-detail-item.d-flex
+          .product-detail-label Danh mục
+          .product-detail-content Danh mục
+        .product-detail-item.d-flex
+          .product-detail-label Thương hiệu
+          .product-detail-content Thương hiệu
+        .product-detail-item.d-flex
+          .product-detail-label Chất liệu
+          .product-detail-content Chất liệu
+      .product-detail-title MÔ TẢ SẢN PHẨM
+      .product-detail-chitiet
+        span Mô tả
 
-    .product-detail
-
+    #main-product-same-list.p-2.mt-4
+      #main-product-same-list-title
+        | SẢN PHẨM TƯƠNG TỰ
+      #main-product-same-list-list.d-flex.flex-wrap.justify-content-center
+        .product-same
+          a(href="x")
+            .bg-white
+              .product-same-img
+                img(src="/images/product1.jpg")
+              .product-same-title.p-2
+                span Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01
+              .product-same-price.p-2.d-flex.justify-content-between
+                div
+                  del.text-secondary ₫
+                  del.text-secondary 100000
+                div
+                  small.text-danger ₫
+                  span.text-danger 100000
+        .product-same
+          a(href="x")
+            .bg-white
+              .product-same-img
+                img(src="/images/product1.jpg")
+              .product-same-title.p-2
+                span Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01
+              .product-same-price.p-2.d-flex.justify-content-between
+                div
+                  del.text-secondary ₫
+                  del.text-secondary 100000
+                div
+                  small.text-danger ₫
+                  span.text-danger 100000
