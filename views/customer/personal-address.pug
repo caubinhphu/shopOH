@@ -9,7 +9,7 @@ block main-personal
       div Địa chỉ của tôi
       button.btn.btn-danger(type="button", data-toggle='modal', data-target='#add-address')
         i.fas.fa-plus
-        span  Thêm địa chỉ mới
+        span &nbsp;Thêm địa chỉ mới
     #personnal-right-middle
       //- div Bạn chưa có địa chỉ
       .personal-address.py-2.d-flex
@@ -76,20 +76,35 @@ block main-personal
         .modal-body
           form()
             .form-group
-              input.form-control(type="text" placeholder="Tên" name="name" required)
+              .input-group
+                .input-group-prepend
+                  label.input-group-text(for="address-name") Tên
+                input#address-name.form-control(type="text" placeholder="Tên" name="name" required)
             .form-group
-              input.form-control(type="text" placeholder="Số điện thoại" name="phone" required)
+              .input-group
+                .input-group-prepend
+                  label.input-group-text(for="address-phone") Số điện thoại
+                input#address-phone.form-control(type="text" placeholder="Số điện thoại" name="phone" required)
             .form-group
-              select.form-control(name="tinh")
-                option(value="1") Tỉnh/Thành phố
+              .input-group
+                .input-group-prepend
+                  label.input-group-text(for="address-tinh") Tỉnh/Thành phố
+                select#address-tinh.custom-select(name="tinh")
             .form-group
-              select.form-control(name="huyen")
-                option(value="1") Quận/Huyện
+              .input-group
+                .input-group-prepend
+                  label.input-group-text(for="address-huyen") Quận/Huyện
+                select#address-huyen.custom-select(name="huyen")
             .form-group
-              select.form-control(name="xz")
-                option(value="1") Phường/Xã
+              .input-group
+                .input-group-prepend
+                  label.input-group-text(for="address-xa") Xã/Phường
+                select#address-xa.custom-select(name="xa")
             .form-group
-              input.form-control(type="text" placeholder="Tòa nhà, tên đường" name="homenum" required)
+              .input-group
+                .input-group-prepend
+                  label.input-group-text(for="address-homenum") Tòa nhà, tên đường
+                input#address-homenum.form-control(type="text" placeholder="Tòa nhà, tên đường" name="homenum" required)
         .modal-footer
           button.btn.btn-light(type='button', data-dismiss='modal') TRỞ LẠI
           button.btn.btn-danger(type='button') HOÀN THÀNH
@@ -101,4 +116,7 @@ block main-personal
           .d-flex
             button.btn.btn-danger.flex-fill.mr-1(type='button') XÓA
             button.btn.btn-light.flex-fill(type='button', data-dismiss='modal') TRỞ LẠI
+
+block script2
+  script(src="/scripts/getDVHCVN.js")
     

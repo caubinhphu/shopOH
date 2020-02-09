@@ -1,0 +1,55 @@
+extends ./common
+
+block style_child
+  link(rel="stylesheet", href="/styles/customer/product.css")
+
+block main
+  .product.p-5
+    .product-info.bg-white.mt-4.d-flex.px-2.py-4
+      .product-info-left
+        .product-image
+          .product-info-img-main
+            .img-product(style="background-image: url('/images/917385.jpg')")
+          .product-info-img-sub
+            .img-sub-list
+              .img-sub
+                .img__sub(style="background-image: url('/images/917385.jpg')")
+              .img-sub
+                .img__sub(style="background-image: url('/images/917385.jpg')")
+              .img-sub
+                .img__sub(style="background-image: url('/images/917385.jpg')")
+              .img-sub
+                .img__sub(style="background-image: url('/images/917385.jpg')")
+              .img-sub
+                .img__sub(style="background-image: url('/images/917385.jpg')")
+              .img-sub
+                .img__sub(style="background-image: url('/images/917385.jpg')")
+
+      .product-info-right.flex-fill.px-3
+        .product-name Tên sản phẩm
+        .product-info-like.d-flex.my-2
+          .product-like
+            i.text-danger.far.fa-heart
+            span &nbsp;Đã thích (0)
+          .product-sold
+            span Đã bán (0)
+        .product-price.p-3.d-flex.align-items-center
+          .product-price-cost
+            del đ0
+          .product-price-current.text-danger
+            span đ0
+          .product-promotion
+            span.badge.badge-danger 0% GIẢM
+        .product-select-option
+          .procudt-transport-fee
+            .product-select.label Phí vận chuyển
+            .product-select-content
+              span đ0
+          .procudt-color
+            .product-select.label Màu sắc
+            .product-select-content
+              button.btn-()
+            
+
+    .product-detail
+
