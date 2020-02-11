@@ -1,0 +1,54 @@
+extends ./common
+
+block style_child
+  link(rel="stylesheet", href="/styles/customer/same-product.css")
+
+block main
+  .main-same
+    .product-main.d-flex
+      .product-main-img.mr-5
+        a(href="#")
+          img(src="/images/product1.jpg")
+      .product-main-content
+        .product-main-name
+          a(href="#") Tên sản phẩm
+        .product-like
+            i.text-danger.far.fa-heart
+            span &nbsp;Đã thích (0)
+        .product-main-price
+          span.text-danger ₫0
+        a.btn.btn-danger(href="#", role="button") Mua ngay
+
+
+    #product-same-list.p-2.mt-4
+      #main-product-same-list-title
+        | SẢN PHẨM TƯƠNG TỰ
+      #main-product-same-list-list.d-flex.flex-wrap.justify-content-center
+        .product-same
+          a(href="x")
+            .bg-white
+              .product-same-img
+                img(src="/images/product1.jpg")
+              .product-same-title.p-2
+                span Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01
+              .product-same-price.p-2.d-flex.justify-content-between
+                div
+                  del.text-secondary ₫
+                  del.text-secondary 100000
+                div
+                  small.text-danger ₫
+                  span.text-danger 100000
+        .product-same
+          a(href="x")
+            .bg-white
+              .product-same-img
+                img(src="/images/product1.jpg")
+              .product-same-title.p-2
+                span Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01
+              .product-same-price.p-2.d-flex.justify-content-between
+                div
+                  del.text-secondary ₫
+                  del.text-secondary 100000
+                div
+                  small.text-danger ₫
+                  span.text-danger 100000
