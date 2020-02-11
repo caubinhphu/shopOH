@@ -4,12 +4,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
-const querySQL = require('./configure/querySQL');
-
+// Router
 const customerRoute = require('./routers/customer.router');
+const indexCustomerRoute = require('./routers/product-customer.router')
 
 const app = express();
 
+// set view engine - template engine
 app.set('views', './views');
 app.set('view engine', 'pug');
 
@@ -18,16 +19,10 @@ app.use(bodyParser.urlencoded( { extended: true } ));
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.SETRECT));
 
-app.get('/', async (req, res, next) => {
-  try {
-    res.render('customer/same-product', {
-      titleSite: 'ShopOH'
-    })
-  } catch(err) { next(err); }
-});
-
+app.use('/', indexCustomerRoute);
 app.use('/account', customerRoute);
 
+// handle errors
 app.use((err, req, res, next) => {
   if (err)
     res.send(err.message);

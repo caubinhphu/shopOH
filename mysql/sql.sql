@@ -87,22 +87,32 @@ CREATE TABLE SANPHAM (
     GIABAN INT NOT NULL DEFAULT 0,
     KHUYENMAI TINYINT DEFAULT 0,
 	HINHANH VARCHAR(1000) NOT NULL,
-    SOLUONGTON INT DEFAULT 0,
+    -- SOLUONGTON INT DEFAULT 0,
     PRIMARY KEY (MA_SANPHAM),
     FOREIGN KEY (MA_LOAI2) REFERENCES LOAI_SP2 (MA_LOAI2),
     FOREIGN KEY (MA_THUONGHIEU) REFERENCES THUONGHIEU (MA_THUONGHIEU),
     FOREIGN KEY (MA_CHATLIEU) REFERENCES CHATLIEU (MA_CHATLIEU)
 );
+ALTER TABLE sanpham DROP column SOLUONGTON;
+ALTER TABLE sanpham ADD column `LIKE` INT default 0;
 
+create table PHANLOAISANPHAM (
+	MA_SANPHAM INT NOT NULL,
+    MAUSAC varchar(20) NOT NULL,
+    SIZE varchar(10) NOT NULL,
+    SOLUONGTON INT DEFAULT 0,
+    primary key (MA_SANPHAM, MAUSAC, SIZE)
+);
+ALTER TABLE PHANLOAISANPHAM ADD foreign key (MA_SANPHAM) references SANPHAM (MA_SANPHAM);
 
-INSERT INTO SANPHAM (MA_SANPHAM, TEN_SANPHAM, MA_LOAI2, MA_THUONGHIEU, MA_CHATLIEU, MOTA, GIABAN, KHUYENMAI, HINHANH, SOLUONGTON)
-VALUES (1, 'SƠ MI TRẮNG TAY DÀI', 3, 1, 6, '🌈🌈🌈SƠ MI NAM WHITE & BLACK
+INSERT INTO SANPHAM (MA_SANPHAM, TEN_SANPHAM, MA_LOAI2, MA_THUONGHIEU, MA_CHATLIEU, MOTA, GIABAN, KHUYENMAI, HINHANH)
+VALUES (2, 'SƠ MI TRẮNG TAY DÀI', 3, 1, 6, '🌈🌈🌈SƠ MI NAM WHITE & BLACK
 ⛔️ ÁO BÊN Ý ĐẶT MAY NHÉ!!! chất lượng đẹp từng cái - BAO ĐỔI NẾU HÀNG KÉM CHẤT LƯỢNG.
 ⚡️⚡️⚡️ Giá lẻ: 170k
 ⚡️⚡️⚡️ Giá sỉ 5sp: 145k 
 ❣️ Shopee: shopee.vn/menshopgiare
 ❣️ Size: M - L XL - XXL
-📞📞 CALL/ ZALO: 0987.96.4243', 200000, 46, 'HINHANH', 200);
+📞📞 CALL/ ZALO: 0987.96.4243', 200000, 46, 'HINHANH');
 
 CREATE TABLE KHACHHANG (
 	MA_KHACHHANG INT NOT NULL,
@@ -110,12 +120,30 @@ CREATE TABLE KHACHHANG (
     MATKHAU VARCHAR(50) NOT NULL,
     TEN_KHACHHANG VARCHAR(100) NULL,
     DIENTHOAI VARCHAR(20) NULL,
-    `TINH/THANHPHO` VARCHAR(100) NULL,
-    `QUAN/HUYEN` VARCHAR(100) NULL,
-    `PHUONG/XA` VARCHAR(100) NULL,
-    `SONHA/DUONG` VARCHAR(100) NULL,
+    -- `TINH/THANHPHO` VARCHAR(100) NULL,
+--     `QUAN/HUYEN` VARCHAR(100) NULL,
+--     `PHUONG/XA` VARCHAR(100) NULL,
+--     `SONHA/DUONG` VARCHAR(100) NULL,
     AVATAR VARCHAR(100) NULL,
     PRIMARY KEY (MA_KHACHHANG)
+);
+ALTER table khachhang DROP column `TINH/THANHPHO`;
+ALTER table khachhang DROP column `QUAN/HUYEN`;
+ALTER table khachhang DROP column `PHUONG/XA`;
+ALTER table khachhang DROP column `SONHA/DUONG`;
+ALTER table khachhang add column EMAIL varchar(100);
+
+create TABLE DIACHIKHACHHANG (
+	MA_KHACHHANG INT,
+    TEN VARCHAR(100),
+    DIENTHOAI VARCHAR(20),
+    `TINH/THANHPHO` VARCHAR(100),
+	`QUAN/HUYEN` VARCHAR(100),
+    `PHUONG/XA` VARCHAR(100),
+    `SONHA/DUONG` VARCHAR(100),
+    MACDINH BIT default FALSE,
+    PRIMARY KEY (MA_KHACHHANG, TEN, DIENTHOAI, `TINH/THANHPHO`, `QUAN/HUYEN`, `PHUONG/XA`, `SONHA/DUONG`),
+    FOREIGN KEY (MA_KHACHHANG) REFERENCES KHACHHANG (MA_KHACHHANG)
 );
 
 INSERT INTO KHACHHANG (MA_KHACHHANG, TAIKHOAN, MATKHAU, TEN_KHACHHANG, DIENTHOAI, `TINH/THANHPHO`, `QUAN/HUYEN`, `PHUONG/XA`, `SONHA/DUONG`, AVATAR)
@@ -191,11 +219,19 @@ call sp_test();
 
 select * from khachhang;
 
-create table test (
-	id int auto_increment primary key,
-    col1 varchar(10) not null, 
-    col2 int not null
-);
-insert into test (col1, col2) values ('một', 1), ('hai', 2);
+select * from sanpham;
 
-select * from test;
+delimiter $$
+create procedure SP_SELECT_SAMEPRODUCT(id int, ma_loai int, ma_chat int)
+begin
+	-- Lấy sản phẩm chính
+	select ma_sanpham, ten_sanpham, giaban, `like` from sanpham where MA_SANPHAM = id;
+    
+    -- Lấy sản phẩm tương tự (cùng mã loại 2 và cùng mã chất liệu)
+    select ma_sanpham, ten_sanpham, giaban, `like`
+    from sanpham
+    where MA_LOAI2 = ma_loai and MA_CHATLIEU = ma_chat and MA_SANPHAM != id;
+end $$
+delimiter ;
+
+

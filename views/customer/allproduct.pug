@@ -11,27 +11,28 @@ block main
         h1 Tất cả
         hr
       #main-product-list-list.d-flex.flex-wrap.justify-content-center
-        .product
-          a(href="x")
-            .bg-white
-              .product-img
-                img(src="/images/product1.jpg")
-              .product-title.p-2
-                span Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01
-              .product-price.p-2.d-flex.justify-content-between
-                div
-                  del.text-secondary ₫
-                  del.text-secondary 100000
-                div
-                  small.text-danger ₫
-                  span.text-danger 100000
-          //- .product-same.text-center.py-1
-          //-   a.text-white(href="#") Tìm sản phẩm tương tự
+        each product in productList
+          .product
+            a(href=`/product/${product.ma_sanpham}`)
+              .bg-white
+                .product-img
+                  img(src="/images/product1.jpg")
+                .product-title.p-2
+                  span= product.ten_sanpham
+                .product-price.p-2.d-flex.justify-content-between
+                  div
+                    small.text-danger ₫
+                    span.text-danger= product.giaban
+                  div
+                    i.far.fa-heart.text-danger
+                    span.text-dark= ` ${product.like}`
+            .product-same.text-center.py-1
+              a.text-white(href=`/product?id=${product.ma_sanpham}&category=${product.ma_loai2}&material=${product.ma_chatlieu}`) Tìm sản phẩm tương tự
 
-    nav.mt-4(aria-label='Page navigation example')
+    nav.mt-4
       ul.pagination.justify-content-center
         li.page-item
-          a.page-link(href='#', aria-label='Previous')
+          a.page-link(href='#')
             span(aria-hidden='true') &laquo;
         li.page-item
           a.page-link(href='#') 1
@@ -42,5 +43,5 @@ block main
         li.page-item
           a.page-link(href='#') 4
         li.page-item
-          a.page-link(href='#', aria-label='Next')
+          a.page-link(href='#')
             span(aria-hidden='true') &raquo;

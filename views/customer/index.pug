@@ -43,26 +43,27 @@ block main
     #main-product-list.p-2
       #main-product-list-title.mt-2.bg-white.p-3.d-flex.justify-content-between
         b GỢI Ý HÔM NAY
-        a(href="#") Xem tất cả &rsaquo;
+        a(href="/product") Xem tất cả &rsaquo;
       #main-product-list-list.d-flex.flex-wrap.justify-content-center
-        .product
-          a(href="x")
-            .bg-white
-              .product-img
-                img(src="/images/product1.jpg")
-              .product-title.p-2
-                span Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01
-              .product-price.p-2.d-flex.justify-content-between
-                div
-                  del.text-secondary ₫
-                  del.text-secondary 100000
-                div
-                  small.text-danger ₫
-                  span.text-danger 100000
-          .product-same.text-center.py-1
-            a.text-white(href="#") Tìm sản phẩm tương tự
+        each product in productList
+          .product
+            a(href=`/product/${product.ma_sanpham}`)
+              .bg-white
+                .product-img
+                  img(src="/images/product1.jpg")
+                .product-title.p-2
+                  span= product.ten_sanpham
+                .product-price.p-2.d-flex.justify-content-between
+                  div
+                    small.text-danger ₫
+                    span.text-danger= product.giaban
+                  div
+                    i.far.fa-heart.text-danger
+                    span.text-dark= ` ${product.like}`
+            .product-same.text-center.py-1
+              a.text-white(href=`/product?id=${product.ma_sanpham}&category=${product.ma_loai2}&material=${product.ma_chatlieu}`) Tìm sản phẩm tương tự
       .text-center.mt-3
-        a.btn.btn-danger(href="#", role="button") Xem thêm
+        a.btn.btn-danger(href="/product", role="button") Xem thêm
 
 
 

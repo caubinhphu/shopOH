@@ -26,20 +26,20 @@ block main
                 .img__sub(style="background-image: url('/images/917385.jpg')")
 
       .product-info-right.flex-fill.px-3
-        .product-name Tên sản phẩm
+        .product-name= product[0].ten_sanpham
         .product-info-like.d-flex.my-2
           .product-like
             i.text-danger.far.fa-heart
-            span &nbsp;Đã thích (0)
+            span= ` Đã thích (${product[0].like})`
           .product-sold
             span Đã bán (0)
         .product-price.p-3.d-flex.align-items-center
           .product-price-cost
-            del đ0
+            del= `đ${(product[0].giaban).toLocaleString('de-DE')}`
           .product-price-current.text-danger
-            span đ0
+            span= `đ${Math.round(product[0].giaban * (1 - product[0].khuyenmai / 100)).toLocaleString('de-DE')}`
           .product-promotion
-            span.badge.badge-danger 0% GIẢM
+            span.badge.badge-danger= `${product[0].khuyenmai}% GIẢM`
         .product-select-option
           .procudt-transport-fee.d-flex.align-items-center
             .product-select.label Phí vận chuyển
