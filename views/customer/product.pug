@@ -26,20 +26,20 @@ block main
                 .img__sub(style="background-image: url('/images/917385.jpg')")
 
       .product-info-right.flex-fill.px-3
-        .product-name= product[0].ten_sanpham
+        .product-name= product.ten_sanpham
         .product-info-like.d-flex.my-2
-          .product-like
-            i.text-danger.far.fa-heart
-            span= ` Đã thích (${product[0].like})`
+          .product-like#product-like
+            i#product-like-icon.text-danger.fa-heart(class=isLike.isLike?'fas':'far')
+            span#product-like-text= ` Đã thích (${like.like})`
           .product-sold
-            span Đã bán (0)
+            span= `Đã bán (${product.daban})`
         .product-price.p-3.d-flex.align-items-center
           .product-price-cost
-            del= `đ${(product[0].giaban).toLocaleString('de-DE')}`
+            del= `đ${(product.giaban).toLocaleString('de-DE')}`
           .product-price-current.text-danger
-            span= `đ${Math.round(product[0].giaban * (1 - product[0].khuyenmai / 100)).toLocaleString('de-DE')}`
+            span= `đ${Math.round(product.giaban * (1 - product.khuyenmai / 100)).toLocaleString('de-DE')}`
           .product-promotion
-            span.badge.badge-danger= `${product[0].khuyenmai}% GIẢM`
+            span.badge.badge-danger= `${product.khuyenmai}% GIẢM`
         .product-select-option
           .procudt-transport-fee.d-flex.align-items-center
             .product-select.label Phí vận chuyển
@@ -48,29 +48,31 @@ block main
           .procudt-color.d-flex.align-items-center
             .product-select.label Chọn màu
             .product-select-content
-              button.btn.btn-outline-dark.product-selected(type="button") Đỏ
-              button.btn.btn-outline-dark(type="button") Vàng
-              button.btn.btn-outline-dark(type="button") Đen
-              button.btn.btn-outline-dark(type="button") Xanh
+              each color in colorList
+                //- button.btn.btn-outline-dark(type="button")= color.mausac
+                .custom-control.custom-radio.custom-control-inline
+                  input.custom-control-input(id=`color-${color.mausac}`, type="radio", name="color", value=color.mausac)
+                  label.custom-control-label(for=`color-${color.mausac}`)= color.mausac
           .procudt-size.d-flex.align-items-center
             .product-select.label Chọn size
             .product-select-content
-              button.btn.btn-outline-dark.product-selected(type="button") S
-              button.btn.btn-outline-dark(type="button") M
-              button.btn.btn-outline-dark(type="button") L
-              button.btn.btn-outline-dark(type="button") XL
+              each size in sizeList
+                //- button.btn.btn-outline-dark(type="button")= size.size
+                .custom-control.custom-radio.custom-control-inline
+                  input.custom-control-input(id=`size-${size.size}`, type="radio", name="size", value=size.size)
+                  label.custom-control-label(for=`size-${size.size}`)= size.size
           .procudt-quantity.d-flex.align-items-center
             .product-select.label Số lượng
             .product-select-content
               .product-quantity-input
                 .input-group
                   .input-group-prepend
-                      button.btn.btn-outline-dark(type='button') -
-                  input.w-25.form-control(type='text', value="1")
+                      button#minus-amount-btn.btn.btn-outline-dark(type='button') -
+                  input#input-amount.w-25.form-control(type='text', value="1", name="soluong")
                   .input-group-append
-                      button.btn.btn-outline-dark(type='button') +
+                      button#minus-plus-btn.btn.btn-outline-dark(type='button') +
               .product-quantity-rest.ml-2.d-inline-block
-                span 0 sản phẩm có sẵn
+                span#text-sanphamton= `${amount.sl} sản phẩm có sẵn`
         .procudt-add-cart.mt-4
           button.btn.btn-outline-danger.mx-4(type="button")
             i.fas.fa-cart-plus
@@ -82,46 +84,43 @@ block main
       .product-detail-list
         .product-detail-item.d-flex
           .product-detail-label Danh mục
-          .product-detail-content Danh mục
+          .product-detail-content
+            a(href=`/`) ShopOH
+            span= ` > `
+            a(href=`/product/search?${category0}`)= product.ten_loai0
+            span= ` > `
+            a(href=`/product/search?${category1}`)= product.ten_loai1
+            span= ` > `
+            a(href=`/product/search?${category2}`)= product.ten_loai2
         .product-detail-item.d-flex
           .product-detail-label Thương hiệu
-          .product-detail-content Thương hiệu
+          .product-detail-content= product.ten_thuonghieu
         .product-detail-item.d-flex
           .product-detail-label Chất liệu
-          .product-detail-content Chất liệu
+          .product-detail-content= product.ten_chatlieu
       .product-detail-title MÔ TẢ SẢN PHẨM
       .product-detail-chitiet
-        span Mô tả
+        span= product.mota
 
     #main-product-same-list.p-2.mt-4
       #main-product-same-list-title
         | SẢN PHẨM TƯƠNG TỰ
       #main-product-same-list-list.d-flex.flex-wrap.justify-content-center
-        .product-same
-          a(href="x")
-            .bg-white
-              .product-same-img
-                img(src="/images/product1.jpg")
-              .product-same-title.p-2
-                span Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01
-              .product-same-price.p-2.d-flex.justify-content-between
-                div
-                  del.text-secondary ₫
-                  del.text-secondary 100000
-                div
-                  small.text-danger ₫
-                  span.text-danger 100000
-        .product-same
-          a(href="x")
-            .bg-white
-              .product-same-img
-                img(src="/images/product1.jpg")
-              .product-same-title.p-2
-                span Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01, Áo sơ mi cổ tàu dài tay kojiba SMT01
-              .product-same-price.p-2.d-flex.justify-content-between
-                div
-                  del.text-secondary ₫
-                  del.text-secondary 100000
-                div
-                  small.text-danger ₫
-                  span.text-danger 100000
+        each product in productSameList
+          .product-same
+            a(href=`/product/${product.ma_sanpham}`)
+              .bg-white
+                .product-same-img
+                  img(src="/images/product1.jpg")
+                .product-same-title.p-2
+                  span= product.ten_sanpham
+                .product-same-price.p-2.d-flex.justify-content-between
+                  div
+                    small.text-danger ₫
+                    span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100)).toLocaleString('de-DE')
+                  div
+                    i.far.fa-heart.text-danger
+                    span.text-dark= ` ${product.like}`
+
+block supScript
+  script(src="/scripts/customer/product.js")

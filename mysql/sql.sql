@@ -95,6 +95,16 @@ CREATE TABLE SANPHAM (
 );
 ALTER TABLE sanpham DROP column SOLUONGTON;
 ALTER TABLE sanpham ADD column `LIKE` INT default 0;
+ALTER TABLE sanpham ADD column DABAN INT default 0;
+ALTER TABLE sanpham drop column `LIKE`;
+
+create table LIKESANPHAM (
+	MA_SANPHAM INT,
+    MA_KHACHHANG INT,
+    primary key (MA_SANPHAM, MA_KHACHHANG),
+    FOREIGN KEY (MA_KHACHHANG) REFERENCES KHACHHANG (MA_KHACHHANG),
+    FOREIGN KEY (MA_SANPHAM) REFERENCES SANPHAM (MA_SANPHAM)
+);
 
 create table PHANLOAISANPHAM (
 	MA_SANPHAM INT NOT NULL,
@@ -113,6 +123,20 @@ VALUES (2, 'SƠ MI TRẮNG TAY DÀI', 3, 1, 6, '🌈🌈🌈SƠ MI NAM WHITE & B
 ❣️ Shopee: shopee.vn/menshopgiare
 ❣️ Size: M - L XL - XXL
 📞📞 CALL/ ZALO: 0987.96.4243', 200000, 46, 'HINHANH');
+
+insert into PHANLOAISANPHAM
+values (1, 'Trắng', 'S', 100),
+	   (1, 'Trắng', 'M', 65),
+       (1, 'Trắng', 'L', 14),
+       (1, 'Đen', 'S', 354),
+       (1, 'Đen', 'M', 354),
+       (1, 'Đen', 'L', 43),
+       (2, 'Trắng', 'S', 100),
+	   (2, 'Trắng', 'M', 65),
+       (2, 'Trắng', 'L', 14),
+       (2, 'Xám', 'S', 354),
+       (2, 'Xám', 'M', 354),
+       (2, 'Xám', 'L', 43);
 
 CREATE TABLE KHACHHANG (
 	MA_KHACHHANG INT NOT NULL,
@@ -219,7 +243,7 @@ call sp_test();
 
 select * from khachhang;
 
-select * from sanpham;
+select * from sanpham limit 10;
 
 delimiter $$
 create procedure SP_SELECT_SAMEPRODUCT(id int, ma_loai int, ma_chat int)
@@ -234,4 +258,110 @@ begin
 end $$
 delimiter ;
 
+call SP_SELECT_SAMEPRODUCT(1, 3, 6);
 
+delimiter $$
+create procedure SP_SELECT_PRODUCT(id int)
+begin
+	-- Lấy sản phẩm chính
+	select sp.ma_sanpham, sp.ten_sanpham, daban, sp.giaban, sp.khuyenmai, sp.mota, sp.hinhanh,
+		   cl.ten_chatlieu, th.ten_thuonghieu, l0.ten_loai0, l1.ten_loai1, l2.ten_loai2
+    from sanpham sp join thuonghieu th on sp.ma_thuonghieu = th.ma_thuonghieu
+					join chatlieu cl on sp.ma_chatlieu = cl.ma_chatlieu
+                    join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
+                    join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
+                    join loai_sp0 l0 on l1.ma_loai0 = l0.ma_loai0
+    where sp.ma_sanpham = id;
+    
+    -- Lấy màu sắc
+    select mausac
+    from phanloaisanpham
+    where ma_sanpham = id
+    group by mausac;
+    
+    -- Lấy size
+    select size
+    from phanloaisanpham
+    where ma_sanpham = id
+    group by size;
+    
+    -- Lấy tổng số lượng sản phẩm
+    select sum(soluongton) as sl
+    from phanloaisanpham
+    where ma_sanpham = id;
+    
+    -- Lấy tổng like
+    select count(*) as `like`
+    from likesanpham
+    where ma_sanpham = id;
+    
+    -- check user current is liked
+    if exists (select * from likesanpham
+			   where ma_sanpham = id and ma_khachhang = idUser)
+	then select true as isLike;
+    else select false as isLike;
+    end if;
+    
+    -- Lấy sản phẩm tương tự (cùng mã loại 2 và cùng mã chất liệu)
+    select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban
+    from sanpham
+    where MA_SANPHAM != id
+		  and ma_loai2 = (select ma_loai2 from sanpham where ma_sanpham = id)
+		  and ma_chatlieu = (select ma_chatlieu from sanpham where ma_sanpham = id);
+end $$
+delimiter ;
+
+call SP_SELECT_PRODUCT(2, 1);
+
+delimiter $$
+create procedure SP_SELECT_MOUNT_PRODUCT (_id int, _color varchar(10), _size varchar(5))
+begin
+	if exists (select soluongton from phanloaisanpham
+			   where ma_sanpham = _id and mausac = _color and size = _size)
+    then select soluongton from phanloaisanpham
+		 where ma_sanpham = _id and mausac = _color and size = _size;
+    else select 0;
+    end if;
+end $$
+delimiter ;
+
+call SP_SELECT_MOUNT_PRODUCT (1, 'Trắng', 'M');
+
+insert into likesanpham (ma_sanpham, ma_khachhang)
+values (1, 1);
+
+delimiter $$
+create procedure SP_ADDLIKE (_id int, _idUser int)
+begin
+	if exists (select * from sanpham where ma_sanpham = _id)
+		and  exists (select * from khachhang where ma_khachhang = _idUser)
+	then insert into likesanpham (ma_sanpham, ma_khachhang)
+		 values (_id, _idUser);
+	end if;
+    
+    -- Lấy tổng like
+    select count(*) as `like`
+    from likesanpham
+    where ma_sanpham = id;
+end $$
+delimiter ;
+
+call SP_ADDLIKE (2, 1);
+
+delimiter $$
+create procedure SP_DELETELIKE (_id int, _idUser int)
+begin
+	if exists (select * from sanpham where ma_sanpham = _id)
+		and  exists (select * from khachhang where ma_khachhang = _idUser)
+	then delete from likesanpham
+		 where ma_sanpham = _id and ma_khachhang = _idUser;
+	end if;
+    
+    -- Lấy tổng like
+    select count(*) as `like`
+    from likesanpham
+    where ma_sanpham = id;
+end $$
+delimiter ;
+
+call SP_DELETELIKE(2, 1);

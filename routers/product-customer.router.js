@@ -10,4 +10,10 @@ router.get('/product', controller.getProducts);
 
 router.get('/product/:idProduct', controller.getProduct);
 
+router.get('/product/:idProduct/:color/:size', controller.getAmountProduct);
+
+router.post('/product/:idProduct/like', controller.postAddLike);
+
+router.delete('/product/:idProduct/like', controller.deleteLike);
+
 module.exports = router;

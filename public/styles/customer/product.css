@@ -52,6 +52,7 @@
 
 .product-like {
   border-right: 1px solid #DDDD;
+  cursor: pointer;
 }
 
 .product-info-like.d-flex div {
@@ -93,6 +94,11 @@
 
 .product-select-content > button {
   margin: 5px;
+}
+
+.product-select-content label {
+  margin: 5px;
+  user-select: none;
 }
 
 .product-select-content .btn-outline-dark:hover {

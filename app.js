@@ -25,6 +25,7 @@ app.use('/account', customerRoute);
 // handle errors
 app.use((err, req, res, next) => {
   if (err)
+    console.log(err);
     res.send(err.message);
 });
 
