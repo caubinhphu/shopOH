@@ -27,3 +27,19 @@ module.exports.postAddCart = async (req, res, next) => {
     next(error);
   }
 }
+
+module.exports.getCart = async (req, res, next) => {
+  try {
+    let dataCart = await querySQL('call SP_SELECT_CART(?)', [1]);
+    let dataSuggestion = await querySQL('call SP_SELECT_PRODUCT_SUGGESTION()');
+    res.render('customer/cart', {
+      titleSite: 'ShopOH - Giở hàng',
+      cartNum: dataCart[0][0],
+      cartProduct: dataCart[1],
+      productSuggestionList: dataSuggestion[0]
+    })
+  } catch (error) {
+    next(error);
+  }
+}
+

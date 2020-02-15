@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 // Router
-const customerAccountRoute = require('./routers/customer.router');
+const customerAccountRoute = require('./routers/personal-customer.router');
 const customerProductRoute = require('./routers/product-customer.router')
 const customerCartRoute = require('./routers/cart-customer.router');
 

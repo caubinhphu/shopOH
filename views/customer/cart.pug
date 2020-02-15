@@ -1,0 +1,76 @@
+extends ./common
+
+block style_child
+  link(rel="stylesheet", href="/styles/customer/cart.css")
+
+block main
+  #main.p-3
+    #main-cart-title
+        h1 Giỏ hàng
+        hr
+    #main-cart-content
+      table.table.bg-white
+        thead
+          tr.text-center
+            th.cart-checkbox.custom-control.custom-checkbox.text-center
+              input#select-all-product.custom-control-input(type='checkbox', name="allProduct", checked)
+              label.custom-control-label(for='select-all-product')
+            th.text-left Sản phẩm
+            th Đơn giá
+            th Số lượng
+            th Số tiền
+            th Thao tác
+        tbody
+          each product in cartProduct
+            tr.text-center
+              td.cart-checkbox.custom-control.custom-checkbox.text-center
+                input.custom-control-input(checked, type='checkbox', name="product", id=`select-${product.ma_sanpham}-${product.masac}-${product.size}`)
+                label.custom-control-label(for=`select-${product.ma_sanpham}-${product.masac}-${product.size}`)
+              td.text-left.cart-name-product
+                a(href=`/product/${product.ma_sanpham}`)
+                  .cart-product-img(style=`background-image: url('${product.hinhanh.split(',')[0]}')`)
+                  .cart-product-content
+                    div= product.ten_sanpham
+                    small= `Loại: màu ${product.mausac}, size: ${product.size}`
+              td
+                if (product.khuyenmai > 0)
+                  del.mr-2.text-secondary= `₫${product.giaban}`
+                span= `₫${Math.round(product.giaban * (1 - product.khuyenmai / 100)).toLocaleString('de-DE')}`
+              td
+                input.text-center.form-control(type="number", min="1", max="100", value=product.soluong)
+              td.text-danger
+                span= `₫${(product.soluong * Math.round(product.giaban * (1 - product.khuyenmai / 100))).toLocaleString('de-DE')}`
+              td
+                button.btn.btn-link(type="button") Xóa
+      #cart-muahang.mt-3.p-2.d-flex.flex-md-row.flex-column
+        .cart-checkbox.custom-control.custom-checkbox.flex-grow-1.align-self-md-center
+          input#select-all-product2.custom-control-input(type='checkbox', name="allProduct", checked)
+          label.custom-control-label(for='select-all-product2')= `Chọn tất cả (${cartNum.slsp})`
+        .d-flex.align-items-center.justify-content-end
+          div= `Tổng tiền hàng (${cartNum.slsp} sản phẩm):`
+          .text-danger.cart-price= `₫000000`
+          button.btn.btn-danger.px-1.px-md-5(type="button") Mua hàng
+
+    #cart-product-suggestion.p-2.mt-4
+      #cart-product-suggestion-title
+        | CÓ THỂ BẠN THÍCH
+      #cart-product-list.d-flex.flex-wrap.justify-content-center
+        each product in productSuggestionList
+          .product-suggestion
+            a(href=`/product/${product.ma_sanpham}`)
+              .bg-white
+                .product-suggesion-img
+                  img(src=`${product.hinhanh.split(',')[0]}`)
+                .product-suggestion-title.p-2
+                  span= product.ten_sanpham
+                .product-same-price.p-2.d-flex.justify-content-between
+                  div
+                    small.text-danger ₫
+                    span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100)).toLocaleString('de-DE')
+                  div
+                    span.text-dark= product.daban
+                    small.text-dark &nbsp;Đã bán
+
+
+block supScript
+  script(src="/scripts/customer/cart.js")
