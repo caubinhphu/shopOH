@@ -5,10 +5,13 @@ const querySQL = require('../configure/querySQL');
 
 module.exports.getIndex = async (req, res, next) => {
   try {
-    let data = await querySQL('select ma_sanpham, ten_sanpham, giaban, khuyenmai, `like`, ma_loai2, hinhanh, ma_chatlieu from sanpham limit 10');
+    let data = await querySQL('call SP_SELECT_PRODUCT_SUGGESTION()');
+    let dataCart = await querySQL('call SP_SELECT_CART(?)', [1]);
     res.render('customer/index', { 
       title: 'ShopOP',
-      productList: data
+      productList: data[0],
+      cartNum: dataCart[0][0],
+      cartProduct: dataCart[1]
     });
   } catch(err) {
     next(err);
@@ -21,16 +24,22 @@ module.exports.getProducts = async (req, res, next) => {
     let data = null;
     if (queryReq.hasOwnProperty('id')) {
       data = await querySQL('call SP_SELECT_SAMEPRODUCT (?, ?, ?)', [queryReq.id, queryReq.category, queryReq.material]);
+      let dataCart = await querySQL('call SP_SELECT_CART(?)', [1]);
       res.render('customer/same-product', {
         title: 'ShopOP - Sản phẩm',
         productMain: data[0][0],
-        productSameList: data[1]
+        productSameList: data[1],
+        cartNum: dataCart[0][0],
+        cartProduct: dataCart[1]
       });
     } else {
-      data = await querySQL('select ma_sanpham, ten_sanpham, giaban, `like`, ma_loai2, hinhanh, ma_chatlieu from sanpham')
+      data = await querySQL('call SP_SELECT_PRODUCT_ALL()')
+      let dataCart = await querySQL('call SP_SELECT_CART(?)', [1]);
       res.render('customer/allproduct', {
         titleSite: 'ShopOP - Sản phẩm',
-        productList: data
+        productList: data[0],
+        cartNum: dataCart[0][0],
+        cartProduct: dataCart[1]
       });
     }
   } catch(err) {
@@ -42,18 +51,22 @@ module.exports.getProduct = async (req, res, next) => {
   try {
     let idProduct = parseInt(req.params.idProduct);
     let data = await querySQL('call SP_SELECT_PRODUCT(?, ?)', [idProduct, 1]);
+    let dataCart = await querySQL('call SP_SELECT_CART(?)', [1]);
     res.render('customer/product', { 
       titleSite: 'ShopOP - Sản phẩm',
       product: data[0][0],
+      urlImgs: data[0][0].hinhanh.split(','),
       colorList: data[1],
       sizeList: data[2],
       amount: data[3][0],
       like: data[4][0],
       isLike: data[5][0],
       productSameList: data[6],
-      category0: querystring.stringify({cate0: data[0][0].ten_loai0}),
-      category1: querystring.stringify({cate0: data[0][0].ten_loai0, cate1: data[0][0].ten_loai1}),
-      category2: querystring.stringify({cate0: data[0][0].ten_loai0, cate1: data[0][0].ten_loai1, cate2: data[0][0].ten_loai2})
+      category0: querystring.stringify({level: 0, category: data[0][0].ma_loai0}),
+      category1: querystring.stringify({level: 1, category: data[0][0].ma_loai1}),
+      category2: querystring.stringify({level: 2, category: data[0][0].ma_loai2}),
+      cartNum: dataCart[0][0],
+      cartProduct: dataCart[1]
     });
   } catch(err) {
     next(err);
@@ -93,6 +106,24 @@ module.exports.deleteLike = async (req, res, next) => {
     let data = await querySQL('call SP_DELETELIKE(?, ?)', [idProduct, 1]);
 
     res.send(data[0][0]);
+  } catch(err) {
+    next(err);
+  }
+};
+
+module.exports.getStyle = async (req, res, next) => {
+  try {
+    let styleText = req.params.style;
+    let style = 0;
+    if (styleText === 'thoitrangnam') {
+      style = 1;
+    } else if (styleText === 'thoitrangnu') {
+      style = 2;
+    }
+
+    let data = await querySQL('call SP_SELECT_PRODUCT_STYLE(?)', [style]);
+
+    res.json(data[0]);
   } catch(err) {
     next(err);
   }

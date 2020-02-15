@@ -13,10 +13,12 @@ block main
         .product-main-name
           a(href=`/product/${productMain.ma_sanpham}`)= productMain.ten_sanpham
         .product-like
-            i.text-danger.far.fa-heart
-            span= ` Đã thích (${productMain.like})`
+            span= `Đã bán (${productMain.daban})`
         .product-main-price
-          span.text-danger= `₫${productMain.giaban}`
+          if (productMain.khuyenmai > 0)
+            del.mr-2= `₫${productMain.giaban}`
+          span.text-danger= `₫${Math.round(productMain.giaban * (1 - productMain.khuyenmai / 100)).toLocaleString('de-DE')}`
+
         a.btn.btn-danger(href=`/product/${productMain.ma_sanpham}`, role="button") Mua ngay
 
 
@@ -37,5 +39,5 @@ block main
                     small.text-danger ₫
                     span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100)).toLocaleString('de-DE')
                   div
-                    i.far.fa-heart.text-danger
-                    span.text-dark= ` ${product.like}`
+                    span.text-dark= productMain.daban
+                    small.text-dark &nbsp;Đã bán

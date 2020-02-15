@@ -5,8 +5,9 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 // Router
-const customerRoute = require('./routers/customer.router');
-const indexCustomerRoute = require('./routers/product-customer.router')
+const customerAccountRoute = require('./routers/customer.router');
+const customerProductRoute = require('./routers/product-customer.router')
+const customerCartRoute = require('./routers/cart-customer.router');
 
 const app = express();
 
@@ -19,8 +20,9 @@ app.use(bodyParser.urlencoded( { extended: true } ));
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.SETRECT));
 
-app.use('/', indexCustomerRoute);
-app.use('/account', customerRoute);
+app.use('/', customerProductRoute);
+app.use('/account', customerAccountRoute);
+app.use('/cart', customerCartRoute);
 
 // handle errors
 app.use((err, req, res, next) => {

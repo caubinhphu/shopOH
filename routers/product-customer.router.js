@@ -16,4 +16,6 @@ router.post('/product/:idProduct/like', controller.postAddLike);
 
 router.delete('/product/:idProduct/like', controller.deleteLike);
 
+router.get('/product/style/:style', controller.getStyle);
+
 module.exports = router;

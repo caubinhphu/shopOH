@@ -16,16 +16,16 @@ block main
             a(href=`/product/${product.ma_sanpham}`)
               .bg-white
                 .product-img
-                  img(src="/images/product1.jpg")
+                  img(src=product.hinhanh.split(',')[0])
                 .product-title.p-2
                   span= product.ten_sanpham
                 .product-price.p-2.d-flex.justify-content-between
                   div
                     small.text-danger ₫
-                    span.text-danger= product.giaban
+                    span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100)).toLocaleString('de-DE')
                   div
-                    i.far.fa-heart.text-danger
-                    span.text-dark= ` ${product.like}`
+                    span.text-dark= `${product.daban}`
+                    small.text-dark &nbsp;Đã bán
             .product-same.text-center.py-1
               a.text-white(href=`/product?id=${product.ma_sanpham}&category=${product.ma_loai2}&material=${product.ma_chatlieu}`) Tìm sản phẩm tương tự
 

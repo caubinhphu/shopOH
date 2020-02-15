@@ -9,24 +9,16 @@ block main
       .product-info-left
         .product-image
           .product-info-img-main
-            .img-product(style="background-image: url('/images/917385.jpg')")
+            .img-product(style=`background-image: url(${urlImgs[0]})`)
           .product-info-img-sub
             .img-sub-list
-              .img-sub
-                .img__sub(style="background-image: url('/images/917385.jpg')")
-              .img-sub
-                .img__sub(style="background-image: url('/images/917385.jpg')")
-              .img-sub
-                .img__sub(style="background-image: url('/images/917385.jpg')")
-              .img-sub
-                .img__sub(style="background-image: url('/images/917385.jpg')")
-              .img-sub
-                .img__sub(style="background-image: url('/images/917385.jpg')")
-              .img-sub
-                .img__sub(style="background-image: url('/images/917385.jpg')")
+              each url in urlImgs
+                .img-sub
+                  .img__sub(style=`background-image: url(${url})`)
 
       .product-info-right.flex-fill.px-3
         .product-name= product.ten_sanpham
+        input.d-none(type="text", name="idPro", value=product.ma_sanpham)
         .product-info-like.d-flex.my-2
           .product-like#product-like
             i#product-like-icon.text-danger.fa-heart(class=isLike.isLike?'fas':'far')
@@ -34,47 +26,47 @@ block main
           .product-sold
             span= `Đã bán (${product.daban})`
         .product-price.p-3.d-flex.align-items-center
-          .product-price-cost
-            del= `đ${(product.giaban).toLocaleString('de-DE')}`
+          if (product.khuyenmai > 0)
+            .product-price-cost
+              del= `đ${(product.giaban).toLocaleString('de-DE')}`
           .product-price-current.text-danger
             span= `đ${Math.round(product.giaban * (1 - product.khuyenmai / 100)).toLocaleString('de-DE')}`
-          .product-promotion
-            span.badge.badge-danger= `${product.khuyenmai}% GIẢM`
+          if (product.khuyenmai > 0)
+            .product-promotion
+              span.badge.badge-danger= `${product.khuyenmai}% GIẢM`
         .product-select-option
           .procudt-transport-fee.d-flex.align-items-center
             .product-select.label Phí vận chuyển
             .product-select-content
               span đ0
-          .procudt-color.d-flex.align-items-center
-            .product-select.label Chọn màu
-            .product-select-content
-              each color in colorList
-                //- button.btn.btn-outline-dark(type="button")= color.mausac
-                .custom-control.custom-radio.custom-control-inline
-                  input.custom-control-input(id=`color-${color.mausac}`, type="radio", name="color", value=color.mausac)
-                  label.custom-control-label(for=`color-${color.mausac}`)= color.mausac
-          .procudt-size.d-flex.align-items-center
-            .product-select.label Chọn size
-            .product-select-content
-              each size in sizeList
-                //- button.btn.btn-outline-dark(type="button")= size.size
-                .custom-control.custom-radio.custom-control-inline
-                  input.custom-control-input(id=`size-${size.size}`, type="radio", name="size", value=size.size)
-                  label.custom-control-label(for=`size-${size.size}`)= size.size
-          .procudt-quantity.d-flex.align-items-center
-            .product-select.label Số lượng
-            .product-select-content
-              .product-quantity-input
-                .input-group
-                  .input-group-prepend
-                      button#minus-amount-btn.btn.btn-outline-dark(type='button') -
-                  input#input-amount.w-25.form-control(type='text', value="1", name="soluong")
-                  .input-group-append
-                      button#minus-plus-btn.btn.btn-outline-dark(type='button') +
-              .product-quantity-rest.ml-2.d-inline-block
-                span#text-sanphamton= `${amount.sl} sản phẩm có sẵn`
-        .procudt-add-cart.mt-4
-          button.btn.btn-outline-danger.mx-4(type="button")
+          #selection-style-product
+            .procudt-color.d-flex.align-items-center
+              .product-select.label Chọn màu
+              .product-select-content
+                each color in colorList
+                  //- button.btn.btn-outline-dark(type="button")= color.mausac
+                  .custom-control.custom-radio.custom-control-inline
+                    input.custom-control-input(id=`color-${color.mausac}`, type="radio", name="color", value=color.mausac)
+                    label.custom-control-label(for=`color-${color.mausac}`)= color.mausac
+            .procudt-size.d-flex.align-items-center
+              .product-select.label Chọn size
+              .product-select-content
+                each size in sizeList
+                  //- button.btn.btn-outline-dark(type="button")= size.size
+                  .custom-control.custom-radio.custom-control-inline
+                    input.custom-control-input(id=`size-${size.size}`, type="radio", name="size", value=size.size)
+                    label.custom-control-label(for=`size-${size.size}`)= size.size
+            .procudt-quantity.d-flex.align-items-center
+              .product-select.label Số lượng
+              .product-select-content
+                .product-quantity-input
+                    input#input-amount.form-control(type='number', value="1", name="soluong", min="1", max=amount.sl)
+                .product-quantity-rest.ml-2.d-inline-block
+                  span#text-sanphamton= `${amount.sl} sản phẩm có sẵn`
+            .err.text-danger
+              em#error-cart
+        .procudt-add-cart.mt-5
+          button#add-to-cart-btn.btn.btn-outline-danger.mx-4(type="button")
             i.fas.fa-cart-plus
             span &nbsp;Thêm vào giở hàng
           button.btn.btn-danger(type="button") Mua ngay
@@ -100,7 +92,9 @@ block main
           .product-detail-content= product.ten_chatlieu
       .product-detail-title MÔ TẢ SẢN PHẨM
       .product-detail-chitiet
-        span= product.mota
+        - var textMoTa = product.mota.split('\n');
+        each line in textMoTa
+          div= line
 
     #main-product-same-list.p-2.mt-4
       #main-product-same-list-title
@@ -111,7 +105,7 @@ block main
             a(href=`/product/${product.ma_sanpham}`)
               .bg-white
                 .product-same-img
-                  img(src="/images/product1.jpg")
+                  img(src=`${product.hinhanh.split(',')[0]}`)
                 .product-same-title.p-2
                   span= product.ten_sanpham
                 .product-same-price.p-2.d-flex.justify-content-between
@@ -119,8 +113,12 @@ block main
                     small.text-danger ₫
                     span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100)).toLocaleString('de-DE')
                   div
-                    i.far.fa-heart.text-danger
-                    span.text-dark= ` ${product.like}`
+                    span.text-dark= product.daban
+                    small.text-dark &nbsp;Đã bán
+  #alert-add-cart-success
+    i.text-success.fas.fa-check-circle.fa-3x
+    br
+    big Sản phẩm đã được thêm vào giỏ hàng
 
 block supScript
   script(src="/scripts/customer/product.js")

@@ -31,11 +31,11 @@ block main
         #main-category-title.my-2.text-center
           b DANH MỤC
         #main-category-list.d-flex.justify-content-center
-          a(href="#").category.p-2
+          a(href="/product/style/thoitrangnam").category.p-2
             .category-img
               img(src="/images/category_male.png")
             .category-text Thời trang nam
-          a(href="#").category.p-2
+          a(href="/product/style/thoitrangnu").category.p-2
             .category-img
               img(src="/images/category_female.png")
             .category-text Thời trang nữ
@@ -50,7 +50,7 @@ block main
             a(href=`/product/${product.ma_sanpham}`)
               .bg-white
                 .product-img
-                  img(src="/images/product1.jpg")
+                  img(src=product.hinhanh.split(',')[0])
                 .product-title.p-2
                   span= product.ten_sanpham
                 .product-price.p-2.d-flex.justify-content-between
@@ -58,8 +58,8 @@ block main
                     small.text-danger ₫
                     span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100)).toLocaleString('de-DE')
                   div
-                    i.far.fa-heart.text-danger
-                    span.text-dark= ` ${product.like}`
+                    span.text-dark= `${product.daban}`
+                    small.text-dark &nbsp;Đã bán
             .product-same.text-center.py-1
               a.text-white(href=`/product?id=${product.ma_sanpham}&category=${product.ma_loai2}&material=${product.ma_chatlieu}`) Tìm sản phẩm tương tự
       .text-center.mt-3

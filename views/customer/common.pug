@@ -90,30 +90,39 @@ block header
             a(href="#")
               i.fas.fa-shopping-cart.fa-2x.text-white
             .position-child-cart
-              span.badge.badge-pill.badge-light 0
-            //- .popover__content__cart.d-none.d-md-inline
-            //-   p.popover__message Sản phẩm mới thêm
-              
-            //-   .popover__content__main.p-2.d-flex(data-link="#")
-            //-     .popover__content__img(style='background-image: url("/images/917385.jpg")')
-            //-     .popover__content__main__cart.row.flex-fill.ml-1
-            //-       .col-8
-            //-         .popover__content__cart__title
-            //-           small Tên sản phẩm
-            //-         .popover__content__cart__content
-            //-           small Phân loại hàng: 
-            //-       .col-4
-            //-         .popover__content__cart__price.text-right
-            //-           span.text-danger 100000
-            //-           small &nbsp;x&nbsp;
-            //-           span 1
-            //-         .popover__content__cart__delete.text-right
-            //-           button.btn.btn-link(type="button") Xóa
-            //-   .text-right.p-2
-            //-     a.btn.btn-danger(href="#") Xem giỏ hàng
-            .popover__content__cart.text-center.py-5.d-none.d-md-inline
-              img.w-25.d-block.mx-auto(src="/images/nocart.png")
-              span Chưa có sản phẩm
+              span#numProductIncart.badge.badge-pill.badge-light= cartNum.slsp
+            #main-cart
+              if (cartNum.slsp === 0)
+                .popover__content__cart.text-center.py-5.d-none.d-md-inline
+                  img.w-25.d-block.mx-auto(src="/images/nocart.png")
+                  span Chưa có sản phẩm
+              else
+                .popover__content__cart.d-none.d-md-inline
+                  p.popover__message Sản phẩm mới thêm
+                  #product_cart_list.popover__content__main
+                    - var index = 0;
+                    while index < cartProduct.length && index < 5
+                      .product_content.p-2.d-flex(data-target=`/product/${cartProduct[index].ma_sanpham}`)
+                        .popover__content__image
+                          .popover__content__img(style=`background-image: url(${cartProduct[index].hinhanh.split(',')[0]})`)
+                        .popover__content__main__cart.ml-1.d-flex
+                          .popover__content__main__cart__content__left
+                            .popover__content__cart__title
+                              small= cartProduct[index].ten_sanpham
+                            .popover__content__cart__content
+                              small= `Loại: màu ${cartProduct[index].mausac}, size: ${cartProduct[index].size}`
+                          .popover__content__main__cart__content__right
+                            .popover__content__cart__price.text-right
+                              span.text-danger= `₫${Math.round(cartProduct[index].giaban * (1 - cartProduct[index].khuyenmai / 100)).toLocaleString('de-DE')}`
+                              if (cartProduct[index].soluong > 1)
+                                small &nbsp;x&nbsp;
+                                span= cartProduct[index].soluong
+                            .popover__content__cart__delete.text-right
+                              button.btn.btn-link.delete-product-cart-btn(type="button", data-product=`${cartProduct[index].ma_sanpham}$${cartProduct[index].ma_khachhang}$${cartProduct[index].mausac}$${cartProduct[index].size}`) Xóa
+                      - index++
+                  .text-right.p-2.d-flex.justify-content-between.align-items-center
+                    small= `${cartNum.sl} loại sản phẩm trong giỏ`
+                    a.btn.btn-danger(href="#") Xem giỏ hàng
       #header-bottom
 
       #header-dangky.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel-dangky', aria-hidden='true')
@@ -200,4 +209,5 @@ block footer
     p © 2020 ShopOH. Tất cả các quyền được bảo lưu.
 
 block script2
+  script(src="/scripts/customer/common.js")
   block supScript

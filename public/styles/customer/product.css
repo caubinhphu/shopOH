@@ -181,3 +181,21 @@
   font-weight: 600;
   font-size: 20px;
 }
+
+.img__sub:hover {
+  outline: 2px solid rgb(238, 77, 45);
+}
+
+#selection-style-product > div{
+  margin: 20px 0;
+}
+
+#alert-add-cart-success {
+  padding: 40px 10px;
+  text-align: center;
+  background-color: #bbb1b1;
+  width: fit-content;
+  position: fixed;
+  top: 40%;
+  left: 40%;
+}
