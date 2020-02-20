@@ -28,9 +28,9 @@ block main
         .product-price.p-3.d-flex.align-items-center
           if (product.khuyenmai > 0)
             .product-price-cost
-              del= `đ${(product.giaban).toLocaleString('de-DE')}`
+              del= `đ${(product.giaban)}`
           .product-price-current.text-danger
-            span= `đ${Math.round(product.giaban * (1 - product.khuyenmai / 100)).toLocaleString('de-DE')}`
+            span= `đ${Math.round(product.giaban * (1 - product.khuyenmai / 100))}`
           if (product.khuyenmai > 0)
             .product-promotion
               span.badge.badge-danger= `${product.khuyenmai}% GIẢM`
@@ -111,7 +111,7 @@ block main
                 .product-same-price.p-2.d-flex.justify-content-between
                   div
                     small.text-danger ₫
-                    span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100)).toLocaleString('de-DE')
+                    span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100))
                   div
                     span.text-dark= product.daban
                     small.text-dark &nbsp;Đã bán

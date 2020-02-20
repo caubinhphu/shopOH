@@ -87,7 +87,7 @@ block header
               a(href="#") Chân váy
         .mx-2.d-flex.flex-column.justify-content-center
           #cart.position-root.popover__wrapper__cart
-            a(href="#")
+            a(href="/cart")
               i.fas.fa-shopping-cart.fa-2x.text-white
             .position-child-cart
               span#numProductIncart.badge.badge-pill.badge-light= cartNum.slsp
@@ -113,16 +113,16 @@ block header
                               small= `Loại: màu ${cartProduct[index].mausac}, size: ${cartProduct[index].size}`
                           .popover__content__main__cart__content__right
                             .popover__content__cart__price.text-right
-                              span.text-danger= `₫${Math.round(cartProduct[index].giaban * (1 - cartProduct[index].khuyenmai / 100)).toLocaleString('de-DE')}`
+                              span.text-danger= `₫${Math.round(cartProduct[index].giaban * (1 - cartProduct[index].khuyenmai / 100))}`
                               if (cartProduct[index].soluong > 1)
                                 small &nbsp;x&nbsp;
                                 span= cartProduct[index].soluong
                             .popover__content__cart__delete.text-right
-                              button.btn.btn-link.delete-product-cart-btn(type="button", data-product=`${cartProduct[index].ma_sanpham}$${cartProduct[index].ma_khachhang}$${cartProduct[index].mausac}$${cartProduct[index].size}`) Xóa
+                              button.btn.btn-link.delete-product-cart-btn(type="button", data-product=`${cartProduct[index].ma_sanpham}$${cartProduct[index].mausac}$${cartProduct[index].size}`) Xóa
                       - index++
                   .text-right.p-2.d-flex.justify-content-between.align-items-center
                     small= `${cartNum.sl} loại sản phẩm trong giỏ`
-                    a.btn.btn-danger(href="#") Xem giỏ hàng
+                    a.btn.btn-danger(href="/cart") Xem giỏ hàng
       #header-bottom
 
       #header-dangky.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel-dangky', aria-hidden='true')

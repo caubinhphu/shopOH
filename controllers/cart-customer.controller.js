@@ -2,7 +2,8 @@ const querySQL = require('../configure/querySQL');
 
 module.exports.deleteCart = async (req, res, next) => {
   try {
-    let cartInfo = req.params.cart.split('$');
+    let cartInfo = req.body.info.split('$');
+    cartInfo.unshift(1);
     await querySQL('call SP_DELETE_CART(?, ?, ?, ?)', cartInfo);
     let dataCart = await querySQL('call SP_SELECT_CART(?)', [1]);
     res.send(dataCart);
@@ -33,7 +34,7 @@ module.exports.getCart = async (req, res, next) => {
     let dataCart = await querySQL('call SP_SELECT_CART(?)', [1]);
     let dataSuggestion = await querySQL('call SP_SELECT_PRODUCT_SUGGESTION()');
     res.render('customer/cart', {
-      titleSite: 'ShopOH - Giở hàng',
+      titleSite: 'ShopOH - Giỏ hàng',
       cartNum: dataCart[0][0],
       cartProduct: dataCart[1],
       productSuggestionList: dataSuggestion[0]
@@ -43,3 +44,15 @@ module.exports.getCart = async (req, res, next) => {
   }
 }
 
+module.exports.putCart = async (req, res, next) => {
+  try {
+    let cartInfo = req.body.info.split('$');
+    let sl = req.body.sl;
+    cartInfo.unshift(1);
+    cartInfo.push(sl);
+    await querySQL('call SP_UPDATE_CART(?, ?, ?, ?, ?)', cartInfo);
+    res.send({});
+  } catch (error) {
+    next(error);
+  }
+}

@@ -9,7 +9,7 @@ function addEventDeleteCartBtn() {
 }
 
 function handleDeleteCart() {
-  axios.delete(`/cart/${this.dataset.product}`)
+  axios.delete('/cart', {data: { info: this.dataset.product }})
     .then(res => {
       let dataRes = res.data;
       if (dataRes[0][0].slsp >= 1) {
@@ -34,7 +34,7 @@ function handleDeleteCart() {
                     <div class="popover__content__main__cart__content__right">
                       <div class="popover__content__cart__price text-right">
                         <span class="text-danger">
-                          ₫${Math.round(product.giaban * (1 - product.khuyenmai / 100)).toLocaleString('de-DE')}
+                          ₫${Math.round(product.giaban * (1 - product.khuyenmai / 100))}
                         </span>`
                         + 
                           (product.soluong !== 1 ? `<small>&nbsp;x&nbsp;</small><span>${product.soluong}</span>` : '')
@@ -42,7 +42,7 @@ function handleDeleteCart() {
                       `</div>
                       <div class="popover__content__cart__delete text-right">
                         <button class="btn btn-link delete-product-cart-btn" type="button"
-                                data-product="${product.ma_sanpham}$${product.ma_khachhang}$${product.mausac}$${product.size}">
+                                data-product="${product.ma_sanpham}$${product.mausac}$${product.size}">
                           Xóa
                         </button>
                       </div>

@@ -100,7 +100,7 @@ addToCartBtn.addEventListener('click', function() {
     textErrorCart.innerHTML = '';
     selectionStyleProduct.style.backgroundColor = 'white';
     
-    axios.post('/cart/add', {
+    axios.post('/cart', {
       idPro: idProductInput.value,
       color: colorInput[0].value,
       size: sizeInput[0].value,

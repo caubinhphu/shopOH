@@ -534,14 +534,14 @@ end $$
 delimiter ;
 call SP_INSERT_CART(1, 1, 'Đen', 'M', 2);
 call SP_INSERT_CART(1, 1, 'Đen', 'L', 1);
-call SP_INSERT_CART(1, 1, 'Đen', 'XL', 2, '2020-2-14 00:00:00');
-call SP_INSERT_CART(1, 1, 'Trắng', 'M', 2, '2020-2-14 00:00:00');
-call SP_INSERT_CART(2, 1, 'Đen', 'M', 2, '2020-2-14 00:00:00');
-call SP_INSERT_CART(2, 1, 'Đen', 'L', 1, '2020-2-14 00:00:00');
-call SP_INSERT_CART(2, 1, 'Đen', 'XL', 1, '2020-2-14 00:00:00');
-call SP_INSERT_CART(2, 1, 'Đen', 'XXL', 2, '2020-2-14 00:00:00');
-call SP_INSERT_CART(3, 1, 'Trắng', '1 size', 2, '2020-2-14 00:00:00');
-call SP_INSERT_CART(3, 1, 'Đen', '1 size', 1, '2020-2-14 00:00:00');
+call SP_INSERT_CART(1, 1, 'Đen', 'XL', 2);
+call SP_INSERT_CART(1, 1, 'Trắng', 'M', 2);
+call SP_INSERT_CART(2, 1, 'Đen', 'M', 2);
+call SP_INSERT_CART(2, 1, 'Đen', 'L', 1);
+call SP_INSERT_CART(2, 1, 'Đen', 'XL', 1);
+call SP_INSERT_CART(2, 1, 'Đen', 'XXL', 2);
+call SP_INSERT_CART(3, 1, 'Trắng', '1 size', 1);
+call SP_INSERT_CART(3, 1, 'Đen', '1 size', 1);
 
 select * from giohang;
 
@@ -579,3 +579,17 @@ end $$
 delimiter ;
 call SP_DELETE_CART(3, 1, 'den', '1 Size');
 select * from giohang;
+
+delimiter $$
+create procedure SP_UPDATE_CART(_iduser int, _idPro int, _color varchar(20), _size varchar(10), _sl int)
+begin
+	-- Check
+    if not exists (select * from giohang
+				   where ma_sanpham = _idPro and ma_khachhang = _idUser and mausac = _color and size = _size)
+	then SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'cart not exists';
+    else update giohang
+		 set soluong = _sl
+		 where ma_sanpham = _idPro and ma_khachhang = _idUser and mausac = _color and size = _size;
+    end if;
+end $$
+delimiter ;

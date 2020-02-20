@@ -22,7 +22,7 @@ block main
                 .product-price.p-2.d-flex.justify-content-between
                   div
                     small.text-danger ₫
-                    span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100)).toLocaleString('de-DE')
+                    span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100))
                   div
                     span.text-dark= `${product.daban}`
                     small.text-dark &nbsp;Đã bán
