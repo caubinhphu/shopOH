@@ -6,7 +6,8 @@ module.exports.deleteCart = async (req, res, next) => {
     cartInfo.unshift(1);
     await querySQL('call SP_DELETE_CART(?, ?, ?, ?)', cartInfo);
     let dataCart = await querySQL('call SP_SELECT_CART(?)', [1]);
-    res.send(dataCart);
+    let [cartNum, cartProduct] = dataCart;
+    res.send([cartNum, cartProduct]);
   } catch (error) {
     next(error);
   }
@@ -23,7 +24,8 @@ module.exports.postAddCart = async (req, res, next) => {
       data.quantity
     ]);
     let dataCart = await querySQL('call SP_SELECT_CART(?)', [1]);
-    res.send(dataCart);
+    let [cartNum, cartProduct] = dataCart;
+    res.send([cartNum, cartProduct]);
   } catch (error) {
     next(error);
   }
@@ -52,6 +54,25 @@ module.exports.putCart = async (req, res, next) => {
     cartInfo.push(sl);
     await querySQL('call SP_UPDATE_CART(?, ?, ?, ?, ?)', cartInfo);
     res.send({});
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports.getCartData = async (req, res, next) => {
+  try {
+    // let idUser = parseInt(req.params.idUser);
+    if (1 === 1) {
+      let dataCart = await querySQL('call SP_SELECT_CART(?)', [1]);
+      let [cartNum, cartProduct] = dataCart;
+      res.send([cartNum, cartProduct]);
+    } else {
+      res.send([
+        [ { sl:0, slsp:0, tongtien: 0 } ],
+        []
+      ]);
+    }
+    
   } catch (error) {
     next(error);
   }

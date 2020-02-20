@@ -106,59 +106,8 @@ addToCartBtn.addEventListener('click', function() {
       size: sizeInput[0].value,
       quantity: quantityInput.value
     }).then(res => {
-      let dataRes = res.data;
-      let textHtml = `<div class="popover__content__cart d-none d-md-inline">
-                        <p class="popover__message">Sản phẩm mới thêm</p>
-                        <div class="popover__content__main" id="product_cart_list">`;
-      textHtml += dataRes[1].map((product, index) => {
-        if (index < 5) {
-          return `<div class="product_content p-2 d-flex" data-target="/product/${product.ma_sanpham}">
-                  <div class="popover__content__image">
-                    <div class="popover__content__img" style="background-image: url('${product.hinhanh.split(',')[0]}');"></div>
-                  </div>
-                <div class="popover__content__main__cart flex-fill ml-1 d-flex">
-                  <div class="popover__content__main__cart__content__left">
-                    <div class="popover__content__cart__title">
-                      <small>${product.ten_sanpham}</small>
-                    </div>
-                    <div class="popover__content__cart__content">
-                      <small>Loại: màu ${product.mausac}, size: ${product.size}</small>
-                    </div>
-                  </div>
-                  <div class="popover__content__main__cart__content__right">
-                    <div class="popover__content__cart__price text-right">
-                      <span class="text-danger">
-                        ₫${Math.round(product.giaban * (1 - product.khuyenmai / 100)).toLocaleString('de-DE')}
-                      </span>`
-                      + 
-                        (product.soluong !== 1 ? `<small>&nbsp;x&nbsp;</small><span>${product.soluong}</span>` : '')
-                      +
-                    `</div>
-                    <div class="popover__content__cart__delete text-right">
-                      <button class="btn btn-link delete-product-cart-btn" type="button"
-                              data-product="${product.ma_sanpham}$${product.ma_khachhang}$${product.mausac}$${product.size}">
-                        Xóa
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>`;
-        } else {
-          return '';
-        }
-      }).join('');
-      textHtml += `</div>
-                <div class="text-right p-2 d-flex justify-content-between align-items-center">
-                  <small>${dataRes[0][0].sl} loại sản phẩm trong giỏ</small>
-                  <a class="btn btn-danger" href="#">Xem giỏ hàng</a>
-                </div>
-              </div>`;
-      mainCart.innerHTML = textHtml;
-
-      // add  event
-      deleteProductCartBtn = document.getElementsByClassName('delete-product-cart-btn');
-      addEventDeleteCartBtn();
-      cartBadge.innerHTML = dataRes[0][0].slsp;
+      sessionStorage.setItem('cartInfo', JSON.stringify(res.data));
+      renderMiniCart();
       $("#alert-add-cart-success").fadeIn(1000).fadeOut(1000);
     });
   }

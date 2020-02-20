@@ -10,5 +10,6 @@ router.route('/')
       .delete(controller.deleteCart)
       .put(controller.putCart);
 
+router.get('/mini', controller.getCartData);
 
 module.exports = router;
