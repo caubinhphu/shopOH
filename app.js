@@ -18,7 +18,7 @@ app.set('view engine', 'pug');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded( { extended: true } ));
 app.use(bodyParser.json());
-app.use(cookieParser(process.env.SETRECT));
+app.use(cookieParser(process.env.SETRECT_COOKIE));
 
 app.use('/', customerProductRoute);
 app.use('/account', customerAccountRoute);
@@ -31,4 +31,4 @@ app.use((err, req, res, next) => {
     res.send(err.message);
 });
 
-app.listen(3000, () => console.log('Server is connected'));
+app.listen(process.env.PORT || 3000, () => console.log('Server is connected'));
