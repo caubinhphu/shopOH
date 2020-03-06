@@ -1,0 +1,183 @@
+extends ../common
+
+block style
+  link(rel="stylesheet", href="/styles/customer/common.css")
+  block style_child
+
+block header
+  #header-background
+    #header.container
+      #header-top.d-md-flex.justify-content-between.pt-1
+        #header-top-left
+          ul.d-flex
+            li
+              a(href="#") Kênh bán hàng
+            li
+              span Kết nối 
+              a(href="#")
+                i.fab.fa-facebook
+              span &nbsp;
+              a(href="#")
+                i.fab.fa-instagram
+        #header-top-right.text-md-right
+          ul.d-flex.justify-content-end
+            li
+              .popover__wrapper
+                a.d-flex(href='#')
+                  .position-root
+                    i.far.fa-bell
+                  span &nbsp;Thông báo
+                  .position-child
+                    span.badge.badge-pill.badge-light 0
+                //- .popover__content.d-none
+                //-   p.popover__message Thông báo mới nhận
+                //-   .popover__content__main.p-2.d-flex
+                //-     .popover__content__img(style='background-image: url("/images/917385.jpg")')
+                //-     .popover__content__thongbao
+                //-       .popover__content__thongbao__title Tên thông báo
+                //-       .popover__content__thongbao__content Nội dung thông báo
+                .popover__content.d-md-flex.flex-column.d-none
+                  .text-center.flex-fill.d-flex.flex-column.justify-content-center.py-5
+                    .popover__content__img.mx-auto(style='background-image: url("/images/917385.jpg"); height: 100px')
+                    .text-danger Đăng nhập để xem thông báo
+                  .d-flex
+                    button.btn.btn-light.flex-fill(type="button", data-toggle='modal', data-target='#header-dangky') Đăng ký
+                    button.btn.btn-light.flex-fill(type="button", data-toggle='modal', data-target='#header-dangnhap') Đăng nhập
+            li
+              a.d-flex(href='#')
+                i.far.fa-question-circle
+                span Trợ giúp
+            li
+              span(data-toggle='modal', data-target='#header-dangky') Đăng ký
+            li
+              span(data-toggle='modal', data-target='#header-dangnhap') Đăng nhập
+            //- li
+            //-   .popover__wrapper__user
+            //-     a.d-flex(href='#')
+            //-       img(src="/images/917385.jpg", width="20px", height="auto")
+            //-       span &nbsp;Tên user
+            //-     .popover__content__user.d-none.d-md-inline
+            //-       .popover__content__main__user.p-2.d-flex
+            //-         a.color-default(href="#") Tài khoản của tôi
+            //-       .popover__content__main__user.p-2.d-flex
+            //-         a.color-default(href="#") Đơn mua
+            //-       .popover__content__main__user.p-2.d-flex
+            //-         a.color-default(href="#") Đăng xuất
+
+      #header-middle.d-flex.mt-3.py-2
+        .mx-2
+          a(href="/")
+            img(src="/images/logo_3.png", title="ShopOH")
+        .flex-fill.mx-4.pt.d-flex.flex-column.justify-content-center
+          .input-group
+            input.form-control(type="text", name="searchInfo", placeholder="Tìm sản phẩm, thương hiệu, chất liệu")
+            .input-group-append
+              button#search-btn.btn.btn-success(type="button")
+                i.fas.fa-search
+          ul.d-sm-flex.d-none
+            li
+              a(href="#") Áo sơ mi nam
+            li
+              a(href="#") Áo sơ mi nữ
+            li
+              a(href="#") Quần tây
+            li
+              a(href="#") Quần jeans
+            li.x
+              a(href="#") Chân váy
+        .mx-2.d-flex.flex-column.justify-content-center
+          #cart.position-root.popover__wrapper__cart
+            a(href="/cart")
+              i.fas.fa-shopping-cart.fa-2x.text-white
+            .position-child-cart
+              span#numProductIncart.badge.badge-pill.badge-light 0
+            #main-cart
+              
+      #header-bottom
+
+      #header-dangky.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel-dangky', aria-hidden='true')
+        .modal-dialog(role='document')
+          .modal-content
+            .modal-header
+              h4#exampleModalLabel-dangky.modal-title Đăng ký
+              p.text-danger(data-toggle='modal', data-target='#header-dangnhap' data-dismiss='modal') Đăng nhập
+            .modal-body
+              form(action="#", method="post")
+                .form-group
+                  label(for="username-dangky") Tên tài khoản
+                  input#username-dangky.form-control(type="text" placeholder="Tên tài khoản" name="username" required)
+                .form-group
+                  label(for="password-dangky") Mật khẩu
+                  input#password-dangky.form-control(type="password" placeholder="Mật khẩu" name="password" required)
+                .form-group
+                  label(for="password2-dangky") Nhập lại mật khẩu
+                  input#password2-dangky.form-control(type="password" placeholder="Mật khẩu" name="password2" required)
+            .modal-footer
+              button.btn.btn-light(type='button', data-dismiss='modal') TRỞ LẠI
+              button.btn.btn-danger(type='button') ĐĂNG KÝ
+      #header-dangnhap.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel-dangnhap', aria-hidden='true')
+        .modal-dialog(role='document')
+          .modal-content
+            .modal-header
+              h4#exampleModalLabel-dangnhap.modal-title Đăng nhập
+              p.text-danger(data-toggle='modal', data-target='#header-dangky' data-dismiss='modal') Đăng ký
+            .modal-body
+              form(action="#", method="post")
+                .form-group
+                  label(for="username-dangnhap") Tên tài khoản
+                  input#username-dangnhap.form-control(type="text" placeholder="Tên tài khoản" name="username" required)
+                .form-group
+                  label(for="password-dangnhap") Mật khẩu
+                  input#password-dangnhap.form-control(type="password" placeholder="Mật khẩu" name="password" required)
+            .modal-footer
+              button.btn.btn-light(type='button', data-dismiss='modal') TRỞ LẠI
+              button.btn.btn-danger(type='button') ĐĂNG NHẬP
+block content
+  block main
+
+block footer
+  #footer.px-5.pt-5.pb-2
+    .row
+      .col-md.text-center
+        b CHĂM SÓC KHÁCH HÀNG
+        ul
+          li
+            a(href="#") Trung tâm trợ giúp
+          li
+            a(href="#") Hướng dẫn mua hàng
+          li
+            a(href="#") Trả hàng &amp; Hoàn tiền
+          li
+            a(href="#") Chăm sóc khách hàng
+          li
+            a(href="#") Chính sách bảo hành
+      .col-md.text-center.mt-md-0.mt-2
+        b VỀ SHOPOH
+        ul
+          li
+            a(href="#") Giới thiệu về ShopOH
+          li
+            a(href="#") Điều khoản ShopOH
+          li
+            a(href="#") Chính sách bảo mật
+          li
+            a(href="#") Chính hãng
+          li
+            a(href="#") Kênh bán hàng
+      .col-md.text-center.mt-md-0.mt-2
+        b LIÊN HỆ VỚI CHÚNG TÔI
+        ul
+          li
+            a(href="#")
+              i.fab.fa-facebook
+              span &nbsp;Facebook
+          li
+            a(href="#")
+              i.fab.fa-instagram
+              span &nbsp;Instagram
+    hr
+    p © 2020 ShopOH. Tất cả các quyền được bảo lưu.
+
+block script2
+  script(src="/scripts/customer/common.js")
+  block supScript

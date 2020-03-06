@@ -1,0 +1,28 @@
+#main-product-list-all-title {
+  position: relative;
+  height: 56px;
+  margin-bottom: 40px;
+}
+
+#main-product-list-all-title h1 {
+  color: white;
+  background-color: rgb(238, 77, 45);
+  padding: 10px;
+  margin: auto;
+  border-radius: 10px;
+  user-select: none;
+  font-weight: 500;
+  font-size: 30px;
+  display: inline-block;
+  position: absolute;
+  left: 50%;
+  z-index: 1;
+}
+
+#main-product-list-all-title hr {
+  position: absolute;
+  left: 0;
+  top: 28px;
+  width: 100%;
+  margin: 0;
+}

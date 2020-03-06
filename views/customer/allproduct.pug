@@ -1,0 +1,47 @@
+extends ./common
+
+block style_child
+  link(rel="stylesheet", href="/styles/customer/index.css")
+  link(rel="stylesheet", href="/styles/customer/allproduct.css")
+
+block main
+  #main.p-md-2.p-lg-4
+    #main-product-list.p-2
+      #main-product-list-all-title
+        h1 Tất cả
+        hr
+      #main-product-list-list.d-flex.flex-wrap.justify-content-center
+        each product in productList
+          .product
+            a(href=`/product/${product.ma_sanpham}`)
+              .bg-white
+                .product-img
+                  img(src=product.hinhanh.split(',')[0])
+                .product-title.p-2
+                  span= product.ten_sanpham
+                .product-price.p-2.d-flex.justify-content-between
+                  div
+                    small.text-danger ₫
+                    span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100))
+                  div
+                    span.text-dark= `${product.daban}`
+                    small.text-dark &nbsp;Đã bán
+            .product-same.text-center.py-1
+              a.text-white(href=`/product?id=${product.ma_sanpham}&category=${product.ma_loai2}&material=${product.ma_chatlieu}`) Tìm sản phẩm tương tự
+
+    nav.mt-4
+      ul.pagination.justify-content-center
+        li.page-item
+          a.page-link(href='#')
+            span(aria-hidden='true') &laquo;
+        li.page-item
+          a.page-link(href='#') 1
+        li.page-item
+          a.page-link(href='#') 2
+        li.page-item
+          a.page-link(href='#') 3
+        li.page-item
+          a.page-link(href='#') 4
+        li.page-item
+          a.page-link(href='#')
+            span(aria-hidden='true') &raquo;

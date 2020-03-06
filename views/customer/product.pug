@@ -1,0 +1,124 @@
+extends ./common
+
+block style_child
+  link(rel="stylesheet", href="/styles/customer/product.css")
+
+block main
+  .product.p-5
+    .product-info.bg-white.mt-4.d-flex.px-2.py-4.flex-column.flex-md-row
+      .product-info-left
+        .product-image
+          .product-info-img-main
+            .img-product(style=`background-image: url(${urlImgs[0]})`)
+          .product-info-img-sub
+            .img-sub-list
+              each url in urlImgs
+                .img-sub
+                  .img__sub(style=`background-image: url(${url})`)
+
+      .product-info-right.flex-fill.px-3
+        .product-name= product.ten_sanpham
+        input.d-none(type="text", name="idPro", value=product.ma_sanpham)
+        .product-info-like.d-flex.my-2
+          .product-like#product-like
+            i#product-like-icon.text-danger.fa-heart(class=isLike.isLike?'fas':'far')
+            span#product-like-text= ` Đã thích (${like.like})`
+          .product-sold
+            span= `Đã bán (${product.daban})`
+        .product-price.p-3.d-flex.align-items-center
+          if (product.khuyenmai > 0)
+            .product-price-cost
+              del= `đ${(product.giaban)}`
+          .product-price-current.text-danger
+            span= `đ${Math.round(product.giaban * (1 - product.khuyenmai / 100))}`
+          if (product.khuyenmai > 0)
+            .product-promotion
+              span.badge.badge-danger= `${product.khuyenmai}% GIẢM`
+        .product-select-option
+          .procudt-transport-fee.d-flex.align-items-center
+            .product-select.label Phí vận chuyển
+            .product-select-content
+              span đ0
+          #selection-style-product
+            .procudt-color.d-flex.align-items-center
+              .product-select.label Chọn màu
+              .product-select-content
+                each color in colorList
+                  //- button.btn.btn-outline-dark(type="button")= color.mausac
+                  .custom-control.custom-radio.custom-control-inline
+                    input.custom-control-input(id=`color-${color.mausac}`, type="radio", name="color", value=color.mausac)
+                    label.custom-control-label(for=`color-${color.mausac}`)= color.mausac
+            .procudt-size.d-flex.align-items-center
+              .product-select.label Chọn size
+              .product-select-content
+                each size in sizeList
+                  //- button.btn.btn-outline-dark(type="button")= size.size
+                  .custom-control.custom-radio.custom-control-inline
+                    input.custom-control-input(id=`size-${size.size}`, type="radio", name="size", value=size.size)
+                    label.custom-control-label(for=`size-${size.size}`)= size.size
+            .procudt-quantity.d-flex.align-items-center
+              .product-select.label Số lượng
+              .product-select-content
+                .product-quantity-input
+                    input#input-amount.form-control(type='number', value="1", name="soluong", min="1", max=amount.sl)
+                .product-quantity-rest.ml-2.d-inline-block
+                  span#text-sanphamton= `${amount.sl} sản phẩm có sẵn`
+            .err.text-danger
+              em#error-cart
+        .procudt-add-cart.mt-5
+          button#add-to-cart-btn.btn.btn-outline-danger.mx-4(type="button")
+            i.fas.fa-cart-plus
+            span &nbsp;Thêm vào giở hàng
+          button.btn.btn-danger(type="button") Mua ngay
+              
+    .product-detail.bg-white.p-4.mt-4
+      .product-detail-title CHI TIẾT SẢN PHẨM
+      .product-detail-list
+        .product-detail-item.d-flex
+          .product-detail-label Danh mục
+          .product-detail-content
+            a(href=`/`) ShopOH
+            span= ` > `
+            a(href=`/product/search?${category0}`)= product.ten_loai0
+            span= ` > `
+            a(href=`/product/search?${category1}`)= product.ten_loai1
+            span= ` > `
+            a(href=`/product/search?${category2}`)= product.ten_loai2
+        .product-detail-item.d-flex
+          .product-detail-label Thương hiệu
+          .product-detail-content= product.ten_thuonghieu
+        .product-detail-item.d-flex
+          .product-detail-label Chất liệu
+          .product-detail-content= product.ten_chatlieu
+      .product-detail-title MÔ TẢ SẢN PHẨM
+      .product-detail-chitiet
+        - var textMoTa = product.mota.split('\n');
+        each line in textMoTa
+          div= line
+
+    #main-product-same-list.p-2.mt-4
+      #main-product-same-list-title
+        | SẢN PHẨM TƯƠNG TỰ
+      #main-product-same-list-list.d-flex.flex-wrap.justify-content-center
+        each product in productSameList
+          .product-same
+            a(href=`/product/${product.ma_sanpham}`)
+              .bg-white
+                .product-same-img
+                  img(src=`${product.hinhanh.split(',')[0]}`)
+                .product-same-title.p-2
+                  span= product.ten_sanpham
+                .product-same-price.p-2.d-flex.justify-content-between
+                  div
+                    small.text-danger ₫
+                    span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100))
+                  div
+                    span.text-dark= product.daban
+                    small.text-dark &nbsp;Đã bán
+  #alert-add-cart-success
+    i.text-success.fas.fa-check-circle.fa-3x
+    br
+    big Sản phẩm đã được thêm vào giỏ hàng
+
+block supScript
+  script(src="/scripts/customer/product.js")
