@@ -320,6 +320,8 @@ create table giohang (
   foreign key (ma_sanpham) references sanpham (ma_sanpham) on delete cascade
 );
 
+-- insert into giohang(ma_khachhang, ma_sanpham, soluong, mausac, size, ngaythem)
+-- values ('1', '1', 2, 'ĐEN', 'M', null);
 
 -- -------------------procedure -------------------- --
 -- lấy sản phẩm gợi ý index
@@ -353,7 +355,7 @@ call sp_select_cart(1);
 
 -- lấy sản phẩm chính kèm các sản phẩm cùng loại
 delimiter $$
-create procedure sp_select_sameproduct(_idpro varchar(50), _idcategory2 int, _idmaterial int)
+create procedure SP_SELECT_SAMEPRODUCT(_idpro varchar(50), _idcategory2 int, _idmaterial int)
 begin
 	-- lấy sản phẩm chính
 	select ma_sanpham, ten_sanpham, giaban, daban from sanpham where ma_sanpham = _idpro;
@@ -366,11 +368,11 @@ begin
 end $$
 delimiter ;
 
-call sp_select_sameproduct(1, 3, 6);
+call SP_SELECT_SAMEPRODUCT(1, 3, 6);
 
 -- lấy thông tin sản phẩm
 delimiter $$
-create procedure sp_select_product(_idpro varchar(50))
+create procedure SP_SELECT_PRODUCT(_idpro varchar(50), _iduser varchar(50))
 begin
 	-- lấy thông tin sản phẩm
 	select sp.ma_sanpham, sp.ten_sanpham, daban, sp.giaban, sp.khuyenmai, sp.mota, sp.hinhanh,
@@ -403,13 +405,13 @@ begin
     where ma_sanpham = _idpro;
     
     -- check user current is liked
-    if exists (select * from likesanpham where ma_sanpham = _idpro and ma_khachhang = iduser)
+    if exists (select * from likesanpham where ma_sanpham = _idpro and ma_khachhang = _iduser)
       then select true as islike;
     else select false as islike;
     end if;
     
     -- lấy sản phẩm tương tự (cùng mã loại 2 và cùng mã chất liệu)
-    select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban
+    select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, hinhanh
     from sanpham
     where ma_sanpham != _idpro
 		  and ma_loai2 = (select ma_loai2 from sanpham where ma_sanpham = _idpro)
@@ -418,7 +420,7 @@ begin
 end $$
 delimiter ;
 
-call sp_select_product(2, 1);
+call sp_select_product('2', 1);
 
 delimiter $$
 create procedure sp_select_mount_product (_id int, _color varchar(10), _size varchar(5))
