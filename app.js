@@ -5,23 +5,32 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 
-// Router
+// Require router
 const customerAccountRoute = require('./routers/personal-customer.router');
 const customerProductRoute = require('./routers/product-customer.router');
 const customerCartRoute = require('./routers/cart-customer.router');
 
+// init app
 const app = express();
 
 // set view engine - template engine
 app.set('views', './views');
 app.set('view engine', 'pug');
 
+// public static file directory
 app.use(express.static('public'));
+
+// body parse json + ulrencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cookieParser(process.env.SETRECT_COOKIE));
+
+// cookie parse with secret
+app.use(cookieParser(process.env.SECRET_COOKIE));
+
+// morgan logger
 app.use(morgan('dev'));
 
+// route
 app.use('/', customerProductRoute);
 app.use('/account', customerAccountRoute);
 app.use('/cart', customerCartRoute);

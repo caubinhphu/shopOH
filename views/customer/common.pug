@@ -32,13 +32,13 @@ block header
                 //- .popover__content.d-none
                 //-   p.popover__message Thông báo mới nhận
                 //-   .popover__content__main.p-2.d-flex
-                //-     .popover__content__img(style='background-image: url("/images/917385.jpg")')
+                //-     .popover__content__img(style='background-image: url("/images/shop/917385.jpg")')
                 //-     .popover__content__thongbao
                 //-       .popover__content__thongbao__title Tên thông báo
                 //-       .popover__content__thongbao__content Nội dung thông báo
                 .popover__content.d-md-flex.flex-column.d-none
                   .text-center.flex-fill.d-flex.flex-column.justify-content-center.py-5
-                    .popover__content__img.mx-auto(style='background-image: url("/images/notification.png"); height: 100px')
+                    .popover__content__img.mx-auto(style='background-image: url("/images/shop/notification.png"); height: 100px')
                     .text-danger Đăng nhập để xem thông báo
                   .d-flex
                     button.btn.btn-light.flex-fill(type="button", data-toggle='modal', data-target='#header-dangky') Đăng ký
@@ -67,7 +67,7 @@ block header
       #header-middle.d-flex.mt-3.py-2
         .mx-2
           a(href="/")
-            img(src="/images/logo_3.png", title="ShopOH")
+            img(src="/images/shop/logo_3.png", title="ShopOH")
         .flex-fill.mx-4.pt.d-flex.flex-column.justify-content-center
           .input-group
             input.form-control(type="text", name="searchInfo", placeholder="Tìm sản phẩm, thương hiệu, chất liệu")
@@ -94,7 +94,7 @@ block header
             #main-cart
               if (cartNum.slsp === 0)
                 .popover__content__cart.text-center.py-5.d-none.d-md-inline
-                  img.w-25.d-block.mx-auto(src="/images/nocart.png")
+                  img.w-25.d-block.mx-auto(src="/images/shop/shop/nocart.png")
                   span Chưa có sản phẩm
               else
                 .popover__content__cart.d-none.d-md-inline

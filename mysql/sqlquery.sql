@@ -94,6 +94,10 @@ create table sanpham (
 );
 alter table sanpham convert to character set utf16 collate utf16_general_ci;
 
+update sanpham
+set hinhanh = '/images/products/36fce04f4c75dfddfd4bd6091f358ac0.jpg,/images/products/2c5592756af5362a6941f20d05adb49d.jpg,/images/products/78a91f32d178908eb610ee62da8028ed.jpg,/images/products/089e99f4b4cb1605a2ca4e962ede6348.jpg,/images/products/e1d31839df38e084e950893523706ff6.jpg'
+where ma_sanpham = '3';
+
 insert into sanpham (ma_sanpham, ten_sanpham, ma_loai2, ma_thuonghieu, ma_chatlieu, mota, giaban, khuyenmai, hinhanh)
 values ('1', 'áo sơ mi nam cổ tàu dài tay ikemen smt01', 3, 1, 6, 'áo sơ mi nam cổ tàu dài tay ikemen :
   ⏺  hướng dẫn cách đặt hàng:

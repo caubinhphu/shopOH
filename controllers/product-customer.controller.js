@@ -152,17 +152,17 @@ module.exports.getStyle = async (req, res, next) => {
 		let styleText = req.params.style;
 		let style = 0;
 		if (styleText === 'thoitrangnam') {
-			style = 1;
+			let data = await querySQL('call SP_SELECT_PRODUCT_STYLE(?)', [1]);
 			res.render('customer/maleProduct', {
 				titleSite: 'ShopOH - Thời trang nam'
 			});
 		} else if (styleText === 'thoitrangnu') {
 			style = 2;
+			let data = await querySQL('call SP_SELECT_PRODUCT_STYLE(?)', [2]);
+			res.render('customer/femaleProduct', {
+				titleSite: 'ShopOH - Thời trang nữ'
+			});
 		}
-
-		let data = await querySQL('call SP_SELECT_PRODUCT_STYLE(?)', [style]);
-
-		// res.json(data[0]);
 	} catch (err) {
 		next(err);
 	}

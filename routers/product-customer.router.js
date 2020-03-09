@@ -20,6 +20,6 @@ router.post('/product/:idProduct/like', controller.postAddLike);
 
 router.delete('/product/:idProduct/like', controller.deleteLike);
 
-router.get('/product/style/:style', controller.getStyle);
+router.get('/product/style/:style', miniCartMiddleware, controller.getStyle);
 
 module.exports = router;
