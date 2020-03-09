@@ -358,13 +358,15 @@ delimiter $$
 create procedure SP_SELECT_SAMEPRODUCT(_idpro varchar(50), _idcategory2 int, _idmaterial int)
 begin
 	-- lấy sản phẩm chính
-	select ma_sanpham, ten_sanpham, giaban, daban from sanpham where ma_sanpham = _idpro;
+	select ma_sanpham, ten_sanpham, giaban, daban, hinhanh, khuyenmai
+  from sanpham
+  where ma_sanpham = _idpro;
   
   -- lấy sản phẩm tương tự (cùng mã loại 2 và cùng mã chất liệu)
-  select ma_sanpham, ten_sanpham, giaban, daban
+  select ma_sanpham, ten_sanpham, giaban, daban, khuyenmai, hinhanh
   from sanpham
-  where ma_loai2 = _idcategory2 and ma_chatlieu = _idmaterial and ma_sanpham != _idpro;
-  -- limit 10;
+  where ma_loai2 = _idcategory2 and ma_chatlieu = _idmaterial and ma_sanpham != _idpro
+  limit 10;
 end $$
 delimiter ;
 
