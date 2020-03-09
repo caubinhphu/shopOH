@@ -14,8 +14,6 @@ block main
           thead
             tr.text-center
               th.cart-checkbox.custom-control.custom-checkbox.text-center
-                //- input#select-all-product.custom-control-input(type='checkbox', name="allProduct", checked)
-                //- label.custom-control-label(for='select-all-product')
               th.text-left Sản phẩm
               th Đơn giá
               th Số lượng
@@ -56,7 +54,7 @@ block main
             #cart-total-pro-check= `Tổng tiền hàng (${cartNum.slsp} sản phẩm):`
             .text-danger.cart-price
               span ₫
-              span#cart-price= cartNum.tongtien
+              span#cart-price= sumPrice.tongtien
             button.btn.btn-danger.px-1.px-md-5(type="button") Mua hàng
       else
         .d-flex.flex-column.justify-content-center.align-items-center

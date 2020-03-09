@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.get('/', miniCartMiddleware, controller.getIndex);
 
-router.get('/product', controller.getProducts);
+router.get('/product', miniCartMiddleware, controller.getProducts);
 
 router.get('/product/:idProduct', miniCartMiddleware, controller.getProduct);
 

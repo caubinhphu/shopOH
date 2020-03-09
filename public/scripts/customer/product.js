@@ -44,7 +44,7 @@ const textLike = document.getElementById('product-like-text');
 likeButton.addEventListener('click', () => {
 	if (likeIcon.classList.item(2) === 'far') {
 		// chưa like -> like
-		// cập nhật csdl = thêm like
+		// requset post add like int csdl
 		axios.post(`${location.href}/like`).then(res => {
 			// đổi icon
 			likeIcon.classList.replace('far', 'fas');
@@ -52,7 +52,7 @@ likeButton.addEventListener('click', () => {
 		});
 	} else if (likeIcon.classList.item(2) === 'fas') {
 		// đã like -> bỏ like
-		// cập nhật csdl = xóa like
+		// request remove like in csdl
 		axios.delete(`${location.href}/like`).then(res => {
 			// đổi icon
 			likeIcon.classList.replace('fas', 'far');

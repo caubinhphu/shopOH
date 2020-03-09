@@ -18,10 +18,8 @@ selectAllCheckbox.addEventListener('change', function() {
 	});
 
 	if (this.checked) {
-		let sumPrice = 0;
 		totalPrice.innerHTML = getSumPrice();
-		let sumPro = getSumProduct();
-		totalProCheck.innerHTML = `Tổng tiền hàng (${sumPro} sản phẩm):`;
+		totalProCheck.innerHTML = `Tổng tiền hàng (${getSumProduct()} sản phẩm):`;
 	} else {
 		totalPrice.innerHTML = '0';
 		totalProCheck.innerHTML = 'Tổng tiền hàng (0 sản phẩm):';
@@ -39,8 +37,7 @@ selectProduct.forEach(checkbox => {
 			}
 		}
 
-		let sumPro = getSumProduct();
-		totalProCheck.innerHTML = `Tổng tiền hàng (${sumPro} sản phẩm):`;
+		totalProCheck.innerHTML = `Tổng tiền hàng (${getSumProduct()} sản phẩm):`;
 		totalPrice.innerHTML = getSumPrice();
 	});
 });
@@ -53,7 +50,7 @@ function getSumProduct() {
 	let dataProduct = checked.map(item => item.dataset.product);
 	return soluongInput.reduce((acc, cur) => {
 		if (dataProduct.includes(cur.dataset.product)) {
-			return acc + parseInt(cur.value);
+			return acc + +cur.value;
 		}
 		return acc;
 	}, 0);
@@ -67,7 +64,7 @@ function getSumPrice() {
 	let dataProduct = checked.map(item => item.dataset.product);
 	return priceProduct.reduce((acc, cur) => {
 		if (dataProduct.includes(cur.dataset.product)) {
-			return acc + parseInt(cur.innerHTML);
+			return acc + +cur.innerHTML;
 		}
 		return acc;
 	}, 0);
@@ -75,9 +72,9 @@ function getSumPrice() {
 
 soluongInput.forEach(input => {
 	input.addEventListener('input', function() {
-		if (parseInt(this.value) < 1) {
+		if (+this.value < 1) {
 			this.value = 1;
-		} else if (parseInt(this.value) > parseInt(this.getAttribute('max'))) {
+		} else if (+this.value > +this.getAttribute('max')) {
 			this.value = this.getAttribute('max');
 		}
 	});
@@ -88,7 +85,7 @@ soluongInput.forEach(input => {
 		axios
 			.put('/cart', {
 				info: this.dataset.product,
-				sl: parseInt(this.value)
+				sl: +this.value
 			})
 			.then(res => {
 				let priceText = document.querySelector(
@@ -97,14 +94,11 @@ soluongInput.forEach(input => {
 				let donGia = document.querySelector(
 					`.cart-dongia[data-product="${this.dataset.product}"]`
 				);
-				priceText.innerHTML = parseInt(donGia.innerHTML) * parseInt(this.value);
+				priceText.innerHTML = +donGia.innerHTML * +this.value;
 				totalPrice.innerHTML = getSumPrice();
 				let sumPro = getSumProduct();
 				totalProCheck.innerHTML = `Tổng tiền hàng (${sumPro} sản phẩm):`;
-				let numAll = soluongInput.reduce(
-					(acc, cur) => acc + parseInt(cur.value),
-					0
-				);
+				let numAll = soluongInput.reduce((acc, cur) => acc + +cur.value, 0);
 				selectAllLabel.innerHTML = `Chọn tất cả (${numAll})`;
 			});
 	});

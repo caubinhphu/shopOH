@@ -1,29 +1,45 @@
 const querySQL = require('../configure/querySQL');
 
+// remove product in cart
 module.exports.deleteCart = async (req, res, next) => {
 	try {
+		// get info prodct want remove
 		let cartInfo = req.body.info.split('$');
-		cartInfo.unshift(1);
+		cartInfo.unshift('1'); // unshift current user
+
+		// remove product from cart
 		await querySQL('call SP_DELETE_CART(?, ?, ?, ?)', cartInfo);
-		let dataCart = await querySQL('call SP_SELECT_CART(?)', [1]);
+
+		// get new cart after remove prodcut from cart
+		let dataCart = await querySQL('call SP_SELECT_CART(?)', ['1']);
 		let [cartNum, cartProduct] = dataCart;
-		res.send([cartNum, cartProduct]);
+
+		// send to client
+		res.json([cartNum, cartProduct]);
 	} catch (error) {
 		next(error);
 	}
 };
 
+// add prduct to the cart
 module.exports.postAddCart = async (req, res, next) => {
 	try {
+		// get info post from client
 		let data = req.body;
+
+		// add product to the cart
 		await querySQL('call SP_INSERT_CART(?, ?, ?, ?, ?)', [
 			data.idPro,
-			1, ///////////////////
-			data.color,
-			data.size,
-			data.quantity
+			'1', // current user
+			data.color, // color product
+			data.size, // size product
+			data.quantity // quantity
 		]);
-		let dataCart = await querySQL('call SP_SELECT_CART(?)', [1]);
+
+		// get new cart after add product
+		let dataCart = await querySQL('call SP_SELECT_CART(?)', ['1']);
+
+		// send to client
 		let [cartNum, cartProduct] = dataCart;
 		res.send([cartNum, cartProduct]);
 	} catch (error) {
@@ -33,12 +49,11 @@ module.exports.postAddCart = async (req, res, next) => {
 
 module.exports.getCart = async (req, res, next) => {
 	try {
-		let dataCart = await querySQL('call SP_SELECT_CART(?)', [1]);
 		let dataSuggestion = await querySQL('call SP_SELECT_PRODUCT_SUGGESTION()');
+		let sumPirce = await querySQL('call SP_GET_SUMPRICE_CART(?)', ['1']);
 		res.render('customer/cart', {
 			titleSite: 'ShopOH - Giỏ hàng',
-			cartNum: dataCart[0][0],
-			cartProduct: dataCart[1],
+			sumPrice: sumPirce[0][0],
 			productSuggestionList: dataSuggestion[0]
 		});
 	} catch (error) {
@@ -63,7 +78,7 @@ module.exports.getCartData = async (req, res, next) => {
 	try {
 		// let idUser = parseInt(req.params.idUser);
 		if (1 === 1) {
-			let dataCart = await querySQL('call SP_SELECT_CART(?)', [1]);
+			let dataCart = await querySQL('call SP_SELECT_CART(?)', ['1']);
 			let [cartNum, cartProduct] = dataCart;
 			res.send([cartNum, cartProduct]);
 		} else {
