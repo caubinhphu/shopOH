@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
 
 // Router
 const customerAccountRoute = require('./routers/personal-customer.router');
@@ -19,6 +20,7 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.SETRECT_COOKIE));
+app.use(morgan('dev'));
 
 app.use('/', customerProductRoute);
 app.use('/account', customerAccountRoute);
