@@ -526,7 +526,7 @@ call sp_insert_cart('3', '1', 'TRẮNG', '1 SIZE', 1);
 call sp_insert_cart('3', '1', 'ĐEN', '1 SIZE', 1);
 
 delimiter $$
-create procedure SP_DELETE_CART(_idpro varchar(50), _iduser varchar(50), _color varchar(30), _size varchar(20))
+create procedure SP_DELETE_CART(_iduser varchar(50), _idpro varchar(50), _color varchar(30), _size varchar(20))
 begin
 	-- check cart exists
   if not exists (select * from giohang
@@ -536,7 +536,7 @@ begin
   end if;
 end $$
 delimiter ;
-call sp_delete_cart(3, 1, 'DEN', '1 SIZE');
+call sp_delete_cart('3', '1', 'ĐEN', '1 SIZE');
 
 delimiter $$
 create procedure SP_UPDATE_CART(_iduser varchar(50), _idpro varchar(50), _color varchar(30), _size varchar(20), _sl int)

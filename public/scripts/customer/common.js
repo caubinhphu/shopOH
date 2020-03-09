@@ -2,17 +2,6 @@ let deleteCartBtn = document.getElementsByClassName('delete-product-cart-btn');
 const cartBadge = document.getElementById('numProductIncart');
 const mainCart = document.getElementById('main-cart');
 
-if (!sessionStorage.cartInfo) {
-	axios.get('/cart/mini').then(res => {
-		sessionStorage.setItem('cartInfo', JSON.stringify(res.data));
-		renderMiniCart();
-	});
-} else {
-	renderMiniCart();
-}
-
-// renderMiniCart();
-
 function addEventDeleteCartBtn() {
 	for (let i = 0; i < deleteCartBtn.length; i++) {
 		deleteCartBtn[i].addEventListener('click', handleDeleteCart);
@@ -82,8 +71,7 @@ function getCartProductHTML(dataCart) {
 	return textHtml;
 }
 
-function renderMiniCart() {
-	let dataCart = JSON.parse(sessionStorage.getItem('cartInfo'));
+function renderMiniCart(dataCart) {
 	if (dataCart[0][0].slsp >= 1) {
 		let textHtml = getCartProductHTML(dataCart);
 		mainCart.innerHTML = textHtml;
@@ -104,8 +92,7 @@ function renderMiniCart() {
 
 function handleDeleteCart() {
 	axios.delete('/cart', { data: { info: this.dataset.product } }).then(res => {
-		sessionStorage.setItem('cartInfo', JSON.stringify(res.data));
-		renderMiniCart();
+		renderMiniCart(res.data);
 	});
 }
 

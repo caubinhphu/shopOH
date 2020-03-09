@@ -111,8 +111,7 @@ addToCartBtn.addEventListener('click', function() {
 				quantity: quantityInput.value
 			})
 			.then(res => {
-				sessionStorage.setItem('cartInfo', JSON.stringify(res.data));
-				renderMiniCart();
+				renderMiniCart(res.data);
 				$('#alert-add-cart-success')
 					.fadeIn(1000)
 					.fadeOut(1000);

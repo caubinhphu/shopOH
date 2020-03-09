@@ -65,7 +65,7 @@ module.exports.putCart = async (req, res, next) => {
 	try {
 		let cartInfo = req.body.info.split('$');
 		let sl = req.body.sl;
-		cartInfo.unshift(1);
+		cartInfo.unshift('1');
 		cartInfo.push(sl);
 		await querySQL('call SP_UPDATE_CART(?, ?, ?, ?, ?)', cartInfo);
 		res.send({});
