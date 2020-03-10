@@ -6,6 +6,9 @@ const controller = require('../controllers/product-customer.controller');
 // mimi cart middlware
 const miniCartMiddleware = require('../middlewares/miniCart.middleware');
 
+// filter list middleware
+const filterListMiddleware = require('../middlewares/filter-list.middleware');
+
 const router = express.Router();
 
 router.get('/', miniCartMiddleware, controller.getIndex);
@@ -14,12 +17,22 @@ router.get('/product', miniCartMiddleware, controller.getProducts);
 
 router.get('/product/:idProduct', miniCartMiddleware, controller.getProduct);
 
+router.get('/product/style/:style/search', (req, res) => {
+  console.log(req.query);
+  res.json(req.query);
+});
+
 router.get('/product/:idProduct/:color/:size', controller.getAmountProduct);
 
 router.post('/product/:idProduct/like', controller.postAddLike);
 
 router.delete('/product/:idProduct/like', controller.deleteLike);
 
-router.get('/product/style/:style', miniCartMiddleware, controller.getStyle);
+router.get(
+  '/product/style/:style',
+  miniCartMiddleware,
+  filterListMiddleware,
+  controller.getStyle
+);
 
 module.exports = router;

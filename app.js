@@ -37,8 +37,8 @@ app.use('/cart', customerCartRoute);
 
 // handle errors
 app.use((err, req, res, next) => {
-	if (err) console.log(err);
-	res.send(err.message);
+  if (err) console.log(err);
+  res.send(err.message);
 });
 
 app.listen(process.env.PORT || 3000, () => console.log('Server is connected'));

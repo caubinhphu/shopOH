@@ -1,4 +1,4 @@
-alter database shopoh character set utf16 collate utf16_general_ci;
+alter database SHOPOH character set utf16 collate utf16_general_ci;
 
 create table thuonghieu (
 	ma_thuonghieu int auto_increment not null,
@@ -46,6 +46,7 @@ create table loai_sp1 (
 	ma_loai1 int auto_increment not null,
   ten_loai1 varchar(50) not null,
   ma_loai0 int not null,
+  hinhanh varchar(50),
   primary key (ma_loai1),
   foreign key (ma_loai0) references loai_sp0(ma_loai0)
 );
@@ -94,10 +95,6 @@ create table sanpham (
 );
 alter table sanpham convert to character set utf16 collate utf16_general_ci;
 
-update sanpham
-set hinhanh = '/images/products/36fce04f4c75dfddfd4bd6091f358ac0.jpg,/images/products/2c5592756af5362a6941f20d05adb49d.jpg,/images/products/78a91f32d178908eb610ee62da8028ed.jpg,/images/products/089e99f4b4cb1605a2ca4e962ede6348.jpg,/images/products/e1d31839df38e084e950893523706ff6.jpg'
-where ma_sanpham = '3';
-
 insert into sanpham (ma_sanpham, ten_sanpham, ma_loai2, ma_thuonghieu, ma_chatlieu, mota, giaban, khuyenmai, hinhanh)
 values ('1', 'áo sơ mi nam cổ tàu dài tay ikemen smt01', 3, 1, 6, 'áo sơ mi nam cổ tàu dài tay ikemen :
   ⏺  hướng dẫn cách đặt hàng:
@@ -124,7 +121,7 @@ values ('1', 'áo sơ mi nam cổ tàu dài tay ikemen smt01', 3, 1, 6, 'áo sơ
   ⏩ hoàn tiền nếu sản phẩm không giống với mô tả. 
   ⏩ được kiểm tra hàng trước khi thanh toán. 
   ⏩ cam kết được đổi trả hàng trong vòng 7 ngày.',
-  150000, 47, '/images/be88e9f1b18ee5b8a07d132752544dcf.jpg,/images/f25b2f5e5798c6290cda1d2f7f514ee8.jpg,/images/f58b1e860a91c1955da13f785646ff11.jpg,/images/f622fdf611f6148d604aee5f9418e34e.jpg,/images/538802932ade0df4c8d7948aa2f65141.jpg'),
+  150000, 47, '/images/products/be88e9f1b18ee5b8a07d132752544dcf.jpg,/images/products/f25b2f5e5798c6290cda1d2f7f514ee8.jpg,/images/products/f58b1e860a91c1955da13f785646ff11.jpg,/images/products/f622fdf611f6148d604aee5f9418e34e.jpg,/images/products/538802932ade0df4c8d7948aa2f65141.jpg'),
     
     ('2', 'áo sơ mi nam trơn dài tay công sở , dáng ôm body hàn quốc', 3, 1, 6,
   '1. giới thiệu sản phẩm
@@ -159,7 +156,7 @@ values ('1', 'áo sơ mi nam cổ tàu dài tay ikemen smt01', 3, 1, 6, 'áo sơ
   - size xxl: cân nặng từ 64-72kg, chiều cao 170 - 175cm
   - size 3xl: cân nặng từ 72-80kg, chiều cao 170 - 183cm
   - hàng có sẵn, đủ size:m, l, xl, xxl,3xl.',
-  150000, 0, '/images/677b37385a048e30c6dcf560c5f23fae.jpg,/images/f350384d912fa95541199b1ef10992a7.jpg,/images/d7cc742447c07a0944507154790b0d50.jpg,/images/bb2bbd97543266e5154f29c3bca4d5e1.jpg,/images/2e53f2232a0986c2bf94fb46d1a12bd4.jpg'),
+  150000, 0, '/images/products/677b37385a048e30c6dcf560c5f23fae.jpg,/images/products/f350384d912fa95541199b1ef10992a7.jpg,/images/products/d7cc742447c07a0944507154790b0d50.jpg,/images/products/bb2bbd97543266e5154f29c3bca4d5e1.jpg,/images/products/2e53f2232a0986c2bf94fb46d1a12bd4.jpg'),
 
     ('3', 'áo croptop tay ngắn cổ tim-thun cotton', 5, 1, 6,
   '* sản phẩm free size dưới 48 kg
@@ -174,7 +171,7 @@ values ('1', 'áo sơ mi nam cổ tàu dài tay ikemen smt01', 3, 1, 6, 'áo sơ
   shop tư vấn 24/7 cho tất cả thắc mắc size cỡ theo chiều cao cân nặng ^^
   facebook: https://www.facebook.com/do.an.1848816
   hotline: 0888-900-550 ( call, sms, zalo)',
-  68000, 49, '/images/36fce04f4c75dfddfd4bd6091f358ac0.jpg,/images/2c5592756af5362a6941f20d05adb49d.jpg,/images/78a91f32d178908eb610ee62da8028ed.jpg,/images/089e99f4b4cb1605a2ca4e962ede6348.jpg,/images/e1d31839df38e084e950893523706ff6.jpg');
+  68000, 49, '/images/products/36fce04f4c75dfddfd4bd6091f358ac0.jpg,/images/products/2c5592756af5362a6941f20d05adb49d.jpg,/images/products/78a91f32d178908eb610ee62da8028ed.jpg,/images/products/089e99f4b4cb1605a2ca4e962ede6348.jpg,/images/products/e1d31839df38e084e950893523706ff6.jpg');
 
 create table phanloaisanpham (
 	ma_sanpham varchar(50) not null,
@@ -489,23 +486,30 @@ delimiter $$
 create procedure SP_SELECT_PRODUCT_STYLE(_style int)
 begin
   -- Lấy danh sách sản phẩm
-	select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, hinhanh, daban
-    from sanpham sp join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
-                    join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
-    where l1.ma_loai0 = _style;
-
-    -- Lấy category1 list từ categody0
-    select ma_loai1, ten_loai1, hinhanh
-    from loai_sp1
-    where ma_loai0 = _style
-
-    -- Lấy material thuộc category0
-    
+	select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, sp.hinhanh, daban
+  from sanpham sp join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
+                  join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
+  where l1.ma_loai0 = _style;
 end $$
 delimiter ;
 call sp_select_product_style(2);
 
-select * from loai_sp2;
+-- get filter list
+delimiter $$
+create procedure SP_SELECT_FILTER_LIST(_style int)
+begin
+    -- Lấy category1 list từ categody0
+    select ma_loai1, ten_loai1, hinhanh
+    from loai_sp1
+    where ma_loai0 = _style;
+
+    -- Lấy material thuộc category0
+    select ma_chatlieu, ten_chatlieu
+    from chatlieu;
+end $$
+delimiter ;
+
+select * from sanpham;
 
 delimiter $$
 create procedure SP_INSERT_CART(_idpro varchar(50), _iduser varchar(50), _color varchar(30), _size varchar(20), _sl int)
