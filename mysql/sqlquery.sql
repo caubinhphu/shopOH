@@ -486,12 +486,21 @@ call sp_select_product_all();
 
 -- get product on category level 0
 delimiter $$
-create procedure sp_select_product_style(_style int)
+create procedure SP_SELECT_PRODUCT_STYLE(_style int)
 begin
+  -- Lấy danh sách sản phẩm
 	select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, hinhanh, daban
     from sanpham sp join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
                     join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
     where l1.ma_loai0 = _style;
+
+    -- Lấy category1 list từ categody0
+    select ma_loai1, ten_loai1, hinhanh
+    from loai_sp1
+    where ma_loai0 = _style
+
+    -- Lấy material thuộc category0
+    
 end $$
 delimiter ;
 call sp_select_product_style(2);

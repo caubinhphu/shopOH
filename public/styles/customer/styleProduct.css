@@ -92,3 +92,13 @@
     height: 110px;
   }
 }
+
+#sort-product {
+  background-color: #ededed;
+  padding: 8px 0;
+}
+
+.sort-active {
+  background-color: #dc3545;
+  color: white;
+}
