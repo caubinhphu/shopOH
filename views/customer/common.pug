@@ -32,13 +32,13 @@ block header
                 //- .popover__content.d-none
                 //-   p.popover__message Thông báo mới nhận
                 //-   .popover__content__main.p-2.d-flex
-                //-     .popover__content__img(style='background-image: url("/images/917385.jpg")')
+                //-     .popover__content__img(style='background-image: url("/images/shop/917385.jpg")')
                 //-     .popover__content__thongbao
                 //-       .popover__content__thongbao__title Tên thông báo
                 //-       .popover__content__thongbao__content Nội dung thông báo
                 .popover__content.d-md-flex.flex-column.d-none
                   .text-center.flex-fill.d-flex.flex-column.justify-content-center.py-5
-                    .popover__content__img.mx-auto(style='background-image: url("/images/notification.png"); height: 100px')
+                    .popover__content__img.mx-auto(style='background-image: url("/images/shop/notification.png"); height: 100px')
                     .text-danger Đăng nhập để xem thông báo
                   .d-flex
                     button.btn.btn-light.flex-fill(type="button", data-toggle='modal', data-target='#header-dangky') Đăng ký
@@ -67,7 +67,7 @@ block header
       #header-middle.d-flex.mt-3.py-2
         .mx-2
           a(href="/")
-            img(src="/images/logo_3.png", title="ShopOH")
+            img(src="/images/shop/logo_3.png", title="ShopOH")
         .flex-fill.mx-4.pt.d-flex.flex-column.justify-content-center
           .input-group
             input.form-control(type="text", name="searchInfo", placeholder="Tìm sản phẩm, thương hiệu, chất liệu")
@@ -90,8 +90,39 @@ block header
             a(href="/cart")
               i.fas.fa-shopping-cart.fa-2x.text-white
             .position-child-cart
-              span#numProductIncart.badge.badge-pill.badge-light 0
+              span#numProductIncart.badge.badge-pill.badge-light= cartNum.slsp
             #main-cart
+              if (cartNum.slsp === 0)
+                .popover__content__cart.text-center.py-5.d-none.d-md-inline
+                  img.w-25.d-block.mx-auto(src="/images/shop/shop/nocart.png")
+                  span Chưa có sản phẩm
+              else
+                .popover__content__cart.d-none.d-md-inline
+                  p.popover__message Sản phẩm mới thêm
+                  #product_cart_list.popover__content__main
+                    - var index = 0;
+                    while index < cartProduct.length && index < 5
+                      .product_content.p-2.d-flex(data-target=`/product/${cartProduct[index].ma_sanpham}`)
+                        .popover__content__image
+                          .popover__content__img(style=`background-image: url(${cartProduct[index].hinhanh.split(',')[0]})`)
+                        .popover__content__main__cart.ml-1.d-flex
+                          .popover__content__main__cart__content__left
+                            .popover__content__cart__title
+                              small= cartProduct[index].ten_sanpham
+                            .popover__content__cart__content
+                              small= `Loại: màu ${cartProduct[index].mausac}, size: ${cartProduct[index].size}`
+                          .popover__content__main__cart__content__right
+                            .popover__content__cart__price.text-right
+                              span.text-danger= `₫${Math.round(cartProduct[index].giaban * (1 - cartProduct[index].khuyenmai / 100))}`
+                              if (cartProduct[index].soluong > 1)
+                                small &nbsp;x&nbsp;
+                                span= cartProduct[index].soluong
+                            .popover__content__cart__delete.text-right
+                              button.btn.btn-link.delete-product-cart-btn(type="button", data-product=`${cartProduct[index].ma_sanpham}$${cartProduct[index].mausac}$${cartProduct[index].size}`) Xóa
+                      - index++
+                  .text-right.p-2.d-flex.justify-content-between.align-items-center
+                    small= `${cartNum.sl} loại sản phẩm trong giỏ`
+                    a.btn.btn-danger(href="/cart") Xem giỏ hàng
               
       #header-bottom
 

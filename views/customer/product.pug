@@ -21,7 +21,7 @@ block main
         input.d-none(type="text", name="idPro", value=product.ma_sanpham)
         .product-info-like.d-flex.my-2
           .product-like#product-like
-            i#product-like-icon.text-danger.fa-heart(class=isLike.isLike?'fas':'far')
+            i#product-like-icon.text-danger.fa-heart(class=isLike.islike?'fas':'far')
             span#product-like-text= ` Đã thích (${like.like})`
           .product-sold
             span= `Đã bán (${product.daban})`

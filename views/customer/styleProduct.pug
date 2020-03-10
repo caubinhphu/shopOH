@@ -1,0 +1,86 @@
+extends ./common
+
+block style_child
+  link(rel="stylesheet", href="/styles/customer/styleProduct.css")
+
+block main
+  #main
+    #banner
+      #baner-img
+        block img-banner
+      #main-area
+        #category-area.py-3
+          div LOẠI SẢN PHẨM
+          #category-list.d-flex.bg-white.flex-wrap
+            a.category(href="#")
+              .category-content
+                .category-image(style='background-image: url("/images/products/ef1988ec2a34daee6d0bf223ce8e2068.jpg")')
+                .categoty-title ÁO THUN
+        #main-content.row
+          #filler.col-md-3.text-center
+            div
+              i.fas.fa-filter
+              span &nbsp;BỘ LỌC TÌM KIẾM
+            #filler-list
+              .filter-criteria.text-left
+                .filter-title.text-center Danh mục
+                .custom-control.custom-radio
+                  input.custom-control-input(id=`filter-xxx`, type="radio", name="filletType", value="")
+                  label.custom-control-label(for=`filter-xxx`) XXX
+              .filter-criteria.text-left
+                .filter-title.text-center Chất liệu
+                .custom-control.custom-radio
+                  input.custom-control-input(id=`filter-xxxx`, type="radio", name="filletMaterial", value="")
+                  label.custom-control-label(for=`filter-xxxx`) XXX
+              .filter-criteria
+                .filter-title Khoảng giá
+                .d-flex.flex-md-column.flex-lg-row.justify-content-center.align-items-center
+                  input.form-control.filter-price(type="number", placeholder="đ")
+                  span &nbsp;&#45;&nbsp;
+                  input.form-control.filter-price(type="number", placeholder="đ")
+                .mt-2
+                  button.btn.btn-danger(type="button") ÁP DỤNG
+              button.btn.btn-danger.mt-2(type="button") XÓA BỘ LỌC
+          #product-list.col-md-9
+            #sort-product.d-flex.justyfy-content-center
+              button.btn.btn-light.mx-2.sort-active(type="button") Mới nhất
+              button.btn.btn-light.mr-2(type="button") Bán chạy
+              select.form-control.w-50(name="")
+                option(value="") Giá
+                option(value="") Giá: Từ Thấp đến Cao
+                option(value="") Giá: Từ Cao đến Thấp
+
+            //- #product-list-main.d-flex.flex-wrap.justify-content-center
+            //-   .product
+            //-     a(href=`#`)
+            //-       .bg-white
+            //-         .product-img
+            //-           img(src=`/images/products/ef1988ec2a34daee6d0bf223ce8e2068.jpg`)
+            //-         .product-title.p-2
+            //-           span sadf
+            //-         .product-price.p-2.d-flex.justify-content-between
+            //-           div
+            //-             small.text-danger ₫
+            //-             span.text-danger 1345
+            //-           div
+            //-             span.text-dark 0
+            //-             small.text-dark &nbsp;Đã bán
+            #product-list-main.text-center.my-3
+              img(src="/images/shop/62d2399b89039bd1dc90ca2d50d3e802.png", alt="noprodcut", width="120px")
+              big.d-block Không tìm thấy sản phẩm nào
+            nav.mt-4
+              ul.pagination.justify-content-center
+                li.page-item
+                  a.page-link(href='#')
+                    span(aria-hidden='true') &laquo;
+                li.page-item
+                  a.page-link(href='#') 1
+                li.page-item
+                  a.page-link(href='#') 2
+                li.page-item
+                  a.page-link(href='#') 3
+                li.page-item
+                  a.page-link(href='#') 4
+                li.page-item
+                  a.page-link(href='#')
+                    span(aria-hidden='true') &raquo;

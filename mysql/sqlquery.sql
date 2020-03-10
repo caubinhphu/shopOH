@@ -94,6 +94,10 @@ create table sanpham (
 );
 alter table sanpham convert to character set utf16 collate utf16_general_ci;
 
+update sanpham
+set hinhanh = '/images/products/36fce04f4c75dfddfd4bd6091f358ac0.jpg,/images/products/2c5592756af5362a6941f20d05adb49d.jpg,/images/products/78a91f32d178908eb610ee62da8028ed.jpg,/images/products/089e99f4b4cb1605a2ca4e962ede6348.jpg,/images/products/e1d31839df38e084e950893523706ff6.jpg'
+where ma_sanpham = '3';
+
 insert into sanpham (ma_sanpham, ten_sanpham, ma_loai2, ma_thuonghieu, ma_chatlieu, mota, giaban, khuyenmai, hinhanh)
 values ('1', 'áo sơ mi nam cổ tàu dài tay ikemen smt01', 3, 1, 6, 'áo sơ mi nam cổ tàu dài tay ikemen :
   ⏺  hướng dẫn cách đặt hàng:
@@ -320,6 +324,8 @@ create table giohang (
   foreign key (ma_sanpham) references sanpham (ma_sanpham) on delete cascade
 );
 
+-- insert into giohang(ma_khachhang, ma_sanpham, soluong, mausac, size, ngaythem)
+-- values ('1', '1', 2, 'ĐEN', 'M', null);
 
 -- -------------------procedure -------------------- --
 -- lấy sản phẩm gợi ý index
@@ -335,7 +341,7 @@ call SP_SELECT_PRODUCT_SUGGESTION();
 
 -- lấy thông tin sản phẩm trong giỏ của khách hàng
 delimiter $$
-create procedure SP_SELECT_CART(_iduser int)
+create procedure SP_SELECT_CART(_iduser varchar(50))
 begin
 	-- tổng số sản phẩm trong giỏ
     select count(*) as sl, ifnull(sum(soluong), 0) as slsp
@@ -346,31 +352,33 @@ begin
   select gh.ma_sanpham, sp.ten_sanpham, mausac, size, soluong, hinhanh, giaban, khuyenmai
   from giohang gh join sanpham sp on gh.ma_sanpham = sp.ma_sanpham
 	where ma_khachhang = _iduser
-  order by ngaythem;
+  order by ngaythem desc;
 end $$
 delimiter ;
 call sp_select_cart(1);
 
 -- lấy sản phẩm chính kèm các sản phẩm cùng loại
 delimiter $$
-create procedure sp_select_sameproduct(_idpro varchar(50), _idcategory2 int, _idmaterial int)
+create procedure SP_SELECT_SAMEPRODUCT(_idpro varchar(50), _idcategory2 int, _idmaterial int)
 begin
 	-- lấy sản phẩm chính
-	select ma_sanpham, ten_sanpham, giaban, daban from sanpham where ma_sanpham = _idpro;
+	select ma_sanpham, ten_sanpham, giaban, daban, hinhanh, khuyenmai
+  from sanpham
+  where ma_sanpham = _idpro;
   
   -- lấy sản phẩm tương tự (cùng mã loại 2 và cùng mã chất liệu)
-  select ma_sanpham, ten_sanpham, giaban, daban
+  select ma_sanpham, ten_sanpham, giaban, daban, khuyenmai, hinhanh
   from sanpham
-  where ma_loai2 = _idcategory2 and ma_chatlieu = _idmaterial and ma_sanpham != _idpro;
-  -- limit 10;
+  where ma_loai2 = _idcategory2 and ma_chatlieu = _idmaterial and ma_sanpham != _idpro
+  limit 10;
 end $$
 delimiter ;
 
-call sp_select_sameproduct(1, 3, 6);
+call SP_SELECT_SAMEPRODUCT(1, 3, 6);
 
 -- lấy thông tin sản phẩm
 delimiter $$
-create procedure sp_select_product(_idpro varchar(50))
+create procedure SP_SELECT_PRODUCT(_idpro varchar(50), _iduser varchar(50))
 begin
 	-- lấy thông tin sản phẩm
 	select sp.ma_sanpham, sp.ten_sanpham, daban, sp.giaban, sp.khuyenmai, sp.mota, sp.hinhanh,
@@ -403,13 +411,13 @@ begin
     where ma_sanpham = _idpro;
     
     -- check user current is liked
-    if exists (select * from likesanpham where ma_sanpham = _idpro and ma_khachhang = iduser)
+    if exists (select * from likesanpham where ma_sanpham = _idpro and ma_khachhang = _iduser)
       then select true as islike;
     else select false as islike;
     end if;
     
     -- lấy sản phẩm tương tự (cùng mã loại 2 và cùng mã chất liệu)
-    select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban
+    select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, hinhanh
     from sanpham
     where ma_sanpham != _idpro
 		  and ma_loai2 = (select ma_loai2 from sanpham where ma_sanpham = _idpro)
@@ -418,61 +426,55 @@ begin
 end $$
 delimiter ;
 
-call sp_select_product(2, 1);
+call sp_select_product('2', 1);
 
+-- Lấy số lượng sản phẩm tồn kho theo màu và size
 delimiter $$
-create procedure sp_select_mount_product (_id int, _color varchar(10), _size varchar(5))
+create procedure SP_SELECT_MOUNT_PRODUCT (_idPro varchar(50), _color varchar(30), _size varchar(20))
 begin
-	if exists (select soluongton from phanloaisanpham
-			   where ma_sanpham = _id and mausac = _color and size = _size)
-    then select soluongton from phanloaisanpham
-		 where ma_sanpham = _id and mausac = _color and size = _size;
-    else select 0;
-    end if;
+  select soluongton from phanloaisanpham
+	where ma_sanpham = _idPro and mausac = _color and size = _size;
 end $$
 delimiter ;
 
 call sp_select_mount_product (3, 'trắng', '1 size');
 
-insert into likesanpham (ma_sanpham, ma_khachhang)
-values (1, 1);
-
+-- Add like và return tổng like của sản phẩm
 delimiter $$
-create procedure sp_addlike (_id int, _iduser int)
+create procedure SP_ADDLIKE (_idpro varchar(50), _iduser varchar(50))
 begin
-	if exists (select * from sanpham where ma_sanpham = _id)
-		and  exists (select * from khachhang where ma_khachhang = _iduser)
-	then insert into likesanpham (ma_sanpham, ma_khachhang)
-		 values (_id, _iduser);
+  -- check exists product? => add like
+	if exists (select * from sanpham where ma_sanpham = _idpro)
+	  then insert into likesanpham (ma_sanpham, ma_khachhang)
+		      values (_idpro, _iduser);
 	end if;
     
-    -- lấy tổng like
-    select count(*) as `like`
-    from likesanpham
-    where ma_sanpham = id;
+  -- lấy tổng like
+  select count(*) as `like`
+  from likesanpham
+  where ma_sanpham = _idpro;
 end $$
 delimiter ;
 
 call sp_addlike (2, 1);
 
+-- remove like và trả về  tổng like của sản phẩm
 delimiter $$
-create procedure sp_deletelike (_id int, _iduser int)
+create procedure SP_DELETELIKE (_idpro varchar(50), _iduser varchar(50))
 begin
-	if exists (select * from sanpham where ma_sanpham = _id)
-		and  exists (select * from khachhang where ma_khachhang = _iduser)
-	then delete from likesanpham
-		 where ma_sanpham = _id and ma_khachhang = _iduser;
+	if exists (select * from sanpham where ma_sanpham = _idpro)
+	  then delete from likesanpham where ma_sanpham = _idpro and ma_khachhang = _iduser;
 	end if;
     
-    -- lấy tổng like
-    select count(*) as `like`
-    from likesanpham
-    where ma_sanpham = id;
+  -- lấy tổng like
+  select count(*) as `like`
+  from likesanpham
+  where ma_sanpham = _idpro;
 end $$
 delimiter ;
 call sp_deletelike(2, 1);
 
-
+-- get all product
 delimiter $$
 create procedure sp_select_product_all()
 begin
@@ -482,13 +484,23 @@ end $$
 delimiter ;
 call sp_select_product_all();
 
+-- get product on category level 0
 delimiter $$
-create procedure sp_select_product_style(_style int)
+create procedure SP_SELECT_PRODUCT_STYLE(_style int)
 begin
+  -- Lấy danh sách sản phẩm
 	select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, hinhanh, daban
     from sanpham sp join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
                     join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
     where l1.ma_loai0 = _style;
+
+    -- Lấy category1 list từ categody0
+    select ma_loai1, ten_loai1, hinhanh
+    from loai_sp1
+    where ma_loai0 = _style
+
+    -- Lấy material thuộc category0
+    
 end $$
 delimiter ;
 call sp_select_product_style(2);
@@ -496,74 +508,70 @@ call sp_select_product_style(2);
 select * from loai_sp2;
 
 delimiter $$
-create procedure sp_insert_cart(_idpro int, _ifuser int, _color varchar(20), _size varchar(10), _sl int, _time datetime)
+create procedure SP_INSERT_CART(_idpro varchar(50), _iduser varchar(50), _color varchar(30), _size varchar(20), _sl int)
 spinsertcartlabel:begin
 	-- check
-    if not exists (select * from khachhang where ma_khachhang = _iduser)
-    then
-		signal sqlstate '45000' set message_text = 'user not exists';
-    end if;
-    
-    if not exists (select *
-				   from sanpham sp join phanloaisanpham pl on sp.ma_sanpham = pl.ma_sanpham
-                   where sp.ma_sanpham = _idpro and pl.mausac = _color and pl.size = _size)
-    then
-		signal sqlstate '45000' set message_text = 'product not exists';
+  if not exists (select * from sanpham sp join phanloaisanpham pl on sp.ma_sanpham = pl.ma_sanpham
+                  where sp.ma_sanpham = _idpro and pl.mausac = _color and pl.size = _size)
+    then signal sqlstate '45000' set message_text = 'product not exists';
 	end if;
     
 	if exists (select * from giohang
-			   where ma_sanpham = _idpro and mausac = _color and size = _size)
+			      where ma_sanpham = _idpro and mausac = _color and size = _size and ma_khachhang = _iduser)
 	then
 		update giohang
-        set soluong = soluong + _sl
-        where ma_sanpham = _idpro and mausac = _color and size = _size;
+    set soluong = soluong + _sl, ngaythem = NOW()
+    where ma_sanpham = _idpro and mausac = _color and size = _size and ma_khachhang = _iduser;
 	else
-		insert into giohang (ma_sanpham, ma_khachhang, mausac, size, soluong)
-        values (_idpro, _iduser, _color, _size, _sl);
-    end if;
+		insert into giohang (ma_sanpham, ma_khachhang, mausac, size, soluong, ngaythem)
+    values (_idpro, _iduser, _color, _size, _sl, NOW());
+  end if;
 end $$
 delimiter ;
-call sp_insert_cart(1, 1, 'đen', 'm', 2);
-call sp_insert_cart(1, 1, 'đen', 'l', 1);
-call sp_insert_cart(1, 1, 'đen', 'xl', 2);
-call sp_insert_cart(1, 1, 'trắng', 'm', 2);
-call sp_insert_cart(2, 1, 'đen', 'm', 2);
-call sp_insert_cart(2, 1, 'đen', 'l', 1);
-call sp_insert_cart(2, 1, 'đen', 'xl', 1);
-call sp_insert_cart(2, 1, 'đen', 'xxl', 2);
-call sp_insert_cart(3, 1, 'trắng', '1 size', 1);
-call sp_insert_cart(3, 1, 'đen', '1 size', 1);
 
-select * from giohang;
-
-create table test (tg datetime);
-select tg from test order by tg desc;
-insert into test values (now());
+call sp_insert_cart('1', '1', 'ĐEN', 'M', 2);
+call sp_insert_cart('1', '1', 'ĐEN', 'L', 1);
+call sp_insert_cart('1', '1', 'ĐEN', 'XL', 2);
+call sp_insert_cart('1', '1', 'TRẮNG', 'M', 2);
+call sp_insert_cart('2', '1', 'ĐEN', 'M', 2);
+call sp_insert_cart('2', '1', 'ĐEN', 'L', 1);
+call sp_insert_cart('2', '1', 'ĐEN', 'XL', 1);
+call sp_insert_cart('2', '1', 'ĐEN', 'XXL', 2);
+call sp_insert_cart('3', '1', 'TRẮNG', '1 SIZE', 1);
+call sp_insert_cart('3', '1', 'ĐEN', '1 SIZE', 1);
 
 delimiter $$
-create procedure sp_delete_cart(_idpro int, _iduser int, _color varchar(20), _size varchar(10))
+create procedure SP_DELETE_CART(_iduser varchar(50), _idpro varchar(50), _color varchar(30), _size varchar(20))
 begin
-	-- check
-    if not exists (select * from giohang
-				   where ma_sanpham = _idpro and ma_khachhang = _iduser and mausac = _color and size = _size)
-	then signal sqlstate '45000' set message_text = 'cart not exists';
-    else delete from giohang where ma_sanpham = _idpro and ma_khachhang = _iduser and mausac = _color and size = _size;
-    end if;
+	-- check cart exists
+  if not exists (select * from giohang
+                where ma_sanpham = _idpro and ma_khachhang = _iduser and mausac = _color and size = _size)
+	  then signal sqlstate '45000' set message_text = 'cart not exists'; -- throw error
+  else delete from giohang where ma_sanpham = _idpro and ma_khachhang = _iduser and mausac = _color and size = _size;
+  end if;
 end $$
 delimiter ;
-call sp_delete_cart(3, 1, 'den', '1 size');
-select * from giohang;
+call sp_delete_cart('3', '1', 'ĐEN', '1 SIZE');
 
 delimiter $$
-create procedure sp_update_cart(_iduser int, _idpro int, _color varchar(20), _size varchar(10), _sl int)
+create procedure SP_UPDATE_CART(_iduser varchar(50), _idpro varchar(50), _color varchar(30), _size varchar(20), _sl int)
 begin
-	-- check
-    if not exists (select * from giohang
-				   where ma_sanpham = _idpro and ma_khachhang = _iduser and mausac = _color and size = _size)
-	then signal sqlstate '45000' set message_text = 'cart not exists';
-    else update giohang
-		 set soluong = _sl
-		 where ma_sanpham = _idpro and ma_khachhang = _iduser and mausac = _color and size = _size;
-    end if;
+	-- check cart exists
+  if not exists (select * from giohang
+                where ma_sanpham = _idpro and ma_khachhang = _iduser and mausac = _color and size = _size)
+	  then signal sqlstate '45000' set message_text = 'cart not exists'; -- throw error
+  else update giohang
+        set soluong = _sl
+        where ma_sanpham = _idpro and ma_khachhang = _iduser and mausac = _color and size = _size;
+  end if;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure SP_GET_SUMPRICE_CART(_iduser varchar(50))
+begin
+  select sum(gh.soluong * sp.giaban * (1 - sp.khuyenmai / 100)) as tongtien
+  from giohang gh join sanpham sp on gh.ma_sanpham = sp.ma_sanpham
+  where gh.ma_khachhang = _iduser;
 end $$
 delimiter ;

@@ -8,7 +8,7 @@ block main
     .product-main.d-flex
       .product-main-img.mr-5
         a(href=`/product/${productMain.ma_sanpham}`)
-          img(src="/images/product1.jpg")
+          img(src=`${productMain.hinhanh.split(',')[0]}`)
       .product-main-content
         .product-main-name
           a(href=`/product/${productMain.ma_sanpham}`)= productMain.ten_sanpham
@@ -31,7 +31,7 @@ block main
             a(href=`/product/${product.ma_sanpham}`)
               .bg-white
                 .product-same-img
-                  img(src="/images/product1.jpg")
+                  img(src=`${product.hinhanh.split(',')[0]}`)
                 .product-same-title.p-2
                   span= product.ten_sanpham
                 .product-same-price.p-2.d-flex.justify-content-between
