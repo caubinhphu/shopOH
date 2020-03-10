@@ -15,14 +15,14 @@ router.get('/', miniCartMiddleware, controller.getIndex);
 
 router.get('/product', miniCartMiddleware, controller.getProducts);
 
+router.get('/product/amount', controller.getAmountProduct);
+
 router.get('/product/:idProduct', miniCartMiddleware, controller.getProduct);
 
 router.get('/product/style/:style/search', (req, res) => {
   console.log(req.query);
   res.json(req.query);
 });
-
-router.get('/product/:idProduct/:color/:size', controller.getAmountProduct);
 
 router.post('/product/:idProduct/like', controller.postAddLike);
 

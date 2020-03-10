@@ -18,7 +18,7 @@ block main
 
       .product-info-right.flex-fill.px-3
         .product-name= product.ten_sanpham
-        input.d-none(type="text", name="idPro", value=product.ma_sanpham)
+        input(type="hidden", name="idPro", value=product.ma_sanpham)
         .product-info-like.d-flex.my-2
           .product-like#product-like
             i#product-like-icon.text-danger.fa-heart(class=isLike.islike?'fas':'far')
@@ -40,22 +40,24 @@ block main
             .product-select-content
               span đ0
           #selection-style-product
-            .procudt-color.d-flex.align-items-center
-              .product-select.label Chọn màu
-              .product-select-content
-                each color in colorList
-                  //- button.btn.btn-outline-dark(type="button")= color.mausac
-                  .custom-control.custom-radio.custom-control-inline
-                    input.custom-control-input(id=`color-${color.mausac}`, type="radio", name="color", value=color.mausac)
-                    label.custom-control-label(for=`color-${color.mausac}`)= color.mausac
-            .procudt-size.d-flex.align-items-center
-              .product-select.label Chọn size
-              .product-select-content
-                each size in sizeList
-                  //- button.btn.btn-outline-dark(type="button")= size.size
-                  .custom-control.custom-radio.custom-control-inline
-                    input.custom-control-input(id=`size-${size.size}`, type="radio", name="size", value=size.size)
-                    label.custom-control-label(for=`size-${size.size}`)= size.size
+            form(name="classifyForm")
+              input(type="hidden", value=product.ma_sanpham, name="idProduct")
+              .procudt-color.d-flex.align-items-center
+                .product-select.label Chọn màu
+                .product-select-content
+                  each color in colorList
+                    //- button.btn.btn-outline-dark(type="button")= color.mausac
+                    .custom-control.custom-radio.custom-control-inline
+                      input.custom-control-input(id=`color-${color.mausac}`, type="radio", name="color", value=color.mausac)
+                      label.custom-control-label(for=`color-${color.mausac}`)= color.mausac
+              .procudt-size.d-flex.align-items-center
+                .product-select.label Chọn size
+                .product-select-content
+                  each size in sizeList
+                    //- button.btn.btn-outline-dark(type="button")= size.size
+                    .custom-control.custom-radio.custom-control-inline
+                      input.custom-control-input(id=`size-${size.size}`, type="radio", name="size", value=size.size)
+                      label.custom-control-label(for=`size-${size.size}`)= size.size
             .procudt-quantity.d-flex.align-items-center
               .product-select.label Số lượng
               .product-select-content

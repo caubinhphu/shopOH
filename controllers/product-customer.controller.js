@@ -98,7 +98,7 @@ module.exports.getProduct = async (req, res, next) => {
 module.exports.getAmountProduct = async (req, res, next) => {
   try {
     // get params product
-    let { idProduct, color, size } = req.params; // get id, color, size product
+    let { idProduct, color, size } = req.query; // get id, color, size product
 
     // get amount product
     let data = await querySQL('call SP_SELECT_MOUNT_PRODUCT (?, ?, ?)', [
