@@ -486,7 +486,7 @@ delimiter $$
 create procedure SP_SELECT_PRODUCT_STYLE(_style int)
 begin
   -- Lấy danh sách sản phẩm
-	select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, sp.hinhanh, daban
+	select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, sp.hinhanh
   from sanpham sp join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
                   join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
   where l1.ma_loai0 = _style;
@@ -496,7 +496,28 @@ call sp_select_product_style(2);
 
 -- get filter list
 delimiter $$
-create procedure SP_SELECT_FILTER_LIST(_style int)
+drop procedure SP_SELECT_FILTER_LIST
+create procedure SP_SELECT_FILTER_LIST(_style int, _style1 int)
+begin
+    -- Lấy category1 list từ categody0
+    select ma_loai1, ten_loai1, hinhanh
+    from loai_sp1
+    where ma_loai0 = _style;
+
+    -- Lấy material thuộc category0
+    select ma_chatlieu, ten_chatlieu
+    from chatlieu;
+
+    --  Lấy category2 từ category1
+    select ma_loai2, ten_loai2
+    from loai_sp2
+    where ma_loai1 = _style1;
+end $$
+delimiter ;
+
+-- get filter list
+delimiter $$
+create procedure SP_SELECT_FILTER_LIST2(_loai0 int, _loai1 int)
 begin
     -- Lấy category1 list từ categody0
     select ma_loai1, ten_loai1, hinhanh
@@ -579,3 +600,32 @@ begin
   where gh.ma_khachhang = _iduser;
 end $$
 delimiter ;
+
+delimiter $$
+drop procedure SP_SEARCH_STYLE;
+create procedure SP_SEARCH_STYLE(
+  _loai0 int, _loai1 varchar(255), _loai2 varchar(255), _material varchar(255), _minRange int, _maxRange int
+)
+begin
+  set @sql = concat(
+    'select sp.ma_sanpham, sp.ten_sanpham, sp.giaban, sp.khuyenmai, sp.daban, sp.hinhanh
+    from sanpham sp join chatlieu cl on sp.ma_chatlieu = cl.ma_chatlieu
+                    join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
+                    join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
+                    join loai_sp0 l0 on l1.ma_loai0 = l0.ma_loai0
+    where l0.ma_loai0 = ', _loai0, ' and (l1.ma_loai1 in (', _loai1, ') or \'', _loai1, '\' = \'-1\')',
+      ' and (l2.ma_loai2 in (', _loai2, ') or \'', _loai2, '\' = \'-1\')',
+      ' and (cl.ma_chatlieu in (', _material, ') or \'', _material, '\' = \'-1\')',
+      ' and ((sp.giaban * (1 - sp.khuyenmai / 100)) >= ', _minRange, ' or ', _minRange, ' = 0)',
+      ' and ((sp.giaban * (1 - sp.khuyenmai / 100)) <= ', _maxRange, ' or ', _maxRange, ' = 0);'
+  );
+  prepare stmt from @sql;
+  execute stmt;
+  deallocate prepare stmt;
+end $$
+delimiter ;
+
+call SP_SEARCH_STYLE(1, '-1', '-1', '6,1', 0, 200000);
+
+
+select ma_loai2 from sanpham;

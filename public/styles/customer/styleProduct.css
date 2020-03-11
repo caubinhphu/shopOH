@@ -109,3 +109,10 @@
   top: 20px;
   height: max-content;
 }
+
+@media only screen and (max-width: 768px) {
+  #filler {
+    position: initial;
+    height: max-content;
+  }
+}

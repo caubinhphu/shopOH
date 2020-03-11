@@ -6,30 +6,22 @@ block style_child
 block main
   #main
     #banner
-      #baner-img
-        block img-banner
       #main-area
-        #category-area.py-3
-          div LOẠI SẢN PHẨM
-          #category-list.d-flex.bg-white.flex-wrap
-            each _type in filterType
-              a.category(href="#")
-                .category-content
-                  .category-image(style='background-image: url("/images/products/ef1988ec2a34daee6d0bf223ce8e2068.jpg")')
-                  .categoty-title= _type.ten_loai1.toUpperCase()
         #main-content.row
           #filler.col-md-3.text-center
             div
               i.fas.fa-filter
               span &nbsp;BỘ LỌC TÌM KIẾM
             form(name="filterForm", method="GET")
+              input(type="hidden", name="filterType1", value=`${query.filterType1}`)
               #filler-list
                 .filter-criteria.text-left
                   .filter-title.text-center Danh mục
+                  - var typeList = query ? query.filterType2.split(',') : [''];
                   each _type in filterType
                     .custom-control.custom-checkbox
-                      input.custom-control-input(id=`filter-type-${_type.ma_loai1}`, type="checkbox", name="filterType1", value=`${_type.ma_loai1}`)
-                      label.custom-control-label(for=`filter-type-${_type.ma_loai1}`)= _type.ten_loai1
+                      input.custom-control-input(id=`filter-type-${_type.ma_loai2}`, type="checkbox", name="filterType2", value=`${_type.ma_loai2}`, checked=typeList.includes(_type.ma_loai2.toString())?true:false)
+                      label.custom-control-label(for=`filter-type-${_type.ma_loai2}`)= _type.ten_loai2
                 .filter-criteria.text-left
                   .filter-title.text-center Chất liệu
                   - var materialList = query ? query.filterMaterial.split(',') : [''];

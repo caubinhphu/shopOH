@@ -8,7 +8,6 @@ module.exports.getIndex = async (req, res, next) => {
   try {
     // lấy sản phẩm gợi ý trong ngày
     let data = await querySQL('call SP_SELECT_PRODUCT_SUGGESTION()');
-
     // render pug
     res.render('customer/index', {
       title: 'ShopOP',
@@ -162,6 +161,66 @@ module.exports.getStyle = async (req, res, next) => {
       res.render('customer/femaleProduct', {
         titleSite: 'ShopOH - Thời trang nữ',
         products: data[0]
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports.searchStyle = async (req, res, next) => {
+  try {
+    let query = req.query,
+      style = 0,
+      title = '',
+      styleText = req.params.style;
+    if (styleText === 'thoitrangnam') {
+      style = 1;
+      title = 'ShopOH - Thời trang nam';
+    } else if (styleText === 'thoitrangnu') {
+      style = 2;
+      title = 'ShopOH - Thời trang nữ';
+    }
+
+    if (!query.filterMaterial || query.filterMaterial === '') {
+      query.filterMaterial = '-1';
+    } else if (Array.isArray(query.filterMaterial)) {
+      query.filterMaterial = query.filterMaterial.join(',');
+    }
+
+    if (!query.filterType1 || query.filterType1 === '') {
+      query.filterType1 = '-1';
+    }
+
+    if (!query.filterType2 || query.filterType2 === '') {
+      query.filterType2 = '-1';
+    } else if (Array.isArray(query.filterType2)) {
+      query.filterType2 = query.filterType2.join(',');
+    }
+
+    query.minPriceRange = +query.minPriceRange;
+    query.maxPriceRange = +query.maxPriceRange;
+
+    let data = await querySQL('call SP_SEARCH_STYLE(?, ?, ?, ?, ?, ?)', [
+      style,
+      query.filterType1,
+      query.filterType2,
+      query.filterMaterial,
+      query.minPriceRange,
+      query.maxPriceRange
+    ]);
+
+    if (query.filterType1 !== '-1') {
+      res.render('customer/subStyleProduct', {
+        titleSite: title,
+        products: data[0],
+        query
+      });
+    } else {
+      res.render('customer/styleProduct', {
+        titleSite: title,
+        products: data[0],
+        query
       });
     }
   } catch (err) {

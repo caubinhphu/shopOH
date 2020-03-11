@@ -157,7 +157,7 @@ body {
   opacity: 0;
   visibility: hidden;
   position: absolute;
-  left: -300px;
+  left: -340px;
   top: 70px;
   transform: translate(0, 10px);
   background-color: white;
@@ -168,7 +168,7 @@ body {
   position: absolute;
   z-index: -1;
   content: "";
-  right: calc(25% - 10px);
+  right: calc(25% - 50px);
   top: -15px;
   border-style: solid;
   border-width: 0 25px 15px 25px;
