@@ -1,6 +1,6 @@
 extends ./personal-common
 
-block style_sub
+append style
   link(rel="stylesheet", href="/styles/customer/personal-address.css")
 
 block main-personal
@@ -117,6 +117,6 @@ block main-personal
             button.btn.btn-danger.flex-fill.mr-1(type='button') XÓA
             button.btn.btn-light.flex-fill(type='button', data-dismiss='modal') TRỞ LẠI
 
-block script2
+append script
   script(src="/scripts/getDVHCVN.js")
     

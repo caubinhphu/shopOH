@@ -1,6 +1,6 @@
 extends ./common
 
-block style_child
+append style
   link(rel="stylesheet", href="/styles/customer/cart.css")
 
 block main
@@ -83,5 +83,5 @@ block main
                     small.text-dark &nbsp;Đã bán
 
 
-block supScript
+append script
   script(src="/scripts/customer/cart.js")

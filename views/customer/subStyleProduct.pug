@@ -1,6 +1,6 @@
 extends ./common
 
-block style_child
+append style
   link(rel="stylesheet", href="/styles/customer/styleProduct.css")
 
 block main
@@ -83,5 +83,5 @@ block main
                   a.page-link(href='#')
                     span(aria-hidden='true') &raquo;
 
-block supScript
+append script
   script(src="/scripts/customer/styleProduct.js")

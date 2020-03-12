@@ -1,8 +1,7 @@
 extends ../common
 
-block style
+append style
   link(rel="stylesheet", href="/styles/customer/common.css")
-  block style_child
 
 block header
   #header-background
@@ -210,6 +209,5 @@ block footer
     hr
     p © 2020 ShopOH. Tất cả các quyền được bảo lưu.
 
-block script2
+append script
   script(src="/scripts/customer/common.js")
-  block supScript
