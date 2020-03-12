@@ -149,15 +149,27 @@ module.exports.deleteLike = async (req, res, next) => {
 // style product (male + female)
 module.exports.getStyle = async (req, res, next) => {
   try {
+    // get style (male or female)
     let { style } = req.params;
+
     if (style === 'thoitrangnam') {
+      // STYLE MALE
+
+      // get product
       let data = await querySQL('call SP_SELECT_PRODUCT_STYLE(?)', [1]);
+
+      // render
       res.render('customer/maleProduct', {
         titleSite: 'ShopOH - Thời trang nam',
         products: data[0]
       });
     } else if (style === 'thoitrangnu') {
+      // STYLE FEMALE
+
+      // get product
       let data = await querySQL('call SP_SELECT_PRODUCT_STYLE(?)', [2]);
+
+      // render
       res.render('customer/femaleProduct', {
         titleSite: 'ShopOH - Thời trang nữ',
         products: data[0]
@@ -168,59 +180,83 @@ module.exports.getStyle = async (req, res, next) => {
   }
 };
 
+// search (filter) by type
 module.exports.searchStyle = async (req, res, next) => {
   try {
-    let query = req.query,
-      style = 0,
-      title = '',
-      styleText = req.params.style;
+    let query = req.query, // get string query filter
+      style = 0, // style (male: 1 or female: 2)
+      title = '', // title site
+      styleText = req.params.style; // style in text
+
     if (styleText === 'thoitrangnam') {
+      // male style
       style = 1;
       title = 'ShopOH - Thời trang nam';
     } else if (styleText === 'thoitrangnu') {
+      // female style
       style = 2;
       title = 'ShopOH - Thời trang nữ';
     }
 
+    // format filter material
     if (!query.filterMaterial || query.filterMaterial === '') {
       query.filterMaterial = '-1';
     } else if (Array.isArray(query.filterMaterial)) {
       query.filterMaterial = query.filterMaterial.join(',');
     }
 
+    // format filter type1
     if (!query.filterType1 || query.filterType1 === '') {
       query.filterType1 = '-1';
     }
 
+    // format filter type1
     if (!query.filterType2 || query.filterType2 === '') {
       query.filterType2 = '-1';
     } else if (Array.isArray(query.filterType2)) {
       query.filterType2 = query.filterType2.join(',');
     }
 
-    query.minPriceRange = +query.minPriceRange;
-    query.maxPriceRange = +query.maxPriceRange;
+    // format price range
+    if (!query.minPriceRange) {
+      query.minPriceRange = 0;
+    } else {
+      query.minPriceRange = +query.minPriceRange;
+    }
+    if (!query.maxPriceRange) {
+      query.maxPriceRange = 0;
+    } else {
+      query.maxPriceRange = +query.maxPriceRange;
+    }
 
+    // get product filter
     let data = await querySQL('call SP_SEARCH_STYLE(?, ?, ?, ?, ?, ?)', [
-      style,
-      query.filterType1,
-      query.filterType2,
-      query.filterMaterial,
-      query.minPriceRange,
-      query.maxPriceRange
+      style, // style formated
+      query.filterType1, // type1 formated
+      query.filterType2, // type2 formated
+      query.filterMaterial, // material formated
+      query.minPriceRange, // min price range formated
+      query.maxPriceRange // max price range formated
     ]);
 
+    // Check being filter by type1?
     if (query.filterType1 !== '-1') {
+      // No
+
+      // render substyle view (type2)
       res.render('customer/subStyleProduct', {
         titleSite: title,
         products: data[0],
-        query
+        query // save filter value
       });
     } else {
+      // Yes
+
+      // render style view (type1)
       res.render('customer/styleProduct', {
         titleSite: title,
         products: data[0],
-        query
+        query // save filter value
       });
     }
   } catch (err) {

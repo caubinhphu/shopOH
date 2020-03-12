@@ -19,6 +19,7 @@
   margin: 15px;
   position: relative;
   transition: all .5s ease-in-out;
+  cursor: pointer;
 }
 
 .category:hover {
@@ -77,10 +78,6 @@
 
 .product-img img {
   width: 100%;
-}
-
-.product > a:hover {
-  text-decoration: none;
 }
 
 @media only screen and (max-width: 922px) {

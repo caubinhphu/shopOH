@@ -13,9 +13,9 @@ block main
           div LOẠI SẢN PHẨM
           #category-list.d-flex.bg-white.flex-wrap
             each _type in filterType
-              a.category(href="#")
+              .category(data-type=`${_type.ma_loai1}`)
                 .category-content
-                  .category-image(style='background-image: url("/images/products/ef1988ec2a34daee6d0bf223ce8e2068.jpg")')
+                  .category-image(style=`background-image: url("/images/products/ef1988ec2a34daee6d0bf223ce8e2068.jpg")`)
                   .categoty-title= _type.ten_loai1.toUpperCase()
         #main-content.row
           #filler.col-md-3.text-center
@@ -23,6 +23,7 @@ block main
               i.fas.fa-filter
               span &nbsp;BỘ LỌC TÌM KIẾM
             form(name="filterForm", method="GET")
+              input(type="hidden", name="sortBy", value=query?query.sortBy:"new")
               #filler-list
                 .filter-criteria.text-left
                   .filter-title.text-center Danh mục
@@ -48,12 +49,10 @@ block main
                 button#btn-clear-filter.btn.btn-danger.mt-2(type="button") XÓA BỘ LỌC
           #product-list.col-md-9
             #sort-product.d-flex.justyfy-content-center
-              button.btn.btn-light.mx-2.sort-active(type="button") Mới nhất
-              button.btn.btn-light.mr-2(type="button") Bán chạy
-              select.form-control.w-50(name="")
-                option(value="") Giá
-                option(value="") Giá: Từ Thấp đến Cao
-                option(value="") Giá: Từ Cao đến Thấp
+              button.btn.btn-light.mx-2.sort(type="button", data-sort="new") Mới nhất
+              button.btn.btn-light.mr-2.sort(type="button", data-sort="selling") Bán chạy
+              button.btn.btn-light.mr-2.sort(type="button", data-sort="price-increase") Giá: Từ Thấp đến Cao
+              button.btn.btn-light.mr-2.sort(type="button", data-sort="price-decease") Giá: Từ Cao đến Thấp
             if (products.length > 0)
               #product-list-main.d-flex.flex-wrap.justify-content-center
                 each product in products

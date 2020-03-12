@@ -515,21 +515,6 @@ begin
 end $$
 delimiter ;
 
--- get filter list
-delimiter $$
-create procedure SP_SELECT_FILTER_LIST2(_loai0 int, _loai1 int)
-begin
-    -- Lấy category1 list từ categody0
-    select ma_loai1, ten_loai1, hinhanh
-    from loai_sp1
-    where ma_loai0 = _style;
-
-    -- Lấy material thuộc category0
-    select ma_chatlieu, ten_chatlieu
-    from chatlieu;
-end $$
-delimiter ;
-
 select * from sanpham;
 
 delimiter $$
