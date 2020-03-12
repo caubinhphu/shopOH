@@ -94,6 +94,11 @@ create table sanpham (
   foreign key (ma_chatlieu) references chatlieu (ma_chatlieu)
 );
 alter table sanpham convert to character set utf16 collate utf16_general_ci;
+alter table sanpham add column ngaythem datetime;
+
+update sanpham
+set ngaythem = now()
+where ma_sanpham = '3';
 
 insert into sanpham (ma_sanpham, ten_sanpham, ma_loai2, ma_thuonghieu, ma_chatlieu, mota, giaban, khuyenmai, hinhanh)
 values ('1', 'áo sơ mi nam cổ tàu dài tay ikemen smt01', 3, 1, 6, 'áo sơ mi nam cổ tàu dài tay ikemen :
@@ -325,17 +330,21 @@ create table giohang (
 -- values ('1', '1', 2, 'ĐEN', 'M', null);
 
 -- -------------------procedure -------------------- --
+
+drop procedure SP_SELECT_PRODUCT_SUGGESTION;
 -- lấy sản phẩm gợi ý index
 delimiter $$
 create procedure SP_SELECT_PRODUCT_SUGGESTION()
 begin
 	select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, ma_loai2, hinhanh, ma_chatlieu
   from sanpham
-  limit 10;
+  order by ngaythem desc
+  limit 20;
 end $$
 delimiter ;
 call SP_SELECT_PRODUCT_SUGGESTION();
 
+drop procedure SP_SELECT_CART;
 -- lấy thông tin sản phẩm trong giỏ của khách hàng
 delimiter $$
 create procedure SP_SELECT_CART(_iduser varchar(50))
@@ -349,12 +358,13 @@ begin
   select gh.ma_sanpham, sp.ten_sanpham, mausac, size, soluong, hinhanh, giaban, khuyenmai
   from giohang gh join sanpham sp on gh.ma_sanpham = sp.ma_sanpham
 	where ma_khachhang = _iduser
-  order by ngaythem desc;
+  order by gh.ngaythem desc;
 end $$
 delimiter ;
 call sp_select_cart(1);
 
 -- lấy sản phẩm chính kèm các sản phẩm cùng loại
+drop procedure SP_SELECT_SAMEPRODUCT;
 delimiter $$
 create procedure SP_SELECT_SAMEPRODUCT(_idpro varchar(50), _idcategory2 int, _idmaterial int)
 begin
@@ -367,7 +377,8 @@ begin
   select ma_sanpham, ten_sanpham, giaban, daban, khuyenmai, hinhanh
   from sanpham
   where ma_loai2 = _idcategory2 and ma_chatlieu = _idmaterial and ma_sanpham != _idpro
-  limit 10;
+  order by daban desc
+  limit 20;
 end $$
 delimiter ;
 
@@ -589,7 +600,8 @@ delimiter ;
 delimiter $$
 drop procedure SP_SEARCH_STYLE;
 create procedure SP_SEARCH_STYLE(
-  _loai0 int, _loai1 varchar(255), _loai2 varchar(255), _material varchar(255), _minRange int, _maxRange int
+  _loai0 int, _loai1 varchar(255), _loai2 varchar(255), _material varchar(255),
+  _minRange int, _maxRange int, _sortby varchar(50)
 )
 begin
   set @sql = concat(
@@ -602,7 +614,8 @@ begin
       ' and (l2.ma_loai2 in (', _loai2, ') or \'', _loai2, '\' = \'-1\')',
       ' and (cl.ma_chatlieu in (', _material, ') or \'', _material, '\' = \'-1\')',
       ' and ((sp.giaban * (1 - sp.khuyenmai / 100)) >= ', _minRange, ' or ', _minRange, ' = 0)',
-      ' and ((sp.giaban * (1 - sp.khuyenmai / 100)) <= ', _maxRange, ' or ', _maxRange, ' = 0);'
+      ' and ((sp.giaban * (1 - sp.khuyenmai / 100)) <= ', _maxRange, ' or ', _maxRange, ' = 0)',
+    ' order by ', _sortby, ';'
   );
   prepare stmt from @sql;
   execute stmt;
@@ -610,7 +623,7 @@ begin
 end $$
 delimiter ;
 
-call SP_SEARCH_STYLE(1, '-1', '-1', '6,1', 0, 200000);
+call SP_SEARCH_STYLE(1, '-1', '-1', '-1', 0, 0, '(sp.giaban * (1 - sp.khuyenmai / 100)) desc');
 
 
 select ma_loai2 from sanpham;

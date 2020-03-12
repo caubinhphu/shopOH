@@ -229,14 +229,26 @@ module.exports.searchStyle = async (req, res, next) => {
       query.maxPriceRange = +query.maxPriceRange;
     }
 
+    // format sort by
+    if (!query.sortBy || query.sortBy === 'new') {
+      query.sort = 'sp.ngaythem desc';
+    } else if (query.sortBy === 'selling') {
+      query.sort = 'sp.daban';
+    } else if (query.sortBy === 'price-increase') {
+      query.sort = '(sp.giaban * (1 - sp.khuyenmai / 100)) asc';
+    } else if (query.sortBy === 'price-decease') {
+      query.sort = '(sp.giaban * (1 - sp.khuyenmai / 100)) desc';
+    }
+
     // get product filter
-    let data = await querySQL('call SP_SEARCH_STYLE(?, ?, ?, ?, ?, ?)', [
+    let data = await querySQL('call SP_SEARCH_STYLE(?, ?, ?, ?, ?, ?, ?)', [
       style, // style formated
       query.filterType1, // type1 formated
       query.filterType2, // type2 formated
       query.filterMaterial, // material formated
       query.minPriceRange, // min price range formated
-      query.maxPriceRange // max price range formated
+      query.maxPriceRange, // max price range formated
+      query.sort // sort by formated
     ]);
 
     // Check being filter by type1?

@@ -76,6 +76,10 @@
   border: 1px solid rgb(238, 77, 45);
 }
 
+.product > a:hover {
+  text-decoration: none;
+}
+
 .product-img img {
   width: 100%;
 }
