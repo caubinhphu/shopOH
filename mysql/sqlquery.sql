@@ -384,13 +384,15 @@ delimiter ;
 
 call SP_SELECT_SAMEPRODUCT(1, 3, 6);
 
+drop procedure SP_SELECT_PRODUCT;
 -- lấy thông tin sản phẩm
 delimiter $$
 create procedure SP_SELECT_PRODUCT(_idpro varchar(50), _iduser varchar(50))
 begin
 	-- lấy thông tin sản phẩm
 	select sp.ma_sanpham, sp.ten_sanpham, daban, sp.giaban, sp.khuyenmai, sp.mota, sp.hinhanh,
-		    cl.ten_chatlieu, th.ten_thuonghieu, l0.ten_loai0, l1.ten_loai1, l2.ten_loai2
+		    cl.ten_chatlieu, th.ten_thuonghieu, l0.ma_loai0, l0.ten_loai0, l1.ma_loai1, l1.ten_loai1,
+        l2.ma_loai2, l2.ten_loai2
   from sanpham sp join thuonghieu th on sp.ma_thuonghieu = th.ma_thuonghieu
                   join chatlieu cl on sp.ma_chatlieu = cl.ma_chatlieu
                   join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2

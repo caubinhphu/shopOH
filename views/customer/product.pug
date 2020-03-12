@@ -81,11 +81,11 @@ block main
           .product-detail-content
             a(href=`/`) ShopOH
             span= ` > `
-            a(href=`/product/search?${category0}`)= product.ten_loai0
+            a(href=`/product/style/${category0}`)= product.ten_loai0
             span= ` > `
-            a(href=`/product/search?${category1}`)= product.ten_loai1
+            a(href=`/product/style/${category0}/search?${category1}`)= product.ten_loai1
             span= ` > `
-            a(href=`/product/search?${category2}`)= product.ten_loai2
+            a(href=`/product/style/${category0}/search?${category2}`)= product.ten_loai2
         .product-detail-item.d-flex
           .product-detail-label Thương hiệu
           .product-detail-content= product.ten_thuonghieu

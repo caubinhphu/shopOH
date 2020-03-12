@@ -65,6 +65,18 @@ module.exports.getProduct = async (req, res, next) => {
 
     // get info main product
     let data = await querySQL('call SP_SELECT_PRODUCT(?, ?)', [idProduct, '1']);
+
+    // format category;
+    let category0 = data[0][0].ma_loai0 === 1 ? 'thoitrangnam' : 'thoitrangnu';
+    let category1 = querystring.stringify({
+      filterType1: data[0][0].ma_loai1
+    });
+    let category2 = querystring.stringify({
+      filterType1: data[0][0].ma_loai1,
+      filterType2: data[0][0].ma_loai2
+    });
+
+    // render
     res.render('customer/product', {
       titleSite: 'ShopOH - Sản phẩm',
       product: data[0][0], // info main product
@@ -75,18 +87,9 @@ module.exports.getProduct = async (req, res, next) => {
       like: data[4][0], // amount like of main product
       isLike: data[5][0], // current user is liked main product?
       productSameList: data[6], // same product list
-      category0: querystring.stringify({
-        level: 0,
-        category: data[0][0].ma_loai0
-      }), // create category level 0 string query
-      category1: querystring.stringify({
-        level: 1,
-        category: data[0][0].ma_loai1
-      }), // create category level 1 string query
-      category2: querystring.stringify({
-        level: 2,
-        category: data[0][0].ma_loai2
-      }) // create category level 2 string query
+      category0, // category level 0 string query
+      category1, // category level 1 string query
+      category2 // category level 2 string query
     });
   } catch (err) {
     next(err);
@@ -232,6 +235,7 @@ module.exports.searchStyle = async (req, res, next) => {
     // format sort by
     if (!query.sortBy || query.sortBy === 'new') {
       query.sort = 'sp.ngaythem desc';
+      query.sortBy = 'new';
     } else if (query.sortBy === 'selling') {
       query.sort = 'sp.daban';
     } else if (query.sortBy === 'price-increase') {
