@@ -237,7 +237,7 @@ module.exports.searchStyle = async (req, res, next) => {
       query.sort = 'sp.ngaythem desc';
       query.sortBy = 'new';
     } else if (query.sortBy === 'selling') {
-      query.sort = 'sp.daban';
+      query.sort = 'sp.daban desc';
     } else if (query.sortBy === 'price-increase') {
       query.sort = '(sp.giaban * (1 - sp.khuyenmai / 100)) asc';
     } else if (query.sortBy === 'price-decease') {
