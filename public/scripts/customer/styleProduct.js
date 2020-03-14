@@ -1,9 +1,11 @@
 const filterCheckbox = document.querySelectorAll('input[type="checkbox"]');
-const btnPriceRange = document.getElementById('btn-submit-pricetange');
+const btnPriceRange = document.getElementById('btn-submit-pricerange');
 const btnClear = document.getElementById('btn-clear-filter');
 const typeDiv = document.querySelectorAll('.category');
 const btnSorts = [...document.querySelectorAll('.sort')];
 const inputSort = document.querySelector('input[name="sortBy"]');
+const inputRanges = document.querySelectorAll('.filter-price');
+const rangePrceArea = document.getElementById('range-price');
 
 const urlPage = location.origin + location.pathname;
 
@@ -25,8 +27,21 @@ filterCheckbox.forEach(function(checkbox) {
   });
 });
 
+inputRanges.forEach(input => {
+  input.addEventListener('input', function() {
+    if (+this.value < 0) {
+      this.value = 0;
+    }
+  });
+});
+
 btnPriceRange.addEventListener('click', function() {
-  submitFormFilter();
+  if (validationRange()) {
+    submitFormFilter();
+  } else {
+    rangePrceArea.style.backgroundColor = '#fff5f5';
+    document.querySelector('#err-range').innerHTML = 'Hãy nhập khoảng giá đúng';
+  }
 });
 
 btnClear.addEventListener('click', function() {
@@ -65,3 +80,10 @@ document.querySelector('#page-next').href =
 document.querySelectorAll('.page-main').forEach(item => {
   item.href = urlPage + '?' + createUrlPage(+item.innerHTML);
 });
+
+function validationRange() {
+  if (+inputRanges[0].value > +inputRanges[1].value) {
+    return false;
+  }
+  return true;
+}

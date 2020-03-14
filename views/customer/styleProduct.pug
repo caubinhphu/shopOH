@@ -40,12 +40,14 @@ block main
                       label.custom-control-label(for=`filter-material-${_material.ma_chatlieu}`)= _material.ten_chatlieu
                 .filter-criteria
                   .filter-title Khoảng giá
-                  .d-flex.flex-md-column.flex-lg-row.justify-content-center.align-items-center
-                    input.form-control.filter-price(type="number", placeholder="đ TỪ", name="minPriceRange", value=query?query.minPriceRange!==0?query.minPriceRange:"":"")
-                    span &nbsp;&#45;&nbsp;
-                    input.form-control.filter-price(type="number", placeholder="đ ĐẾN", name="maxPriceRange", value=query?query.maxPriceRange!==0?query.maxPriceRange:"":"")
+                  #range-price.py-1
+                    .d-flex.flex-md-column.flex-lg-row.justify-content-center.align-items-center
+                      input.form-control.filter-price(type="number", placeholder="đ TỪ", name="minPriceRange", value=query?query.minPriceRange!==0?query.minPriceRange:"":"")
+                      span &nbsp;&#45;&nbsp;
+                      input.form-control.filter-price(type="number", placeholder="đ ĐẾN", name="maxPriceRange", value=query?query.maxPriceRange!==0?query.maxPriceRange:"":"")
+                    em#err-range.text-danger
                   .mt-2
-                    button#btn-submit-pricetange.btn.btn-danger(type="button") ÁP DỤNG
+                    button#btn-submit-pricerange.btn.btn-danger(type="button") ÁP DỤNG
                 button#btn-clear-filter.btn.btn-danger.mt-2(type="button") XÓA BỘ LỌC
           #product-list.col-md-9
             if (products.length > 0)

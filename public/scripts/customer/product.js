@@ -55,9 +55,9 @@ likeButton.addEventListener('click', () => {
 });
 
 inputTextAmount.addEventListener('input', function() {
-  if (parseInt(this.value) > parseInt(this.getAttribute('max'))) {
+  if (+this.value > +this.getAttribute('max')) {
     this.value = this.getAttribute('max');
-  } else if (parseInt(this.value) < parseInt(this.getAttribute('min'))) {
+  } else if (+this.value < +this.getAttribute('min')) {
     this.value = this.getAttribute('min');
   }
 });
