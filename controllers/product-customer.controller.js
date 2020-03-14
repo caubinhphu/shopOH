@@ -1,5 +1,46 @@
 const querystring = require('querystring');
 
+// product / page
+const productPerPage = 24;
+
+// function generate page array
+const generatePageArr = function(pageCur, pageMax) {
+  // init array
+  let pageArr = [pageCur - 2, pageCur - 1, pageCur, pageCur + 1, pageCur + 2];
+
+  // validate array
+  pageArr = pageArr.filter(
+    p => p * productPerPage <= pageMax * productPerPage && p > 0
+  );
+
+  // case special
+  if (pageCur === 1) {
+    if (pageCur + 3 <= pageMax) {
+      pageArr.push(pageCur + 3);
+      if (pageCur + 4 <= pageMax) {
+        pageArr.push(pageCur + 4);
+      }
+    }
+  } else if (pageCur === 2) {
+    if (pageCur + 3 <= pageMax) {
+      pageArr.push(pageCur + 3);
+    }
+  } else if (pageCur === pageMax - 1) {
+    if (pageCur - 3 > 0) {
+      pageArr.unshift(pageCur - 3);
+    }
+  } else if (pageCur === pageMax) {
+    if (pageCur - 3 > 0) {
+      pageArr.unshift(pageCur - 3);
+      if (pageCur - 4 > 0) {
+        pageArr.unshift(pageCur - 4);
+      }
+    }
+  }
+
+  return pageArr;
+};
+
 // query SQL function
 const querySQL = require('../configure/querySQL');
 
@@ -22,7 +63,9 @@ module.exports.getIndex = async (req, res, next) => {
 module.exports.getProducts = async (req, res, next) => {
   try {
     //get query string
-    let queryReq = req.query;
+    let queryReq = req.query,
+      page = +queryReq.page || 1, // current page, default 1
+      offset = (page - 1) * productPerPage;
 
     // data product
     let data = null;
@@ -35,21 +78,43 @@ module.exports.getProducts = async (req, res, next) => {
         queryReq.material // material main product
       ]);
 
+      let sumProductSame = data[1].length,
+        pageMax = Math.ceil(sumProductSame / productPerPage),
+        pageArr = generatePageArr(page, pageMax),
+        sameProducts = data[1].slice(offset, productPerPage + offset);
+
       // render pug
       res.render('customer/same-product', {
         title: 'ShopOP - Sản phẩm',
         productMain: data[0][0], // data main product
-        productSameList: data[1] // data same-product list
+        sameProducts, // data same-product list
+        pageMax, // page max
+        sumProductSame, // sum product same
+        page, // page current
+        productPerPage, // product per page
+        pageArr // page array
       });
     } else {
       // NO QUERY STRING => GET ALL PRODUCT
       // get data
-      data = await querySQL('call SP_SELECT_PRODUCT_ALL()');
+      data = await querySQL('call SP_SELECT_PRODUCT_ALL(?, ?)', [
+        offset, // offset limit
+        productPerPage // limit
+      ]);
 
+      let sumProduct = data[1][0].tong, // sum product
+        pageMax = Math.ceil(sumProduct / productPerPage); // page max
+
+      let pageArr = generatePageArr(page, pageMax);
       // render pug
       res.render('customer/allproduct', {
         titleSite: 'ShopOP - Sản phẩm',
-        productList: data[0] // all data product
+        products: data[0], // all data product
+        page, // page current
+        pageArr, // page array
+        pageMax, // page max
+        productPerPage, // product per page
+        sumProduct // sum product
       });
     }
   } catch (err) {
@@ -154,28 +219,56 @@ module.exports.getStyle = async (req, res, next) => {
   try {
     // get style (male or female)
     let { style } = req.params;
+    let page = +req.query.page || 1, // current page, default 1
+      offset = (page - 1) * productPerPage;
 
     if (style === 'thoitrangnam') {
       // STYLE MALE
 
       // get product
-      let data = await querySQL('call SP_SELECT_PRODUCT_STYLE(?)', [1]);
+      let data = await querySQL('call SP_SELECT_PRODUCT_STYLE(?, ?, ?)', [
+        1, // style
+        offset, // offset limit
+        productPerPage // limit
+      ]);
+
+      let sumProduct = data[1][0].tong,
+        pageMax = Math.ceil(sumProduct / productPerPage),
+        pageArr = generatePageArr(page, pageMax);
 
       // render
       res.render('customer/maleProduct', {
         titleSite: 'ShopOH - Thời trang nam',
-        products: data[0]
+        products: data[0],
+        page, // page current
+        productPerPage, // product per page
+        pageArr, // page array
+        pageMax, // page max
+        sumProduct // sum product satisfy condition
       });
     } else if (style === 'thoitrangnu') {
       // STYLE FEMALE
 
       // get product
-      let data = await querySQL('call SP_SELECT_PRODUCT_STYLE(?)', [2]);
+      let data = await querySQL('call SP_SELECT_PRODUCT_STYLE(?, ?, ?)', [
+        2, // style
+        offset, // offset limit
+        productPerPage // limit
+      ]);
+
+      let sumProduct = data[1][0].tong,
+        pageMax = Math.ceil(sumProduct / productPerPage),
+        pageArr = generatePageArr(page, pageMax);
 
       // render
       res.render('customer/femaleProduct', {
         titleSite: 'ShopOH - Thời trang nữ',
-        products: data[0]
+        products: data[0],
+        page, // page current
+        productPerPage, // prodcut per page
+        pageArr, // page array
+        pageMax, // page max
+        sumProduct // sum product satisfy condition
       });
     }
   } catch (err) {
@@ -189,7 +282,9 @@ module.exports.searchStyle = async (req, res, next) => {
     let query = req.query, // get string query filter
       style = 0, // style (male: 1 or female: 2)
       title = '', // title site
-      styleText = req.params.style; // style in text
+      styleText = req.params.style, // style in text
+      page = +query.page || 1,
+      offset = (page - 1) * productPerPage;
 
     if (styleText === 'thoitrangnam') {
       // male style
@@ -255,6 +350,11 @@ module.exports.searchStyle = async (req, res, next) => {
       query.sort // sort by formated
     ]);
 
+    let sumProduct = data[0].length,
+      pageMax = Math.ceil(sumProduct / productPerPage),
+      pageArr = generatePageArr(page, pageMax),
+      products = data[0].slice(offset, offset + productPerPage);
+
     // Check being filter by type1?
     if (query.filterType1 !== '-1') {
       // No
@@ -262,8 +362,13 @@ module.exports.searchStyle = async (req, res, next) => {
       // render substyle view (type2)
       res.render('customer/subStyleProduct', {
         titleSite: title,
-        products: data[0],
-        query // save filter value
+        products,
+        query, // save filter value
+        page, // page current
+        pageArr, // page array
+        sumProduct, // sum product
+        productPerPage, // product per page
+        pageMax // page max
       });
     } else {
       // Yes
@@ -271,8 +376,13 @@ module.exports.searchStyle = async (req, res, next) => {
       // render style view (type1)
       res.render('customer/styleProduct', {
         titleSite: title,
-        products: data[0],
-        query // save filter value
+        products,
+        query, // save filter value
+        page, // page current
+        pageArr, // page array
+        sumProduct, // sum product
+        productPerPage, // product per page
+        pageMax // page max
       });
     }
   } catch (err) {

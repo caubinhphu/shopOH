@@ -11,7 +11,7 @@ block main
         h1 Tất cả
         hr
       #main-product-list-list.d-flex.flex-wrap.justify-content-center
-        each product in productList
+        each product in products
           .product
             a(href=`/product/${product.ma_sanpham}`)
               .bg-white
@@ -29,19 +29,19 @@ block main
             .product-same.text-center.py-1
               a.text-white(href=`/product?id=${product.ma_sanpham}&category=${product.ma_loai2}&material=${product.ma_chatlieu}`) Tìm sản phẩm tương tự
 
-    nav.mt-4
-      ul.pagination.justify-content-center
-        li.page-item
-          a.page-link(href='#')
-            span(aria-hidden='true') &laquo;
-        li.page-item
-          a.page-link(href='#') 1
-        li.page-item
-          a.page-link(href='#') 2
-        li.page-item
-          a.page-link(href='#') 3
-        li.page-item
-          a.page-link(href='#') 4
-        li.page-item
-          a.page-link(href='#')
-            span(aria-hidden='true') &raquo;
+    if (products.length === 0)
+      #product-list-main.text-center.my-3
+        img(src="/images/shop/62d2399b89039bd1dc90ca2d50d3e802.png", alt="noprodcut", width="120px")
+        big.d-block Không tìm thấy sản phẩm nào
+    else if (sumProduct > productPerPage)
+      nav.mt-4
+        ul.pagination.justify-content-center
+          li.page-item(class=page===1?'disabled':'')
+            a.page-link(href=`/product?page=${page - 1}`)
+              span(aria-hidden='true') &laquo;
+          each p in pageArr
+            li.page-item(class=p===page?'active':'')
+              a.page-link(href=`/product?page=${p}`)= p          
+          li.page-item(class=page===pageMax?'disabled':'')
+            a.page-link(href=`/product?page=${page - 1}`)
+              span(aria-hidden='true') &raquo;

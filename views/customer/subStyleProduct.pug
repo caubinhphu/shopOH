@@ -40,13 +40,16 @@ block main
                     button#btn-submit-pricetange.btn.btn-danger(type="button") ÁP DỤNG
                 button#btn-clear-filter.btn.btn-danger.mt-2(type="button") XÓA BỘ LỌC
           #product-list.col-md-9
-            #sort-product.d-flex.justyfy-content-center
-              button.btn.btn-light.mx-2.sort(type="button", data-sort="new") Mới nhất
-              button.btn.btn-light.mr-2.sort(type="button", data-sort="selling") Bán chạy
-              button.btn.btn-light.mr-2.sort(type="button", data-sort="price-increase") Giá: Từ Thấp đến Cao
-              button.btn.btn-light.mr-2.sort(type="button", data-sort="price-decease") Giá: Từ Cao đến Thấp
             if (products.length > 0)
+              div= `Loại sản phẩm: ${products[0].ten_loai0} > ${products[0].ten_loai1}`
+              #sort-product.d-flex.justyfy-content-center
+                button.btn.btn-light.mx-2.sort(type="button", data-sort="new") Mới nhất
+                button.btn.btn-light.mr-2.sort(type="button", data-sort="selling") Bán chạy
+                button.btn.btn-light.mr-2.sort(type="button", data-sort="price-increase") Giá: Từ Thấp đến Cao
+                button.btn.btn-light.mr-2.sort(type="button", data-sort="price-decease") Giá: Từ Cao đến Thấp
+              
               #product-list-main.d-flex.flex-wrap.justify-content-center
+                input(type="hidden", name="page", value=page)
                 each product in products
                   .product
                     a(href=`/product/${product.ma_sanpham}`)
@@ -66,22 +69,18 @@ block main
               #product-list-main.text-center.my-3
                 img(src="/images/shop/62d2399b89039bd1dc90ca2d50d3e802.png", alt="noprodcut", width="120px")
                 big.d-block Không tìm thấy sản phẩm nào
-            nav.mt-4
-              ul.pagination.justify-content-center
-                li.page-item
-                  a.page-link(href='#')
-                    span(aria-hidden='true') &laquo;
-                li.page-item
-                  a.page-link(href='#') 1
-                li.page-item
-                  a.page-link(href='#') 2
-                li.page-item
-                  a.page-link(href='#') 3
-                li.page-item
-                  a.page-link(href='#') 4
-                li.page-item
-                  a.page-link(href='#')
-                    span(aria-hidden='true') &raquo;
+            if (sumProduct > productPerPage && products.length > 0)
+              nav.mt-4
+                ul.pagination.justify-content-center
+                  li.page-item(class=page===1?'disabled':'')
+                    a#page-prev.page-link
+                      span &laquo;
+                  each p in pageArr
+                    li.page-item(class=p===page?'active':'')
+                      a.page-main.page-link= p          
+                  li.page-item(class=page===pageMax?'disabled':'')
+                    a#page-next.page-link
+                      span &raquo;
 
 append script
   script(src="/scripts/customer/styleProduct.js")

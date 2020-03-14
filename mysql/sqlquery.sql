@@ -58,6 +58,13 @@ values ('Áo thun', 1),
        ('Áo', 2),
 	     ('Chân váy', 2);
 
+update loai_sp1
+set hinhanh = 'https://robohash.org/quaeratdignissimosnesciunt.jpg?size=450x450&set=set1'
+where ma_loai1 = 4;
+
+alter table loai_sp1
+change column hinhanh hinhanh varchar(100) after ma_loai0;
+
 create table loai_sp2 (
 	ma_loai2 int auto_increment not null,
   ten_loai2 varchar(50) not null,
@@ -1739,7 +1746,7 @@ begin
 	select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, ma_loai2, hinhanh, ma_chatlieu
   from sanpham
   order by ngaythem desc
-  limit 20;
+  limit 24;
 end $$
 delimiter ;
 call SP_SELECT_PRODUCT_SUGGESTION();
@@ -1777,8 +1784,7 @@ begin
   select ma_sanpham, ten_sanpham, giaban, daban, khuyenmai, hinhanh
   from sanpham
   where ma_loai2 = _idcategory2 and ma_chatlieu = _idmaterial and ma_sanpham != _idpro
-  order by daban desc
-  limit 20;
+  order by daban desc;
 end $$
 delimiter ;
 
@@ -1790,8 +1796,7 @@ delimiter $$
 create procedure SP_SELECT_PRODUCT(_idpro varchar(50), _iduser varchar(50))
 begin
 	-- lấy thông tin sản phẩm
-	select sp.ma_sanpham, sp.ten_sanpham, daban, sp.giaban, sp.khuyenmai, sp.mota, sp.hinhanh,
-		    cl.ten_chatlieu, th.ten_thuonghieu, l0.ma_loai0, l0.ten_loai0, l1.ma_loai1, l1.ten_loai1,
+	select sp.*, cl.ten_chatlieu, th.ten_thuonghieu, l0.ma_loai0, l0.ten_loai0, l1.ma_loai1, l1.ten_loai1,
         l2.ma_loai2, l2.ten_loai2
   from sanpham sp join thuonghieu th on sp.ma_thuonghieu = th.ma_thuonghieu
                   join chatlieu cl on sp.ma_chatlieu = cl.ma_chatlieu
@@ -1884,22 +1889,38 @@ end $$
 delimiter ;
 call sp_deletelike(2, 1);
 
+drop procedure sp_select_product_all;
 -- get all product
 delimiter $$
-create procedure sp_select_product_all()
+create procedure sp_select_product_all(_offset int, _linmit int)
 begin
 	select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, ma_loai2, hinhanh, ma_chatlieu
-    from sanpham;
+  from sanpham
+  order by ngaythem desc
+  limit _offset, _linmit;
+
+  -- select sum product
+  select count(ma_sanpham) as tong
+  from sanpham;
 end $$
 delimiter ;
 call sp_select_product_all();
 
+drop procedure SP_SELECT_PRODUCT_STYLE;
 -- get product on category level 0
 delimiter $$
-create procedure SP_SELECT_PRODUCT_STYLE(_style int)
+create procedure SP_SELECT_PRODUCT_STYLE(_style int, _offset int, _limit int)
 begin
   -- Lấy danh sách sản phẩm
 	select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, sp.hinhanh
+  from sanpham sp join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
+                  join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
+  where l1.ma_loai0 = _style
+  order by ngaythem desc
+  limit _offset, _limit;
+
+  -- Get sum product satisfy condition
+  select count(ma_sanpham) as tong
   from sanpham sp join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
                   join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
   where l1.ma_loai0 = _style;
@@ -2007,7 +2028,7 @@ create procedure SP_SEARCH_STYLE(
 )
 begin
   set @sql = concat(
-    'select sp.ma_sanpham, sp.ten_sanpham, sp.giaban, sp.khuyenmai, sp.daban, sp.hinhanh
+    'select sp.ma_sanpham, sp.ten_sanpham, sp.giaban, sp.khuyenmai, sp.daban, sp.hinhanh, l1.ten_loai1, l0.ten_loai0
     from sanpham sp join chatlieu cl on sp.ma_chatlieu = cl.ma_chatlieu
                     join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
                     join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1

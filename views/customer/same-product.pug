@@ -25,19 +25,40 @@ block main
     #product-same-list.p-2.mt-4
       #main-product-same-list-title
         | SẢN PHẨM TƯƠNG TỰ
-      #main-product-same-list-list.d-flex.flex-wrap.justify-content-center
-        each product in productSameList
-          .product-same
-            a(href=`/product/${product.ma_sanpham}`)
-              .bg-white
-                .product-same-img
-                  img(src=`${product.hinhanh.split(',')[0]}`)
-                .product-same-title.p-2
-                  span= product.ten_sanpham
-                .product-same-price.p-2.d-flex.justify-content-between
-                  div
-                    small.text-danger ₫
-                    span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100))
-                  div
-                    span.text-dark= productMain.daban
-                    small.text-dark &nbsp;Đã bán
+      if (sameProducts.length > 0)
+        #main-product-same-list-list.d-flex.flex-wrap.justify-content-center
+          each product in sameProducts
+            .product-same
+              a(href=`/product/${product.ma_sanpham}`)
+                .bg-white
+                  .product-same-img
+                    img(src=`${product.hinhanh.split(',')[0]}`)
+                  .product-same-title.p-2
+                    span= product.ten_sanpham
+                  .product-same-price.p-2.d-flex.justify-content-between
+                    div
+                      small.text-danger ₫
+                      span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100))
+                    div
+                      span.text-dark= productMain.daban
+                      small.text-dark &nbsp;Đã bán
+      else
+        #main-product-same-list-list.text-center.my-3
+          img(src="/images/shop/62d2399b89039bd1dc90ca2d50d3e802.png", alt="noprodcut", width="120px")
+          big.d-block Không tìm thấy sản phẩm nào
+      input(type="hidden", name="page", value=page)
+      if (sumProductSame > productPerPage && sameProducts.length > 0)
+        nav.mt-4
+          ul.pagination.justify-content-center
+            li.page-item(class=page===1?'disabled':'')
+              a#page-prev.page-link
+                span &laquo;
+            each p in pageArr
+              li.page-item(class=p===page?'active':'')
+                a.page-main.page-link= p          
+            li.page-item(class=page===pageMax?'disabled':'')
+              a#page-next.page-link
+                span &raquo;
+
+append script
+  script(src="/scripts/customer/sameProduct.js")
