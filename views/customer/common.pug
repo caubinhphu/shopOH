@@ -69,22 +69,23 @@ block header
           a(href="/")
             img(src="/images/shop/logo_3.png", title="ShopOH")
         .flex-fill.mx-4.pt.d-flex.flex-column.justify-content-center
-          .input-group
-            input.form-control(type="text", name="searchInfo", placeholder="Tìm sản phẩm, thương hiệu, chất liệu")
-            .input-group-append
-              button#search-btn.btn.btn-success(type="button")
-                i.fas.fa-search
+          form(action='/product/search', method="GET", name="formSearch")
+            .input-group
+              input.form-control(type="text", name="keyword", placeholder="Tìm sản phẩm, thương hiệu, chất liệu", value=keyword?keyword:"")
+              .input-group-append
+                button#search-btn.btn.btn-success(type="submit")
+                  i.fas.fa-search
           ul.d-sm-flex.d-none
             li
-              a(href="#") Áo sơ mi nam
+              a(href="/product/search?keyword=%C3%81o%20s%C6%A1%20mi%20nam") Áo sơ mi nam
             li
-              a(href="#") Áo sơ mi nữ
+              a(href="/product/search?keyword=%C3%81o%20s%C6%A1%20mi%20n%E1%BB%AF") Áo sơ mi nữ
             li
-              a(href="#") Quần tây
+              a(href="/product/search?keyword=Qu%E1%BA%A7n%20t%C3%A2y") Quần tây
             li
-              a(href="#") Quần jeans
+              a(href="/product/search?keyword=Qu%E1%BA%A7n%20jeans") Quần jeans
             li.x
-              a(href="#") Chân váy
+              a(href="/product/search?keyword=Ch%C3%A2n%20v%C3%A1y") Chân váy
         .mx-2.d-flex.flex-column.justify-content-center
           #cart.position-root.popover__wrapper__cart
             a(href="/cart")

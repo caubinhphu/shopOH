@@ -1,7 +1,7 @@
 const querystring = require('querystring');
 
 // product / page
-const productPerPage = 24;
+const productPerPage = 36;
 
 // function generate page array
 const generatePageArr = function(pageCur, pageMax) {
@@ -51,7 +51,7 @@ module.exports.getIndex = async (req, res, next) => {
     let data = await querySQL('call SP_SELECT_PRODUCT_SUGGESTION()');
     // render pug
     res.render('customer/index', {
-      title: 'ShopOP',
+      titleSite: 'ShopOH',
       productList: data[0] // danh sách sản phẩm gợi ý
     });
   } catch (err) {
@@ -85,7 +85,7 @@ module.exports.getProducts = async (req, res, next) => {
 
       // render pug
       res.render('customer/same-product', {
-        title: 'ShopOP - Sản phẩm',
+        titleSite: 'ShopOH - Sản phẩm',
         productMain: data[0][0], // data main product
         sameProducts, // data same-product list
         pageMax, // page max
@@ -108,7 +108,7 @@ module.exports.getProducts = async (req, res, next) => {
       let pageArr = generatePageArr(page, pageMax);
       // render pug
       res.render('customer/allproduct', {
-        titleSite: 'ShopOP - Sản phẩm',
+        titleSite: 'ShopOH - Sản phẩm',
         products: data[0], // all data product
         page, // page current
         pageArr, // page array
@@ -281,7 +281,7 @@ module.exports.searchStyle = async (req, res, next) => {
   try {
     let query = req.query, // get string query filter
       style = 0, // style (male: 1 or female: 2)
-      title = '', // title site
+      titleSite = '', // title site
       styleText = req.params.style, // style in text
       page = +query.page || 1,
       offset = (page - 1) * productPerPage;
@@ -289,11 +289,11 @@ module.exports.searchStyle = async (req, res, next) => {
     if (styleText === 'thoitrangnam') {
       // male style
       style = 1;
-      title = 'ShopOH - Thời trang nam';
+      titleSite = 'ShopOH - Thời trang nam';
     } else if (styleText === 'thoitrangnu') {
       // female style
       style = 2;
-      title = 'ShopOH - Thời trang nữ';
+      titleSite = 'ShopOH - Thời trang nữ';
     }
 
     // format filter material
@@ -361,7 +361,7 @@ module.exports.searchStyle = async (req, res, next) => {
 
       // render substyle view (type2)
       res.render('customer/subStyleProduct', {
-        titleSite: title,
+        titleSite,
         products,
         query, // save filter value
         page, // page current
@@ -375,7 +375,7 @@ module.exports.searchStyle = async (req, res, next) => {
 
       // render style view (type1)
       res.render('customer/styleProduct', {
-        titleSite: title,
+        titleSite,
         products,
         query, // save filter value
         page, // page current
@@ -385,6 +385,79 @@ module.exports.searchStyle = async (req, res, next) => {
         pageMax // page max
       });
     }
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports.searchProduct = async (req, res, next) => {
+  try {
+    // get keyword search
+    let { keyword } = req.query,
+      page = +req.query.page || 1,
+      offset = (page - 1) * productPerPage;
+
+    // slice 100 chars start keyword string
+    keyword = keyword.slice(0, 100);
+
+    // convert keyword into array
+    let keywordArr = keyword.split(' ');
+
+    // get all product
+    let data = await querySQL('call SP_SELECT_PRODCUT_FOR_SEARCH()');
+    let products = data[0];
+
+    // get info product serve for search (merge into string)
+    let mapping = products.map(pro => {
+      pro.search = pro.ten_sanpham.concat(
+        ' ',
+        pro.ten_thuonghieu,
+        ' ',
+        pro.ten_chatlieu,
+        ' ',
+        pro.ten_loai2,
+        ' ',
+        pro.ten_loai1,
+        ' ',
+        pro.ten_loai0
+      ); // add field search
+      pro.count = 0; // add field count word same with keyword
+      return pro;
+    });
+
+    let mapFilter = mapping.filter(pro => {
+      let strArr = pro.search.split(' ');
+      // compare base word - word
+      for (let str of strArr) {
+        for (let key of keywordArr) {
+          // compare locale base
+          if (str.localeCompare(key, 'en', { sensitivity: 'base' }) === 0) {
+            pro.count++;
+          }
+        }
+      }
+      return pro.count > 0;
+    });
+
+    // sort desc count word same with keyword
+    mapFilter.sort((a, b) => b.count - a.count);
+
+    let sumProduct = mapFilter.length,
+      pageMax = Math.ceil(sumProduct / productPerPage),
+      pageArr = generatePageArr(page, pageMax);
+
+    mapFilter = mapFilter.slice(offset, offset + productPerPage);
+
+    res.render('customer/searchProduct', {
+      titleSite: 'Shop OH - Search',
+      products: mapFilter, // product search
+      page, // page current
+      productPerPage, // product per page
+      pageArr, // page array
+      pageMax, // page max
+      keyword, // key word search
+      sumProduct // sum product
+    });
   } catch (err) {
     next(err);
   }

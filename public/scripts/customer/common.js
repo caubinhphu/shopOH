@@ -1,10 +1,10 @@
-let deleteCartBtn = document.getElementsByClassName("delete-product-cart-btn");
-const cartBadge = document.getElementById("numProductIncart");
-const mainCart = document.getElementById("main-cart");
+let deleteCartBtn = document.getElementsByClassName('delete-product-cart-btn');
+const cartBadge = document.getElementById('numProductIncart');
+const mainCart = document.getElementById('main-cart');
 
 function addEventDeleteCartBtn() {
   for (let i = 0; i < deleteCartBtn.length; i++) {
-    deleteCartBtn[i].addEventListener("click", handleDeleteCart);
+    deleteCartBtn[i].addEventListener('click', handleDeleteCart);
   }
 }
 
@@ -21,7 +21,7 @@ function getCartProductHTML(dataCart) {
           }">
                 <div class="popover__content__image">
                   <div class="popover__content__img" style="background-image: url('${
-                    product.hinhanh.split(",")[0]
+                    product.hinhanh.split(',')[0]
                   }');"></div>
                 </div>
                 <div class="popover__content__main__cart flex-fill ml-1 d-flex">
@@ -44,7 +44,7 @@ function getCartProductHTML(dataCart) {
                       </span>` +
           (product.soluong !== 1
             ? `<small>&nbsp;x&nbsp;</small><span>${product.soluong}</span>`
-            : "") +
+            : '') +
           `</div>
                     <div class="popover__content__cart__delete text-right">
                       <button class="btn btn-link delete-product-cart-btn" type="button"
@@ -57,10 +57,10 @@ function getCartProductHTML(dataCart) {
               </div>`
         );
       } else {
-        return "";
+        return '';
       }
     })
-    .join("");
+    .join('');
 
   textHtml += `</div>
               <div class="text-right p-2 d-flex justify-content-between align-items-center">
@@ -78,7 +78,7 @@ function renderMiniCart(dataCart) {
 
     // add  event
     deleteProductCartBtn = document.getElementsByClassName(
-      "delete-product-cart-btn"
+      'delete-product-cart-btn'
     );
     addEventDeleteCartBtn();
   } else {
@@ -91,19 +91,30 @@ function renderMiniCart(dataCart) {
 }
 
 function handleDeleteCart() {
-  axios.delete("/cart", { data: { info: this.dataset.product } }).then(res => {
+  axios.delete('/cart', { data: { info: this.dataset.product } }).then(res => {
     renderMiniCart(res.data);
   });
 }
 
 addEventDeleteCartBtn();
 
-const productList = document.getElementsByClassName("product_content");
+const productList = document.getElementsByClassName('product_content');
 for (let i = 0; i < productList.length; i++) {
-  productList[i].addEventListener("click", function(event) {
-    if (event.target.localName !== "button") {
+  productList[i].addEventListener('click', function(event) {
+    if (event.target.localName !== 'button') {
       let url = event.currentTarget.dataset.target;
       location.href = url;
     }
   });
 }
+
+const formSearch = document.formSearch;
+const intputSearch = document.querySelector('input[name="keyword"]');
+// check form
+formSearch.addEventListener('submit', function(e) {
+  if (intputSearch.value.trim().length <= 0) {
+    e.preventDefault();
+  } else {
+    intputSearch.value = intputSearch.value.trim();
+  }
+});

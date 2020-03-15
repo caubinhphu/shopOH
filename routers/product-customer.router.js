@@ -17,7 +17,7 @@ router.get('/product', miniCartMiddleware, controller.getProducts);
 
 router.get('/product/amount', controller.getAmountProduct);
 
-// router.get('/product/search', controller.searchProduct);
+router.get('/product/search', miniCartMiddleware, controller.searchProduct);
 
 router.get('/product/:idProduct', miniCartMiddleware, controller.getProduct);
 

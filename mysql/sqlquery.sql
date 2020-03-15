@@ -2050,3 +2050,19 @@ call SP_SEARCH_STYLE(1, '-1', '-1', '-1', 0, 0, '(sp.giaban * (1 - sp.khuyenmai 
 
 
 select ma_loai2 from sanpham;
+
+delimiter $$
+create procedure SP_SELECT_PRODCUT_FOR_SEARCH()
+begin
+  select sp.ma_sanpham, sp.ten_sanpham, sp.giaban, sp.khuyenmai, sp.daban, sp.hinhanh,
+        th.ten_thuonghieu, cl.ten_chatlieu, l2.ten_loai2, l1.ten_loai1, l0.ten_loai0
+  from sanpham sp join thuonghieu th on sp.ma_thuonghieu = th.ma_thuonghieu
+                  join chatlieu cl on sp.ma_chatlieu = cl.ma_chatlieu
+                  join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
+                  join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
+                  join loai_sp0 l0 on l1.ma_loai0 = l0.ma_loai0
+  order by ngaythem desc;
+end $$
+delimiter ;
+
+call SP_SELECT_PRODCUT_FOR_SEARCH();
