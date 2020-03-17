@@ -54,7 +54,7 @@ block main
             #cart-total-pro-check= `Tổng tiền hàng (${cartNum.slsp} sản phẩm):`
             .text-danger.cart-price
               span ₫
-              span#cart-price= sumPrice.tongtien
+              span#cart-price= Math.round(sumPrice.tongtien)
             button.btn.btn-danger.px-1.px-md-5(type="button") Mua hàng
       else
         .d-flex.flex-column.justify-content-center.align-items-center
