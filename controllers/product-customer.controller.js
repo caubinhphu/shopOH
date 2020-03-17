@@ -128,8 +128,13 @@ module.exports.getProduct = async (req, res, next) => {
     // get id main product
     let { idProduct } = req.params;
 
+    let idUser = req.signedCookies.uuid || '-1';
+
     // get info main product
-    let data = await querySQL('call SP_SELECT_PRODUCT(?, ?)', [idProduct, '1']);
+    let data = await querySQL('call SP_SELECT_PRODUCT(?, ?)', [
+      idProduct,
+      idUser
+    ]);
 
     // format category;
     let category0 = data[0][0].ma_loai0 === 1 ? 'thoitrangnam' : 'thoitrangnu';
@@ -189,7 +194,10 @@ module.exports.postAddLike = async (req, res, next) => {
     let { idProduct } = req.params;
 
     // add like anh return amount like
-    let data = await querySQL('call SP_ADDLIKE (?, ?)', [idProduct, '1']);
+    let data = await querySQL('call SP_ADDLIKE (?, ?)', [
+      idProduct,
+      req.signedCookies.uuid
+    ]);
 
     // send amount like to client
     res.json(data[0][0]);
@@ -205,7 +213,10 @@ module.exports.deleteLike = async (req, res, next) => {
     let { idProduct } = req.params;
 
     // remove like and return amount like
-    let data = await querySQL('call SP_DELETELIKE(?, ?)', [idProduct, 1]);
+    let data = await querySQL('call SP_DELETELIKE(?, ?)', [
+      idProduct,
+      req.signedCookies.uuid
+    ]);
 
     // send amount like to client
     res.json(data[0][0]);

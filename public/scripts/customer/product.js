@@ -39,17 +39,25 @@ likeButton.addEventListener('click', () => {
     // chưa like -> like
     // requset post add like int csdl
     axios.post(`${location.href}/like`).then(res => {
-      // đổi icon
-      likeIcon.classList.replace('far', 'fas');
-      textLike.innerHTML = ` Đã thích (${res.data.like})`;
+      if (/application\/json/.test(res.headers['content-type'])) {
+        // đổi icon
+        likeIcon.classList.replace('far', 'fas');
+        textLike.innerHTML = ` Đã thích (${res.data.like})`;
+      } else if (/text\/html/.test(res.headers['content-type'])) {
+        location.href = 'http://localhost:3000/login';
+      }
     });
   } else if (likeIcon.classList.item(2) === 'fas') {
     // đã like -> bỏ like
     // request remove like in csdl
     axios.delete(`${location.href}/like`).then(res => {
-      // đổi icon
-      likeIcon.classList.replace('fas', 'far');
-      textLike.innerHTML = ` Đã thích (${res.data.like})`;
+      if (/application\/json/.test(res.headers['content-type'])) {
+        // đổi icon
+        likeIcon.classList.replace('fas', 'far');
+        textLike.innerHTML = ` Đã thích (${res.data.like})`;
+      } else if (/text\/html/.test(res.headers['content-type'])) {
+        location.href = 'http://localhost:3000/login';
+      }
     });
   }
 });
@@ -102,10 +110,14 @@ addToCartBtn.addEventListener('click', function() {
         quantity: quantityInput.value
       })
       .then(res => {
-        renderMiniCart(res.data);
-        $('#alert-add-cart-success')
-          .fadeIn(1000)
-          .fadeOut(1000);
+        if (/application\/json/.test(res.headers['content-type'])) {
+          renderMiniCart(res.data);
+          $('#alert-add-cart-success')
+            .fadeIn(1000)
+            .fadeOut(1000);
+        } else if (/text\/html/.test(res.headers['content-type'])) {
+          location.href = 'http://localhost:3000/login';
+        }
       });
   }
 });

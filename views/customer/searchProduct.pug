@@ -27,8 +27,6 @@ block main
                   div
                     span.text-dark= `${product.daban}`
                     small.text-dark &nbsp;Đã bán
-            .product-same.text-center.py-1
-              a.text-white(href=`/product?id=${product.ma_sanpham}&category=${product.ma_loai2}&material=${product.ma_chatlieu}`) Tìm sản phẩm tương tự
 
     if (products.length === 0)
       #product-list-main.text-center.my-3

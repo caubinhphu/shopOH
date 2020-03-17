@@ -28,20 +28,24 @@ block header
                   span &nbsp;Thông báo
                   .position-child
                     span.badge.badge-pill.badge-light 0
-                //- .popover__content.d-none
-                //-   p.popover__message Thông báo mới nhận
-                //-   .popover__content__main.p-2.d-flex
-                //-     .popover__content__img(style='background-image: url("/images/shop/917385.jpg")')
-                //-     .popover__content__thongbao
-                //-       .popover__content__thongbao__title Tên thông báo
-                //-       .popover__content__thongbao__content Nội dung thông báo
-                .popover__content.d-md-flex.flex-column.d-none
-                  .text-center.flex-fill.d-flex.flex-column.justify-content-center.py-5
-                    .popover__content__img.mx-auto(style='background-image: url("/images/shop/notification.png"); height: 100px')
-                    .text-danger Đăng nhập để xem thông báo
-                  .d-flex
-                    button.btn.btn-light.flex-fill(type="button", data-toggle='modal', data-target='#header-dangky') Đăng ký
-                    button.btn.btn-light.flex-fill(type="button", data-toggle='modal', data-target='#header-dangnhap') Đăng nhập
+                if (user)
+                  .popover__content
+                    p.popover__message Thông báo mới nhận
+                    .popover__content__main.p-2.d-flex
+                      .popover__content__img(style='background-image: url("/images/shop/917385.jpg")')
+                      .popover__content__thongbao
+                        .popover__content__thongbao__title Tên thông báo
+                        .popover__content__thongbao__content Nội dung thông báo
+                else
+                  .popover__content.d-md-flex.flex-column.d-none
+                    .text-center.flex-fill.d-flex.flex-column.justify-content-center.py-5
+                      .popover__content__img.mx-auto(style='background-image: url("/images/shop/notification.png"); height: 100px')
+                      .text-danger Đăng nhập để xem thông báo
+                    .d-flex
+                      //- button.btn.btn-light.flex-fill(type="button", data-toggle='modal', data-target='#header-dangky') Đăng ký
+                      //- button.btn.btn-light.flex-fill(type="button", data-toggle='modal', data-target='#header-dangnhap') Đăng nhập
+                      a.btn.btn-light.flex-fill(role="button", href="/login/register") Đăng ký
+                      a.btn.btn-light.flex-fill(role="button", href="/login") Đăng nhập
             li
               a.d-flex(href='#')
                 i.far.fa-question-circle

@@ -1,4 +1,7 @@
 const express = require('express');
+const csurf = require('csurf');
+
+const csrfProtection = csurf({ cookie: true, signed: true });
 
 // controller
 const controller = require('../controllers/auth.controller');
@@ -7,11 +10,11 @@ const controller = require('../controllers/auth.controller');
 const router = express.Router();
 
 // router
-router.get('/', controller.getLogin);
+router.get('/', csrfProtection, controller.getLogin);
 
-router.get('/register', controller.getRegister);
+router.get('/register', csrfProtection, controller.getRegister);
 
-router.post('/', controller.postLogin);
+router.post('/', csrfProtection, controller.postLogin);
 
 router.get('/logout', controller.getLogout);
 

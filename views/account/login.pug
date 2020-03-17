@@ -10,6 +10,8 @@ block content
         h4#exampleModalLabel-dangnhap.modal-title Đăng nhập
         a(href="/login/register").text-danger Đăng ký
       form(action="/login", method="POST", name="formLogin")
+        input(type="hidden", name="referer", value=referer)
+        input(type="hidden", name="_csrf", value=csrfToken)
         .form-group
           label(for="username-dangnhap") Tên tài khoản
           input#username-dangnhap.form-control(type="text" placeholder="Tên tài khoản" name="account" required)

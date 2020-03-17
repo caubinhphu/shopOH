@@ -277,3 +277,7 @@ body {
 .popover__content__main__cart__content__right {
   width: 35%;
 }
+
+.popover__content a {
+  color: #ee4d2d !important;
+}

@@ -5,8 +5,11 @@ const Joi = require('@hapi/joi'); // validate body form
 const querySQL = require('../configure/querySQL');
 
 module.exports.getLogin = (req, res) => {
+  let referer = req.headers.referer || '/';
   res.render('account/login', {
-    titleSite: 'ShopOH - Login'
+    titleSite: 'ShopOH - Login',
+    referer,
+    csrfToken: req.csrfToken()
   });
 };
 
@@ -17,13 +20,13 @@ module.exports.getRegister = (req, res) => {
 };
 
 module.exports.getLogout = (req, res) => {
-  res.clearCookie();
-  res.redirect(req.headers.referer || '/');
+  res.clearCookie('uuid');
+  res.redirect('/');
 };
 
 module.exports.postLogin = async (req, res, next) => {
   // get data login
-  let { account, password } = req.body;
+  let { account, password, referer } = req.body;
 
   // validation
   const schema = Joi.object({
@@ -59,6 +62,7 @@ module.exports.postLogin = async (req, res, next) => {
   // login successful => rederect page current
   res.cookie('uuid', user.ma_khachhang, { signed: true });
 
-  let rederect = req.headers.referer || '/';
-  res.redirect(rederect);
+  res.clearCookie('_csrf');
+
+  res.redirect(referer);
 };

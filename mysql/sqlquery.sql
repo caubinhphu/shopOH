@@ -2090,3 +2090,5 @@ delimiter ;
 update khachhang
 set matkhau = '$2b$10$oz7iLbheWh2OURXtEz0EOOxwfZJDf/80OGy1I/ym8gqLFsb3/AoXe'
 where taikhoan = 'caubinhphu'
+
+select * from khachhang;

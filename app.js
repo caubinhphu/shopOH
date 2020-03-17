@@ -11,6 +11,10 @@ const customerProductRoute = require('./routers/product-customer.router');
 const customerCartRoute = require('./routers/cart-customer.router');
 const authRouter = require('./routers/auth.router');
 
+// middleware
+const authMiddleware = require('./middlewares/auth.middleware');
+const usernameMiddleware = require('./middlewares/usermame.middleware');
+
 // init app
 const app = express();
 
@@ -32,10 +36,10 @@ app.use(cookieParser(process.env.SECRET_COOKIE));
 app.use(morgan('dev'));
 
 // route
-app.use('/', customerProductRoute);
+app.use('/', usernameMiddleware, customerProductRoute);
 app.use('/login', authRouter);
-app.use('/account', customerAccountRoute);
-app.use('/cart', customerCartRoute);
+app.use('/account', authMiddleware, usernameMiddleware, customerAccountRoute);
+app.use('/cart', authMiddleware, usernameMiddleware, customerCartRoute);
 
 // handle errors
 app.use((err, req, res, next) => {

@@ -8,6 +8,7 @@ const miniCartMiddleware = require('../middlewares/miniCart.middleware');
 
 // filter list middleware
 const filterListMiddleware = require('../middlewares/filter-list.middleware');
+const authMiddleware = require('../middlewares/auth.middleware');
 
 const router = express.Router();
 
@@ -28,9 +29,13 @@ router.get(
   controller.searchStyle
 );
 
-router.post('/product/:idProduct/like', controller.postAddLike);
+router.post('/product/:idProduct/like', authMiddleware, controller.postAddLike);
 
-router.delete('/product/:idProduct/like', controller.deleteLike);
+router.delete(
+  '/product/:idProduct/like',
+  authMiddleware,
+  controller.deleteLike
+);
 
 router.get(
   '/product/style/:style',
