@@ -46,22 +46,27 @@ block header
               a.d-flex(href='#')
                 i.far.fa-question-circle
                 span Trợ giúp
-            li
-              span(data-toggle='modal', data-target='#header-dangky') Đăng ký
-            li
-              span(data-toggle='modal', data-target='#header-dangnhap') Đăng nhập
-            //- li
-            //-   .popover__wrapper__user
-            //-     a.d-flex(href='#')
-            //-       img(src="/images/917385.jpg", width="20px", height="auto")
-            //-       span &nbsp;Tên user
-            //-     .popover__content__user.d-none.d-md-inline
-            //-       .popover__content__main__user.p-2.d-flex
-            //-         a.color-default(href="#") Tài khoản của tôi
-            //-       .popover__content__main__user.p-2.d-flex
-            //-         a.color-default(href="#") Đơn mua
-            //-       .popover__content__main__user.p-2.d-flex
-            //-         a.color-default(href="#") Đăng xuất
+            if (user)
+              li
+                .popover__wrapper__user
+                  a.d-flex(href='#')
+                    img(src="/images/shop/nocart.png", width="20px", height="auto")
+                    span= ` ${user}`
+                  .popover__content__user.d-none.d-md-inline
+                    .popover__content__main__user.p-2.d-flex
+                      a.color-default(href="#") Tài khoản của tôi
+                    .popover__content__main__user.p-2.d-flex
+                      a.color-default(href="#") Đơn mua
+                    .popover__content__main__user.p-2.d-flex
+                      a.color-default(href="/login/logout") Đăng xuất
+            else
+              li
+                //- span(data-toggle='modal', data-target='#header-dangky') Đăng ký
+                a(href="/login/register") Đăng ký
+              li
+                //- span(data-toggle='modal', data-target='#header-dangnhap') Đăng nhập
+                a(href="/login") Đăng nhập
+            
             
 
       #header-middle.d-flex.mt-3.py-2
@@ -127,43 +132,43 @@ block header
               
       #header-bottom
 
-      #header-dangky.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel-dangky', aria-hidden='true')
-        .modal-dialog(role='document')
-          .modal-content
-            .modal-header
-              h4#exampleModalLabel-dangky.modal-title Đăng ký
-              p.text-danger(data-toggle='modal', data-target='#header-dangnhap' data-dismiss='modal') Đăng nhập
-            .modal-body
-              form(action="#", method="post")
-                .form-group
-                  label(for="username-dangky") Tên tài khoản
-                  input#username-dangky.form-control(type="text" placeholder="Tên tài khoản" name="username" required)
-                .form-group
-                  label(for="password-dangky") Mật khẩu
-                  input#password-dangky.form-control(type="password" placeholder="Mật khẩu" name="password" required)
-                .form-group
-                  label(for="password2-dangky") Nhập lại mật khẩu
-                  input#password2-dangky.form-control(type="password" placeholder="Mật khẩu" name="password2" required)
-            .modal-footer
-              button.btn.btn-light(type='button', data-dismiss='modal') TRỞ LẠI
-              button.btn.btn-danger(type='button') ĐĂNG KÝ
-      #header-dangnhap.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel-dangnhap', aria-hidden='true')
-        .modal-dialog(role='document')
-          .modal-content
-            .modal-header
-              h4#exampleModalLabel-dangnhap.modal-title Đăng nhập
-              p.text-danger(data-toggle='modal', data-target='#header-dangky' data-dismiss='modal') Đăng ký
-            .modal-body
-              form(action="#", method="post")
-                .form-group
-                  label(for="username-dangnhap") Tên tài khoản
-                  input#username-dangnhap.form-control(type="text" placeholder="Tên tài khoản" name="username" required)
-                .form-group
-                  label(for="password-dangnhap") Mật khẩu
-                  input#password-dangnhap.form-control(type="password" placeholder="Mật khẩu" name="password" required)
-            .modal-footer
-              button.btn.btn-light(type='button', data-dismiss='modal') TRỞ LẠI
-              button.btn.btn-danger(type='button') ĐĂNG NHẬP
+      //- #header-dangky.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel-dangky', aria-hidden='true')
+      //-   .modal-dialog(role='document')
+      //-     .modal-content
+      //-       .modal-header
+      //-         h4#exampleModalLabel-dangky.modal-title Đăng ký
+      //-         p.text-danger(data-toggle='modal', data-target='#header-dangnhap' data-dismiss='modal') Đăng nhập
+      //-       .modal-body
+      //-         form(action="/login/register", method="post")
+      //-           .form-group
+      //-             label(for="username-dangky") Tên tài khoản
+      //-             input#username-dangky.form-control(type="text" placeholder="Tên tài khoản" name="account" required)
+      //-           .form-group
+      //-             label(for="password-dangky") Mật khẩu
+      //-             input#password-dangky.form-control(type="password" placeholder="Mật khẩu" name="password" required)
+      //-           .form-group
+      //-             label(for="password2-dangky") Nhập lại mật khẩu
+      //-             input#password2-dangky.form-control(type="password" placeholder="Mật khẩu" name="password2" required)
+      //-           .modal-footer
+      //-             button.btn.btn-light(type='button', data-dismiss='modal') TRỞ LẠI
+      //-             button.btn.btn-danger(type='button') ĐĂNG KÝ
+      //- #header-dangnhap.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel-dangnhap', aria-hidden='true')
+      //-   .modal-dialog(role='document')
+      //-     .modal-content
+      //-       .modal-header
+      //-         h4#exampleModalLabel-dangnhap.modal-title Đăng nhập
+      //-         p.text-danger(data-toggle='modal', data-target='#header-dangky' data-dismiss='modal') Đăng ký
+      //-       .modal-body
+      //-         form(action="/login", method="POST", name="formLogin")
+      //-           .form-group
+      //-             label(for="username-dangnhap") Tên tài khoản
+      //-             input#username-dangnhap.form-control(type="text" placeholder="Tên tài khoản" name="account" required)
+      //-           .form-group
+      //-             label(for="password-dangnhap") Mật khẩu
+      //-             input#password-dangnhap.form-control(type="password" placeholder="password" name="password" required)
+      //-           .modal-footer
+      //-             button.btn.btn-light(type='button', data-dismiss='modal') TRỞ LẠI
+      //-             button.btn.btn-danger(type='submit') ĐĂNG NHẬP
 block content
   block main
 

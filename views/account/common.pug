@@ -1,0 +1,73 @@
+extends ../common
+
+append style
+  link(rel="stylesheet", href="/styles/customer/common.css")
+  style
+    |#form-area {
+    | background-color: #f5f5f5; 
+    |}
+    |#form {
+    | max-width: 400px;
+    | background-color: white;
+    | padding: 10px;
+    |}
+    |#header {
+    | background-color: #ea4d2b;
+    |}
+    |#title-form > a {
+    | cursor: pointer;  
+    |}
+    |#title-form > a:hover {
+    | text-decoration: none;
+    |}
+    |h1 {
+    | color: white;
+    |}
+block header
+  #header.py-3.d-flex.align-items-center.justify-content-center
+    a(href="/")
+      img(src="/images/shop/logo_3.png", title="ShopOH")
+    block title-form
+
+block footer
+  #footer.px-5.pt-5.pb-2
+    .row
+      .col-md.text-center
+        b CHĂM SÓC KHÁCH HÀNG
+        ul
+          li
+            a(href="#") Trung tâm trợ giúp
+          li
+            a(href="#") Hướng dẫn mua hàng
+          li
+            a(href="#") Trả hàng &amp; Hoàn tiền
+          li
+            a(href="#") Chăm sóc khách hàng
+          li
+            a(href="#") Chính sách bảo hành
+      .col-md.text-center.mt-md-0.mt-2
+        b VỀ SHOPOH
+        ul
+          li
+            a(href="#") Giới thiệu về ShopOH
+          li
+            a(href="#") Điều khoản ShopOH
+          li
+            a(href="#") Chính sách bảo mật
+          li
+            a(href="#") Chính hãng
+          li
+            a(href="#") Kênh bán hàng
+      .col-md.text-center.mt-md-0.mt-2
+        b LIÊN HỆ VỚI CHÚNG TÔI
+        ul
+          li
+            a(href="#")
+              i.fab.fa-facebook
+              span &nbsp;Facebook
+          li
+            a(href="#")
+              i.fab.fa-instagram
+              span &nbsp;Instagram
+    hr
+    p © 2020 ShopOH. Tất cả các quyền được bảo lưu.

@@ -1,0 +1,20 @@
+extends ./common
+
+block title-form
+  h1.mb-0.ml-2 Login
+
+block content
+  #form-area.py-4
+    #form.mx-auto
+      #title-form.d-flex.align-items-center.justify-content-between
+        h4#exampleModalLabel-dangnhap.modal-title Đăng nhập
+        a(href="/login/register").text-danger Đăng ký
+      form(action="/login", method="POST", name="formLogin")
+        .form-group
+          label(for="username-dangnhap") Tên tài khoản
+          input#username-dangnhap.form-control(type="text" placeholder="Tên tài khoản" name="account" required)
+        .form-group
+          label(for="password-dangnhap") Mật khẩu
+          input#password-dangnhap.form-control(type="password" placeholder="Password" name="password" required)
+        .text-right
+          button.btn.btn-danger(type='submit') ĐĂNG NHẬP

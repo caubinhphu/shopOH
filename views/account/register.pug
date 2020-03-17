@@ -1,0 +1,23 @@
+extends ./common
+
+block title-form
+  h1.mb-0.ml-2 Sign up
+
+block content
+  #form-area.py-4
+    #form.mx-auto
+      #title-form.d-flex.align-items-center.justify-content-between
+        h4#exampleModalLabel-dangky.modal-title Đăng ký
+        a(href="/login").text-danger Đăng nhập
+      form(action="/login/register", method="post")
+        .form-group
+          label(for="username-dangky") Tên tài khoản
+          input#username-dangky.form-control(type="text" placeholder="Tên tài khoản" name="account" required)
+        .form-group
+          label(for="password-dangky") Mật khẩu
+          input#password-dangky.form-control(type="password" placeholder="Mật khẩu" name="password" required)
+        .form-group
+          label(for="password2-dangky") Nhập lại mật khẩu
+          input#password2-dangky.form-control(type="password" placeholder="Nhập lại mật khẩu" name="password2" required)
+        .text-right
+          button.btn.btn-danger(type='button') ĐĂNG KÝ

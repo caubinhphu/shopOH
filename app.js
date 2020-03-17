@@ -9,6 +9,7 @@ const morgan = require('morgan');
 const customerAccountRoute = require('./routers/personal-customer.router');
 const customerProductRoute = require('./routers/product-customer.router');
 const customerCartRoute = require('./routers/cart-customer.router');
+const authRouter = require('./routers/auth.router');
 
 // init app
 const app = express();
@@ -32,6 +33,7 @@ app.use(morgan('dev'));
 
 // route
 app.use('/', customerProductRoute);
+app.use('/login', authRouter);
 app.use('/account', customerAccountRoute);
 app.use('/cart', customerCartRoute);
 

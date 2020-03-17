@@ -2066,3 +2066,27 @@ end $$
 delimiter ;
 
 call SP_SELECT_PRODCUT_FOR_SEARCH();
+
+drop procedure CHECK_ACCOUNT;
+-- check account exists
+delimiter $$
+create procedure CHECK_ACCOUNT(_account varchar(50))
+begin
+  select * from khachhang where taikhoan = _account;
+end $$
+delimiter ;
+
+call CHECK_ACCOUNT('\' or 1 = 1;--');
+select * from khachhang where taikhoan = '1' or 1 = 1;--;
+
+
+delimiter $$
+create procedure CHECK_ACCOUNT_ID(_idUser varchar(50))
+begin
+  select * from khachhang where ma_khachhang = _idUser;
+end $$
+delimiter ;
+
+update khachhang
+set matkhau = '$2b$10$oz7iLbheWh2OURXtEz0EOOxwfZJDf/80OGy1I/ym8gqLFsb3/AoXe'
+where taikhoan = 'caubinhphu'
