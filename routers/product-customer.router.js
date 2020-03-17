@@ -31,12 +31,6 @@ router.get(
 
 router.post('/product/:idProduct/like', authMiddleware, controller.postAddLike);
 
-router.delete(
-  '/product/:idProduct/like',
-  authMiddleware,
-  controller.deleteLike
-);
-
 router.get(
   '/product/style/:style',
   miniCartMiddleware,

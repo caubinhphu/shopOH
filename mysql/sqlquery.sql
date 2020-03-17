@@ -2092,3 +2092,21 @@ set matkhau = '$2b$10$oz7iLbheWh2OURXtEz0EOOxwfZJDf/80OGy1I/ym8gqLFsb3/AoXe'
 where taikhoan = 'caubinhphu'
 
 select * from khachhang;
+
+drop procedure MODIFY_LIKE;
+delimiter $$
+create procedure MODIFY_LIKE(_idpro varchar(50), _iduser varchar(50))
+begin
+  if exists (select * from likesanpham where ma_khachhang = _iduser and ma_sanpham = _idpro)
+  then delete from likesanpham
+        where ma_khachhang = _iduser and ma_sanpham = _idpro;
+  else insert into likesanpham (ma_khachhang, ma_sanpham)
+        values (_iduser, _idpro);
+  end if;
+
+  -- lấy tổng like
+  select count(*) as `like`
+  from likesanpham
+  where ma_sanpham = _idpro;
+end $$
+delimiter ;

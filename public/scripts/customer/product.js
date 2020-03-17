@@ -35,31 +35,20 @@ const likeIcon = document.getElementById('product-like-icon');
 const textLike = document.getElementById('product-like-text');
 
 likeButton.addEventListener('click', () => {
-  if (likeIcon.classList.item(2) === 'far') {
-    // chưa like -> like
-    // requset post add like int csdl
-    axios.post(`${location.href}/like`).then(res => {
-      if (/application\/json/.test(res.headers['content-type'])) {
-        // đổi icon
+  axios.post(`${location.href}/like`).then(res => {
+    if (/application\/json/.test(res.headers['content-type'])) {
+      // đổi icon
+      if (likeIcon.classList.contains('far')) {
         likeIcon.classList.replace('far', 'fas');
-        textLike.innerHTML = ` Đã thích (${res.data.like})`;
-      } else if (/text\/html/.test(res.headers['content-type'])) {
-        location.href = 'http://localhost:3000/login';
-      }
-    });
-  } else if (likeIcon.classList.item(2) === 'fas') {
-    // đã like -> bỏ like
-    // request remove like in csdl
-    axios.delete(`${location.href}/like`).then(res => {
-      if (/application\/json/.test(res.headers['content-type'])) {
-        // đổi icon
+      } else if (likeIcon.classList.contains('fas')) {
         likeIcon.classList.replace('fas', 'far');
-        textLike.innerHTML = ` Đã thích (${res.data.like})`;
-      } else if (/text\/html/.test(res.headers['content-type'])) {
-        location.href = 'http://localhost:3000/login';
       }
-    });
-  }
+
+      textLike.innerHTML = ` Đã thích (${res.data.like})`;
+    } else if (/text\/html/.test(res.headers['content-type'])) {
+      location.href = 'http://localhost:3000/login';
+    }
+  });
 });
 
 inputTextAmount.addEventListener('input', function() {

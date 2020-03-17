@@ -187,33 +187,14 @@ module.exports.getAmountProduct = async (req, res, next) => {
   }
 };
 
-// add like
+// modify like
 module.exports.postAddLike = async (req, res, next) => {
   try {
     // get id product
     let { idProduct } = req.params;
 
     // add like anh return amount like
-    let data = await querySQL('call SP_ADDLIKE (?, ?)', [
-      idProduct,
-      req.signedCookies.uuid
-    ]);
-
-    // send amount like to client
-    res.json(data[0][0]);
-  } catch (err) {
-    next(err);
-  }
-};
-
-// remove like
-module.exports.deleteLike = async (req, res, next) => {
-  try {
-    // get id product
-    let { idProduct } = req.params;
-
-    // remove like and return amount like
-    let data = await querySQL('call SP_DELETELIKE(?, ?)', [
+    let data = await querySQL('call MODIFY_LIKE (?, ?)', [
       idProduct,
       req.signedCookies.uuid
     ]);
