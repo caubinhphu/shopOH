@@ -1,9 +1,14 @@
 const bcrypt = require('bcrypt');
-const Joi = require('@hapi/joi'); // validate body form
-const uuid = require('uuid');
+const { v4 } = require('uuid');
 
 // query SQL function
 const querySQL = require('../configure/querySQL');
+
+// validate
+const {
+  loginValidation,
+  registerValidation
+} = require('../validates/auth.validate');
 
 // get login
 module.exports.getLogin = (req, res) => {
@@ -43,17 +48,7 @@ module.exports.postLogin = async (req, res, next) => {
   let { account, password, referer } = req.body;
 
   // validation data
-  // create schema obj validate
-  const schema = Joi.object({
-    account: Joi.string()
-      .pattern(/^\w{6,24}$/)
-      .required(),
-    password: Joi.string()
-      .min(4)
-      .required()
-  });
-  // validate => get error
-  let { error } = schema.validate({ account, password });
+  let { error } = loginValidation({ account, password });
 
   // error => display view
   let errorText = null;
@@ -117,19 +112,8 @@ module.exports.postRegister = async (req, res, next) => {
   let { account, password, password2 } = req.body;
 
   // validation data
-  // create chema obj
-  const schema = Joi.object({
-    account: Joi.string()
-      .pattern(/^\w{6,24}$/)
-      .required(),
-    password: Joi.string()
-      .min(6)
-      .required(),
-    password2: Joi.ref('password')
-  });
-  // validate
   // get error validate
-  let { error } = schema.validate({ account, password, password2 });
+  let { error } = registerValidation({ account, password, password2 });
 
   let errorTexts = [];
 
@@ -169,7 +153,7 @@ module.exports.postRegister = async (req, res, next) => {
   } else {
     // pass => insert db
     // generate idUser
-    let idUser = uuid.v4();
+    let idUser = v4();
 
     // hash password
     let salt = await bcrypt.genSalt(10);
