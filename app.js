@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const flash = require('connect-flash');
+const session = require('express-session');
 
 // Require router
 const customerAccountRoute = require('./routers/personal-customer.router');
@@ -35,6 +36,13 @@ app.use(cookieParser(process.env.SECRET_COOKIE));
 
 // morgan logger
 app.use(morgan('dev'));
+app.use(
+  session({
+    secret: 'sadfalsd&^#$SDFGSDsdf*%&HDSARF',
+    resave: false,
+    saveUninitialized: true
+  })
+);
 app.use(flash());
 
 // route

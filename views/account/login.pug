@@ -10,6 +10,12 @@ block content
         span= errorText
         button.close(type='button', data-dismiss='alert', aria-label='Close')
           span(aria-hidden='true') &times;
+    if (successMgs.length > 0)
+      each mgs in successMgs
+        .alert.alert-success.alert-dismissible.fade.show.mx-auto(role='alert', style="max-width: 400px")
+          span= mgs
+          button.close(type='button', data-dismiss='alert', aria-label='Close')
+            span(aria-hidden='true') &times;
     #form.mx-auto
       #title-form.d-flex.align-items-center.justify-content-between
         h4#exampleModalLabel-dangnhap.modal-title Đăng nhập
