@@ -128,7 +128,7 @@ module.exports.getProduct = async (req, res, next) => {
     // get id main product
     let { idProduct } = req.params;
 
-    let idUser = req.signedCookies.uuid || '-1';
+    let idUser = req.userId || '-1';
 
     // get info main product
     let data = await querySQL('call SP_SELECT_PRODUCT(?, ?)', [
@@ -196,7 +196,7 @@ module.exports.postAddLike = async (req, res, next) => {
     // add like anh return amount like
     let data = await querySQL('call MODIFY_LIKE (?, ?)', [
       idProduct,
-      req.signedCookies.uuid
+      req.userId
     ]);
 
     // send amount like to client

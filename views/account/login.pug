@@ -5,6 +5,11 @@ block title-form
 
 block content
   #form-area.py-4
+    if (errorText)
+      .alert.alert-danger.alert-dismissible.fade.show.mx-auto(role='alert', style="max-width: 400px")
+        span= errorText
+        button.close(type='button', data-dismiss='alert', aria-label='Close')
+          span(aria-hidden='true') &times;
     #form.mx-auto
       #title-form.d-flex.align-items-center.justify-content-between
         h4#exampleModalLabel-dangnhap.modal-title Đăng nhập
@@ -14,9 +19,9 @@ block content
         input(type="hidden", name="_csrf", value=csrfToken)
         .form-group
           label(for="username-dangnhap") Tên tài khoản
-          input#username-dangnhap.form-control(type="text" placeholder="Tên tài khoản" name="account" required)
+          input#username-dangnhap.form-control(type="text", placeholder="Tên tài khoản", name="account", required, value=account?account:'')
         .form-group
           label(for="password-dangnhap") Mật khẩu
-          input#password-dangnhap.form-control(type="password" placeholder="Password" name="password" required)
+          input#password-dangnhap.form-control(type="password", placeholder="Password", name="password", required)
         .text-right
           button.btn.btn-danger(type='submit') ĐĂNG NHẬP

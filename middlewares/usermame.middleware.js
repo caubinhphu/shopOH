@@ -10,6 +10,7 @@ module.exports = async (req, res, next) => {
     if (user) {
       res.locals.user = user.taikhoan;
       res.locals.avatarUser = user.avatar;
+      req.userId = user.ma_khachhang;
     }
   }
   next();

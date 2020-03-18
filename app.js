@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
+const flash = require('connect-flash');
 
 // Require router
 const customerAccountRoute = require('./routers/personal-customer.router');
@@ -34,6 +35,7 @@ app.use(cookieParser(process.env.SECRET_COOKIE));
 
 // morgan logger
 app.use(morgan('dev'));
+app.use(flash());
 
 // route
 app.use('/', usernameMiddleware, customerProductRoute);

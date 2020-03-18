@@ -2110,3 +2110,12 @@ begin
   where ma_sanpham = _idpro;
 end $$
 delimiter ;
+
+drop procedure ADD_USER;
+delimiter $$
+create procedure ADD_USER(_iduser varchar(50), _account varchar(50), _password varchar(100))
+begin
+  insert into khachhang (ma_khachhang, taikhoan, matkhau)
+  values (_iduser, _account, _password);
+end $$
+delimiter ;

@@ -16,6 +16,8 @@ router.get('/register', csrfProtection, controller.getRegister);
 
 router.post('/', csrfProtection, controller.postLogin);
 
+router.post('/register', csrfProtection, controller.postRegister);
+
 router.get('/logout', controller.getLogout);
 
 // export router
