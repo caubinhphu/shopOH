@@ -10,6 +10,9 @@ module.exports.profileValidate = data => {
     birthday: Joi.date()
       .min('1-1-1900')
       .max('now')
+      .allow(''),
+    phone: Joi.string()
+      .pattern(/^\d{9,12}$/)
       .allow('')
   });
 

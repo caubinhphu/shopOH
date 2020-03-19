@@ -79,10 +79,10 @@ module.exports.getAddress = (req, res, next) => {
 module.exports.postProfile = async (req, res, next) => {
   try {
     // get data form
-    let { username, gender, birthday } = req.body;
+    let { username, gender, birthday, phone } = req.body;
 
     // validate
-    let { error } = profileValidate({ username, gender, birthday });
+    let { error } = profileValidate({ username, gender, birthday, phone });
     let errorTexts = [];
 
     // error validate
@@ -95,6 +95,8 @@ module.exports.postProfile = async (req, res, next) => {
         errorTexts.push('Giới tính không hợp lệ');
       } else if (error.details[0].path[0] === 'birthday') {
         errorTexts.push('Ngày sinh không hợp lệ');
+      } else if (error.details[0].path[0] === 'phone') {
+        errorTexts.push('Số điện thoại không hợp lệ');
       }
     }
 
@@ -106,11 +108,12 @@ module.exports.postProfile = async (req, res, next) => {
 
     // pass validate
     // update db
-    await querySQL('call UPDATE_PROFILE(?, ?, ?, ?)', [
+    await querySQL('call UPDATE_PROFILE(?, ?, ?, ?, ?)', [
       req.userId,
       username,
       gender,
-      birthday
+      birthday,
+      phone
     ]);
 
     req.flash('success_mgs', 'Cập nhật thông tin thành công');

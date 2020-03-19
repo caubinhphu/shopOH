@@ -31,10 +31,9 @@ block main-personal
             label Email
             div= account.email || 'Chưa thiết lập'
             button.btn.btn-link.btn-change(type="button") Thay đổi
-          .form-group.d-flex
-            label Số điện thoại
-            div= account.dienthoai || 'Chưa thiết lập'
-            button.btn.btn-link.btn-change(type="button") Thay đổi
+          .form-group.d-flex.align-items-center
+            label.mb-0(for='phone') Số điện thoại
+            input#name.form-control(type='text', name="phone", placehodle="Nhập số điện thoại", value=account.dienthoai||"")
           .form-group.d-flex
             label Tên tài khoản
             b= account.taikhoan

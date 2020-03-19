@@ -2127,10 +2127,14 @@ set avatar = '/images/users/default-avatar.jpg';
 
 drop procedure UPDATE_PROFILE;
 delimiter $$
-create procedure UPDATE_PROFILE(_iduser varchar(50), _username varchar(100), _gender varchar(10), _birthday varchar(50))
+create procedure UPDATE_PROFILE(_iduser varchar(50), _username varchar(100), _gender varchar(10), _birthday varchar(50), _phone varchar(20))
 begin
   update khachhang
   set ten_khachhang = _username
+  where ma_khachhang = _iduser;
+
+  update khachhang
+  set dienthoai = _phone
   where ma_khachhang = _iduser;
 
   if _gender != ''
