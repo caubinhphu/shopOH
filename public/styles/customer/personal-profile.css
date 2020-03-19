@@ -37,3 +37,9 @@
 .form-group > input {
   width: 80%;
 }
+
+.btn-change {
+  padding-top: 0;
+  padding-bottom: 0;
+  height: max-content;
+}

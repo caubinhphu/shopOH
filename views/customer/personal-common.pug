@@ -7,28 +7,28 @@ block main
   #personal.row
     #personal-left.col-md-4.col-lg-3.d-flex.flex-md-column.justify-content-around.justify-content-md-start
       #personal-left-top.d-flex
-        a(href="#").mr-3
+        a(href="/account/profile").mr-3
           #personal-left-img
-            img(src="/images/917385.jpg")
+            img(src=`${avatarUser}`)
         #personal-left-name
           div
             b Tên user
-          a(href="#")
+          a(href="/account/profile")
             i.fas.fa-edit
             span Sửa hồ sơ
       #personal-top-middle
         .personal-dropdown
-          a#dropdownMenu(href="#")
+          a#dropdownMenu(href="/account/profile")
             i.bg-warning.far.fa-user
             sapn Tài khoản của tôi
-          .personal-dropdown-menu
-            a.personal-dropdown-item(href='#') Hồ sơ
-            a.personal-dropdown-item(href='#') Địa chỉ
-            a.personal-dropdown-item(href='#') Mật khẩu
-        a(href="#")
+          .personal-dropdown-menu(class=/(profile|address|password)/.test(active)?"":"d-none")
+            a.personal-dropdown-item(href='/account/profile', class=active==="profile"?"personal-active":"") Hồ sơ
+            a.personal-dropdown-item(href='/account/address', class=active==="address"?"personal-active":"") Địa chỉ
+            a.personal-dropdown-item(href='/account/password', class=active==="password"?"personal-active":"") Mật khẩu
+        a(href="/account/purchase", class=active==="purchase"?"personal-active":"")
           i.bg-info.far.fa-file-alt
           sapn Đơn mua
-        a.personal-active(href="#")
+        a(href="/account/notification", class=active==="notification"?"personal-active":"")
           i.bg-danger.far.fa-bell
           sapn Thông báo
     block main-personal

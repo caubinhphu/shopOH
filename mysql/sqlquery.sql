@@ -1648,6 +1648,8 @@ create table khachhang (
   primary key (ma_khachhang)
 );
 alter table khachhang convert to character set utf16 collate utf16_general_ci;
+alter table khachhang add column gioitinh varchar(10);
+alter table khachhang add column ngaysinh date;
 
 insert into khachhang (ma_khachhang, taikhoan, matkhau, ten_khachhang, email, dienthoai, avatar)
 values ('1', 'caubinhphu', '1234', null, 'abc@gmail.com', null, null);
@@ -2115,7 +2117,38 @@ drop procedure ADD_USER;
 delimiter $$
 create procedure ADD_USER(_iduser varchar(50), _account varchar(50), _password varchar(100))
 begin
-  insert into khachhang (ma_khachhang, taikhoan, matkhau)
-  values (_iduser, _account, _password);
+  insert into khachhang (ma_khachhang, taikhoan, matkhau, avatar)
+  values (_iduser, _account, _password, '/images/users/default-avatar.jpg');
 end $$
 delimiter ;
+
+update khachhang
+set avatar = '/images/users/default-avatar.jpg';
+
+drop procedure UPDATE_PROFILE;
+delimiter $$
+create procedure UPDATE_PROFILE(_iduser varchar(50), _username varchar(100), _gender varchar(10), _birthday varchar(50))
+begin
+  update khachhang
+  set ten_khachhang = _username
+  where ma_khachhang = _iduser;
+
+  if _gender != ''
+    then update khachhang
+        set gioitinh = _gender
+        where ma_khachhang = _iduser;
+  end if;
+
+  if _birthday != ''
+    then update khachhang
+        set ngaysinh = _birthday
+        where ma_khachhang = _iduser;
+  end if;
+end $$
+delimiter ;
+
+update khachhang
+set ngaysinh = ''
+where ma_khachhang = '1';
+
+select * from khachhang;

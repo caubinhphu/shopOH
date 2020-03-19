@@ -53,14 +53,14 @@ block header
             if (user)
               li
                 .popover__wrapper__user
-                  a.d-flex(href='#')
-                    img(src="/images/shop/nocart.png", width="20px", height="auto")
+                  a.d-flex(href='/account/purchase')
+                    img(src=`${avatarUser}`, width="20px", height="auto")
                     span= ` ${user}`
                   .popover__content__user.d-none.d-md-inline
                     .popover__content__main__user.p-2.d-flex
-                      a.color-default(href="#") Tài khoản của tôi
+                      a.color-default(href="/account/profile") Tài khoản của tôi
                     .popover__content__main__user.p-2.d-flex
-                      a.color-default(href="#") Đơn mua
+                      a.color-default(href="/account/purchase") Đơn mua
                     .popover__content__main__user.p-2.d-flex
                       a.color-default(href="/login/logout") Đăng xuất
             else
