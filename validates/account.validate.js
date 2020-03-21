@@ -3,7 +3,7 @@ const Joi = require('@hapi/joi'); // validate body form
 module.exports.profileValidate = data => {
   let schema = Joi.object({
     username: Joi.string()
-      .pattern(/[^<>/`~!@#$%^&*(){}[\]\-=;:'"|?+_]/)
+      .pattern(/^[^<>/`~!@#$%^&*(){}[\]\-=;:'"|?+_\\]+$/)
       .max(100)
       .allow(''),
     gender: Joi.string().pattern(/(0|1|2)/),

@@ -1,6 +1,44 @@
+const fs = require('fs');
+const multer = require('multer');
+const path = require('path');
 const querySQL = require('../configure/querySQL');
 
 const { profileValidate } = require('../validates/account.validate');
+
+const storage = multer.diskStorage({
+  destination: './public/images/users/',
+  filename: (req, file, cb) => {
+    let uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(
+      null,
+      file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname)
+    );
+  }
+});
+
+// upload file
+const upload = multer({
+  storage: storage,
+  // limits: { fileSize: 10 },
+  fileFilter: (req, file, cb) => {
+    // ext type
+    const extTypes = /jpeg|jpg|png|gif/;
+
+    // check extname
+    const extname = extTypes.test(
+      path.extname(file.originalname).toLowerCase()
+    );
+
+    // check mimetype
+    const mime = extTypes.test(file.mimetype);
+
+    if (extname && mime) {
+      cb(null, true);
+    } else {
+      cb('File ảnh không đúng định dạng');
+    }
+  }
+}).single('avatar');
 
 // get profile
 module.exports.getProfile = async (req, res, next) => {
@@ -121,4 +159,39 @@ module.exports.postProfile = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+module.exports.putAvatar = async (req, res) => {
+  upload(req, res, async err => {
+    if (err) {
+      return res.status(400).json({ mgs: err.message });
+    } else {
+      let urlAvatar = `/images/users/${req.file.filename}`;
+      try {
+        let data = await querySQL('call UPDATE_AVATAR(?, ?)', [
+          req.userId,
+          urlAvatar
+        ]);
+        // path old avatar
+        let oldAvatar = data[0][0].avatar;
+
+        // remove old avatar
+        if (oldAvatar !== '/images/users/default-avatar.jpg') {
+          fs.unlink(
+            path.join(__dirname, '..', 'public', oldAvatar),
+            errUnlink => {
+              if (errUnlink) {
+                throw errUnlink;
+              }
+            }
+          );
+        }
+      } catch (error) {
+        return res.status(400).json({ mgs: error.message });
+      }
+      return res
+        .status(200)
+        .json({ mgs: 'Cập nhật avatar thành công', src: urlAvatar });
+    }
+  });
 };

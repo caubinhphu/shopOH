@@ -11,18 +11,23 @@ const csrfProtection = csurf({ cookie: true, signed: true });
 
 const router = express.Router();
 
-router.use(miniCartMiddleware);
-
-router.get('/profile', csrfProtection, controller.getProfile);
+router.get(
+  '/profile',
+  miniCartMiddleware,
+  csrfProtection,
+  controller.getProfile
+);
 
 router.post('/profile', csrfProtection, controller.postProfile);
 
-router.get('/purchase', controller.getPurchase);
+router.get('/purchase', miniCartMiddleware, controller.getPurchase);
 
-router.get('/password', controller.getProfilePassword);
+router.get('/password', miniCartMiddleware, controller.getProfilePassword);
 
-router.get('/notification', controller.getNotification);
+router.get('/notification', miniCartMiddleware, controller.getNotification);
 
-router.get('/address', controller.getAddress);
+router.get('/address', miniCartMiddleware, controller.getAddress);
+
+router.put('/profile/avatar', controller.putAvatar);
 
 module.exports = router;

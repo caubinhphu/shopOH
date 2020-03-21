@@ -1650,6 +1650,9 @@ create table khachhang (
 alter table khachhang convert to character set utf16 collate utf16_general_ci;
 alter table khachhang add column gioitinh varchar(10);
 alter table khachhang add column ngaysinh date;
+alter table khachhang
+change column avatar avatar varchar(50) after dienthoai;
+
 
 insert into khachhang (ma_khachhang, taikhoan, matkhau, ten_khachhang, email, dienthoai, avatar)
 values ('1', 'caubinhphu', '1234', null, 'abc@gmail.com', null, null);
@@ -2156,3 +2159,17 @@ set ngaysinh = ''
 where ma_khachhang = '1';
 
 select * from khachhang;
+
+
+drop procedure UPDATE_AVATAR;
+delimiter $$
+create procedure UPDATE_AVATAR(_iduser varchar(50), _avatar varchar(50))
+begin
+  select avatar from khachhang where ma_khachhang = _iduser;
+
+  update khachhang
+  set avatar = _avatar
+  where ma_khachhang = _iduser;
+end $$
+delimiter ;
+
