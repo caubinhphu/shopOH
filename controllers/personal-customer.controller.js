@@ -1,9 +1,13 @@
 const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
+const bcrypt = require('bcrypt');
 const querySQL = require('../configure/querySQL');
 
-const { profileValidate } = require('../validates/account.validate');
+const {
+  profileValidate,
+  changePassValidate
+} = require('../validates/account.validate');
 
 const storage = multer.diskStorage({
   destination: './public/images/users/',
@@ -91,9 +95,12 @@ module.exports.getPurchase = (req, res, next) => {
 
 // get profile password
 module.exports.getProfilePassword = (req, res, next) => {
-  res.render('customer/personal-profile', {
+  res.render('customer/personal-password', {
     titleSite: 'ShopOH - Tài khoản của tôi',
-    active: 'password'
+    active: 'password',
+    csrfToken: req.csrfToken(), // csrf token
+    errorMgs: req.flash('error_mgs'), // error mgs flash
+    successMgs: req.flash('success_mgs') // success mgs flash
   });
 };
 
@@ -194,4 +201,68 @@ module.exports.putAvatar = async (req, res) => {
         .json({ mgs: 'Cập nhật avatar thành công', src: urlAvatar });
     }
   });
+};
+
+module.exports.postProfilePassword = async (req, res, next) => {
+  try {
+    // get data from form body
+    let {
+      oldpassword: oldPassword,
+      newpassword: newPassword,
+      newpassword2: newPassword2
+    } = req.body;
+
+    // validate data
+    // get error validate
+    let { error } = changePassValidate({
+      oldPassword,
+      newPassword,
+      newPassword2
+    });
+
+    // validate error
+    let textError = '';
+    if (error) {
+      if (error.details[0].path[0] === 'oldPassword') {
+        textError = 'Mật khẩu cũ không đúng';
+      } else if (error.details[0].path[0] === 'newPassword') {
+        textError = 'Mật khẩu mới không hợp lệ (ngắn nhất 6 kí tự)';
+      } else if (error.details[0].path[0] === 'newPassword2') {
+        textError = 'Xác nhận mật khẩu mới không đúng';
+      }
+      req.flash('error_mgs', textError);
+      return res.redirect('/account/password');
+    }
+
+    // pass validate
+    // check old password
+    let data = await querySQL('call CHECK_ACCOUNT_ID(?)', [req.userId]);
+
+    if (data[0][0]) {
+      // get old password
+      let oldPasswordHash = data[0][0].matkhau;
+
+      // check old password
+      let checkPass = await bcrypt.compare(oldPassword, oldPasswordHash);
+      if (!checkPass) {
+        req.flash('error_mgs', 'Mật khẩu cũ không đúng');
+        return res.redirect('/account/password');
+      }
+
+      // correct old password
+      // change password
+      // hass new password
+      let salt = await bcrypt.genSalt(10);
+      let hash = await bcrypt.hash(newPassword, salt);
+      // update db
+      await querySQL('call UPDATE_PASSWORD(?, ?)', [req.userId, hash]);
+
+      req.flash('success_mgs', 'Thay đổi mật khẩu thành công');
+      return res.redirect('/account/password');
+    } else {
+      res.redirect('/login');
+    }
+  } catch (err) {
+    next(err);
+  }
 };

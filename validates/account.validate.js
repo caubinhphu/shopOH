@@ -18,3 +18,15 @@ module.exports.profileValidate = data => {
 
   return schema.validate(data);
 };
+
+module.exports.changePassValidate = data => {
+  let schema = Joi.object({
+    oldPassword: Joi.string().required(),
+    newPassword: Joi.string()
+      .min(6)
+      .required(),
+    newPassword2: Joi.ref('newPassword')
+  });
+
+  return schema.validate(data);
+};

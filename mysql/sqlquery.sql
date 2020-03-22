@@ -2173,3 +2173,13 @@ begin
 end $$
 delimiter ;
 
+drop procedure UPDATE_PASSWORD;
+delimiter $$
+create procedure UPDATE_PASSWORD(_iduser varchar(50), _password varchar(100))
+begin
+  update khachhang
+  set matkhau = _password
+  where ma_khachhang = _iduser;
+end $$
+delimiter ;
+
