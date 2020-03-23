@@ -128,7 +128,7 @@ block header
                                 small &nbsp;x&nbsp;
                                 span= cartProduct[index].soluong
                             .popover__content__cart__delete.text-right
-                              button.btn.btn-link.delete-product-cart-btn(type="button", data-product=`${cartProduct[index].ma_sanpham}$${cartProduct[index].mausac}$${cartProduct[index].size}`) Xóa
+                              button.btn.btn-link.delete-product-cart-btn(type="button", data-product=cartProduct[index].encode) Xóa
                       - index++
                   .text-right.p-2.d-flex.justify-content-between.align-items-center
                     small= `${cartNum.sl} loại sản phẩm trong giỏ`

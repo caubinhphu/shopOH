@@ -45,10 +45,10 @@ block main-personal
                     span= address['tinh/thanhpho']
             .personal-address-right.text-right
               .personal-address-right-top
-                button.btn.btn-link(type="button", data-toggle='modal', data-target='#add-address') Sửa
-                button.btn.btn-link(type="button", data-toggle='modal', data-target='#delete-address') Xóa
+                button.btn.btn-link(type="button", data-toggle='modal', data-target='#add-address', data-address=address.encode) Sửa
+                button.btn.btn-link(type="button", data-toggle='modal', data-target='#delete-address', data-address=address.encode) Xóa
               .personal-address-right-bottom
-                button.btn.btn-light(type="button" disabled=address.macdinh?true:false, class=address.macdinh?'not-allowed':'') Thiết lập mặc định
+                button.btn.btn-light(type="button" disabled=address.macdinh?true:false, class=address.macdinh?'not-allowed':'', data-address=address.encode) Thiết lập mặc định
   
   #add-address.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel-addAddress', aria-hidden='true', class)
     .modal-dialog(role='document')

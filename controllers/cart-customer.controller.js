@@ -1,23 +1,30 @@
 const querySQL = require('../configure/querySQL');
+const { myEncode, myDecode } = require('../configure/myEncode');
 
 // remove product in cart
 module.exports.deleteCart = async (req, res, next) => {
   try {
     // get info prodct want remove
-    let cartInfo = req.body.info.split('$');
-    cartInfo.unshift(req.signedCookies.uuid); // unshift current user
+    let cartInfo = myDecode(req.body.info).split('$');
+    cartInfo.unshift(req.userId); // unshift current user
 
     // remove product from cart
     await querySQL('call SP_DELETE_CART(?, ?, ?, ?)', cartInfo);
 
     // get new cart after remove prodcut from cart
-    let dataCart = await querySQL('call SP_SELECT_CART(?)', [
-      req.signedCookies.uuid
-    ]);
-    let [cartNum, cartProduct] = dataCart;
+    let dataCart = await querySQL('call SP_SELECT_CART(?)', [req.userId]);
+    let cartNum = dataCart[0][0],
+      cartProduct = dataCart[1];
+
+    // add field encode to cartProduct
+    for (let item of cartProduct) {
+      item.encode = myEncode(
+        item.ma_sanpham.concat('$', item.mausac, '$', item.size)
+      );
+    }
 
     // send to client
-    res.json([cartNum, cartProduct]);
+    res.status(200).json({ cartNum, cartProduct });
   } catch (error) {
     next(error);
   }
@@ -31,63 +38,97 @@ module.exports.postAddCart = async (req, res, next) => {
 
     // add product to the cart
     await querySQL('call SP_INSERT_CART(?, ?, ?, ?, ?)', [
-      data.idPro,
-      req.signedCookies.uuid, // current user
+      data.idPro, // id product
+      req.userId, // current user
       data.color, // color product
       data.size, // size product
       data.quantity // quantity
     ]);
 
     // get new cart after add product
-    let dataCart = await querySQL('call SP_SELECT_CART(?)', [
-      req.signedCookies.uuid
-    ]);
+    let dataCart = await querySQL('call SP_SELECT_CART(?)', [req.userId]);
+    let cartNum = dataCart[0][0],
+      cartProduct = dataCart[1];
+
+    // add field encode to cartProduct
+    for (let item of cartProduct) {
+      item.encode = myEncode(
+        item.ma_sanpham.concat('$', item.mausac, '$', item.size)
+      );
+    }
 
     // send to client
-    let [cartNum, cartProduct] = dataCart;
-    res.json([cartNum, cartProduct]);
+    res.status(200).json({ cartNum, cartProduct });
   } catch (error) {
     next(error);
   }
 };
 
+// get cart index
 module.exports.getCart = async (req, res, next) => {
   try {
+    // get products suggestion
     let dataSuggestion = await querySQL('call SP_SELECT_PRODUCT_SUGGESTION()');
-    let sumPirce = await querySQL('call SP_GET_SUMPRICE_CART(?)', [
-      req.signedCookies.uuid
-    ]);
+
+    // get sum price product in cart
+    let sumPirce = await querySQL('call SP_GET_SUMPRICE_CART(?)', [req.userId]);
+
+    // render
     res.render('customer/cart', {
       titleSite: 'ShopOH - Giỏ hàng',
-      sumPrice: sumPirce[0][0],
-      productSuggestionList: dataSuggestion[0]
+      sumPrice: sumPirce[0][0], // sum price in cart
+      productSuggestionList: dataSuggestion[0] // products suggestion
     });
   } catch (error) {
     next(error);
   }
 };
 
+// change (put) amount of product in cart
 module.exports.putCart = async (req, res, next) => {
   try {
-    let cartInfo = req.body.info.split('$');
+    // get product data from client and decode
+    let cartInfo = myDecode(req.body.info).split('$');
+
+    // get amount want to put
     let sl = req.body.sl;
-    cartInfo.unshift(req.signedCookies.uuid);
+
+    // add userId to cart info
+    cartInfo.unshift(req.userId);
+
+    // add amount want to put to cart info
     cartInfo.push(sl);
+
+    // put cart
     await querySQL('call SP_UPDATE_CART(?, ?, ?, ?, ?)', cartInfo);
-    res.json({});
+
+    // send Ok status to client
+    res.sendStatus(200);
   } catch (error) {
     next(error);
   }
 };
 
+// get data for mini cart
 module.exports.getCartData = async (req, res, next) => {
   try {
-    // let idUser = parseInt(req.params.idUser);
-    let dataCart = await querySQL('call SP_SELECT_CART(?)', [
-      req.signedCookies.uuid
-    ]);
-    let [cartNum, cartProduct] = dataCart;
-    res.json([cartNum, cartProduct]);
+    // get data cart
+    let dataCart = await querySQL('call SP_SELECT_CART(?)', [req.userId]);
+
+    // get cartNum (slsp: sum product, sl: sum type product) and cartProduct (products in cart)
+    let cartNum = dataCart[0][0],
+      cartProduct = dataCart[1];
+
+    // add field encode to cartProduct
+    for (let item of cartProduct) {
+      item.encode = myEncode(
+        item.ma_sanpham.concat('$', item.mausac, '$', item.size)
+      );
+    }
+
+    // send data to client
+    // res.json([cartNum, cartProduct]);
+    res.status(200).json({ cartNum, cartProduct });
   } catch (error) {
     next(error);
   }

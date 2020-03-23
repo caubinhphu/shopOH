@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const querySQL = require('../configure/querySQL');
+const { myEncode, myDecode } = require('../configure/myEncode');
 
 const {
   profileValidate,
@@ -117,6 +118,27 @@ module.exports.getNotification = (req, res, next) => {
 module.exports.getAddress = async (req, res, next) => {
   // get data address
   let data = await querySQL('call SELECT_ADDRESS(?)', [req.userId]);
+  let addresses = data[0];
+
+  // add encode field to addresses
+  for (let addr of addresses) {
+    addr.encode = myEncode(
+      addr.ma_khachhang.concat(
+        '$',
+        addr.ten,
+        '$',
+        addr.dienthoai,
+        '$',
+        addr['tinh/thanhpho'],
+        '$',
+        addr['quan/huyen'],
+        '$',
+        addr['phuong/xa'],
+        '$',
+        addr['sonha/duong']
+      )
+    );
+  }
 
   res.render('customer/personal-address', {
     titleSite: 'ShopOH - Tài khoản của tôi',
