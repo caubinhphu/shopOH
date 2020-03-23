@@ -6,7 +6,8 @@ const querySQL = require('../configure/querySQL');
 
 const {
   profileValidate,
-  changePassValidate
+  changePassValidate,
+  addressValidate
 } = require('../validates/account.validate');
 
 const storage = multer.diskStorage({
@@ -113,10 +114,16 @@ module.exports.getNotification = (req, res, next) => {
 };
 
 // get address
-module.exports.getAddress = (req, res, next) => {
+module.exports.getAddress = async (req, res, next) => {
+  // get data address
+  let data = await querySQL('call SELECT_ADDRESS(?)', [req.userId]);
+
   res.render('customer/personal-address', {
     titleSite: 'ShopOH - Tài khoản của tôi',
-    active: 'address'
+    active: 'address',
+    csrfToken: req.csrfToken(),
+    successMgs: req.flash('success_mgs'),
+    addresses: data[0]
   });
 };
 
@@ -262,6 +269,62 @@ module.exports.postProfilePassword = async (req, res, next) => {
     } else {
       res.redirect('/login');
     }
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports.getHCVN = (req, res) => {
+  res.status(200).sendFile(path.join(__dirname, '..', 'hcvnmini.json'));
+};
+
+module.exports.postAddress = async (req, res, next) => {
+  try {
+    // get data form
+    let { name, phone, tinh, huyen, xa, homenum } = req.body;
+
+    // validate
+    let { error } = addressValidate({ name, phone, tinh, huyen, xa, homenum });
+    // validate error
+    let errorText = '';
+    if (error) {
+      if (error.details[0].path[0] === 'name') {
+        errorText =
+          'Tên không hợp lệ (dài tối đa 100 kí tự, không chứa các kí tự đặt biệt)';
+      } else if (error.details[0].path[0] === 'phone') {
+        errorText = 'Số điện thoại không hợp lệ';
+      } else if (error.details[0].path[0] === 'tinh') {
+        errorText = 'Tỉnh/Thành phố không hợp lệ';
+      } else if (error.details[0].path[0] === 'huyen') {
+        errorText = 'Quận/Huyện không hợp lệ';
+      } else if (error.details[0].path[0] === 'xa') {
+        errorText = 'Xã/Phường không hợp lệ';
+      } else if (error.details[0].path[0] === 'homenum') {
+        errorText = 'Tòa nhà, tên đường không hợp lệ';
+      }
+      return res.render('customer/personal-address', {
+        titleSite: 'ShopOH - Tài khoản của tôi',
+        active: 'address',
+        csrfToken: req.csrfToken(),
+        errorMgs: errorText,
+        body: { name, phone, tinh, huyen, xa, homenum },
+        showModalAddress: true
+      });
+    }
+
+    // pass validate
+    // insert db
+    await querySQL('call ADD_ADDRESS(?, ?, ?, ?, ?, ?, ?)', [
+      req.userId,
+      name,
+      phone,
+      tinh,
+      huyen,
+      xa,
+      homenum
+    ]);
+    req.flash('success_mgs', 'Thêm địa chỉ thành công');
+    res.redirect('/account/address');
   } catch (err) {
     next(err);
   }

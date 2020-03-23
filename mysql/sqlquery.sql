@@ -1670,6 +1670,8 @@ create table diachikhachhang (
   foreign key (ma_khachhang) references khachhang (ma_khachhang) on delete cascade
 );
 alter table diachikhachhang convert to character set utf16 collate utf16_general_ci;
+alter table diachikhachhang
+change column macdinh macdinh boolean default false after `sonha/duong`;
 
 create table likesanpham (
 	ma_sanpham  varchar(50),
@@ -2183,3 +2185,40 @@ begin
 end $$
 delimiter ;
 
+select * from diachikhachhang;
+
+drop procedure ADD_ADDRESS;
+delimiter $$
+create procedure ADD_ADDRESS(
+  _iduser varchar(50), _ten varchar(100), _sdt varchar(20),
+  _tinh varchar(100), _huyen varchar(100), _xa varchar(100), _duong varchar(100)
+)
+begin
+  insert into diachikhachhang (
+    ma_khachhang, ten, dienthoai, `tinh/thanhpho`, `quan/huyen`,`phuong/xa`, `sonha/duong`
+  ) values (_iduser, _ten, _sdt, _tinh, _huyen, _xa, _duong);
+
+  -- if user only have one address => set this address into default address
+  if (select count(*) from diachikhachhang where ma_khachhang = _iduser) = 1
+    then update diachikhachhang set macdinh = true where ma_khachhang = _iduser;
+  end if;
+end $$
+delimiter ;
+
+`tinh/thanhpho` varchar(100),
+	`quan/huyen` varchar(100),
+  `phuong/xa` varchar(100),
+  `sonha/duong` varchar(100),
+  macdinh bit default false,
+
+call ADD_ADDRESS('1', 'asf', 'asdf', 'asdf', 'asdf', 'asdf', 'afasdfas');
+
+delete from diachikhachhang;
+
+drop procedure SELECT_ADDRESS;
+delimiter $$
+create procedure SELECT_ADDRESS(_iduser varchar(50))
+begin
+  select * from diachikhachhang where ma_khachhang = _iduser;
+end $$
+delimiter 
