@@ -2233,13 +2233,41 @@ create procedure CHANGE_DEFAULT_ADDRESS(
   _tinh varchar(100), _huyen varchar(100), _xa varchar(100), _duong varchar(100)
 )
 begin
-  update diachikhachhang
-  set macdinh = false
-  where ma_khachhang = _iduser;
+  if exists (select * from diachikhachhang where ma_khachhang = _iduser and ten = _ten
+    and dienthoai = _sdt and `tinh/thanhpho` = _tinh and `quan/huyen` = _huyen
+    and `phuong/xa` = _xa and `sonha/duong` = _duong)
+  then
+    -- begin
+      update diachikhachhang
+      set macdinh = false
+      where ma_khachhang = _iduser and macdinh = true;
 
-  update diachikhachhang
-  set macdinh = true
-  where ma_khachhang = _iduser and ten = _ten and dienthoai = _sdt and `tinh/thanhpho` = _tinh
-    and `quan/huyen` = _huyen and `phuong/xa` = _xa and `sonha/duong` = _duong;
+      update diachikhachhang
+      set macdinh = true
+      where ma_khachhang = _iduser and ten = _ten and dienthoai = _sdt and `tinh/thanhpho` = _tinh
+        and `quan/huyen` = _huyen and `phuong/xa` = _xa and `sonha/duong` = _duong;
+    -- end;
+  else signal sqlstate '45000' set message_text = 'address not exists'; -- throw error
+  end if;
+end $$
+delimiter ;
+
+drop procedure DELETE_ADDRESS;
+delimiter $$
+create procedure DELETE_ADDRESS(
+  _iduser varchar(50), _ten varchar(100), _sdt varchar(20),
+  _tinh varchar(100), _huyen varchar(100), _xa varchar(100), _duong varchar(100)
+)
+begin
+  if exists (select * from diachikhachhang where ma_khachhang = _iduser and ten = _ten
+    and dienthoai = _sdt and `tinh/thanhpho` = _tinh and `quan/huyen` = _huyen
+    and `phuong/xa` = _xa and `sonha/duong` = _duong)
+  then
+      delete from  diachikhachhang
+      where ma_khachhang = _iduser and ten = _ten and dienthoai = _sdt and `tinh/thanhpho` = _tinh
+        and `quan/huyen` = _huyen and `phuong/xa` = _xa and `sonha/duong` = _duong;
+    -- end;
+  else signal sqlstate '45000' set message_text = 'address not exists'; -- throw error
+  end if;
 end $$
 delimiter ;

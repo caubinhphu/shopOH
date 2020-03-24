@@ -16,6 +16,7 @@ block main-personal
           span= sMgs
           button.close(type='button', data-dismiss='alert', aria-label='Close')
             span(aria-hidden='true') &times;
+    #message
     #personnal-right-middle
       if (addresses.length === 0)
         div Bạn chưa có địa chỉ
@@ -45,7 +46,7 @@ block main-personal
             .personal-address-right.text-right
               .personal-address-right-top
                 button.btn.btn-link(type="button", data-toggle='modal', data-target='#add-address', data-address=address.encode) Sửa
-                button.btn.btn-link(type="button", data-toggle='modal', data-target='#delete-address', data-address=address.encode) Xóa
+                button.del-addr-btn.btn.btn-link(type="button", data-toggle='modal', data-target='#delete-address', data-address=address.encode) Xóa
               .personal-address-right-bottom
                 button.default-btn.btn.btn-light(type="button" disabled=address.macdinh?true:false, class=address.macdinh?'not-allowed':'', data-address=address.encode) Thiết lập mặc định
   
@@ -95,14 +96,23 @@ block main-personal
             .modal-footer
               button.btn.btn-light(type='button', data-dismiss='modal') TRỞ LẠI
               button.btn.btn-danger(type='submit') HOÀN THÀNH
+  
   #delete-address.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')
       .modal-content.p-2
         .modal-body
           .py-5 Bạn có chắc muốn xoá địa chỉ này?
           .d-flex
-            button.btn.btn-danger.flex-fill.mr-1(type='button') XÓA
+            button#OK-del-addr-btn.btn.btn-danger.flex-fill.mr-1(type='button') XÓA
             button.btn.btn-light.flex-fill(type='button', data-dismiss='modal') TRỞ LẠI
+
+  #warning-address.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
+    .modal-dialog.modal-dialog-centered(role='document')
+      .modal-content.p-2
+        .modal-body
+          .py-5 Bạn không thể xóa địa chỉ mặc định!
+          .d-flex
+            button.btn.btn-danger.flex-fill(type='button', data-dismiss='modal') ĐÃ HIỂU
 
 append script
   script(src="/scripts/customer/personal-address.js")

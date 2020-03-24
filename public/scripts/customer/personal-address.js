@@ -26,7 +26,11 @@ function afterLoadHCVN() {
   const xaSelect = document.getElementById('address-xa');
   const formAddress = document.addressForm;
   const defaultBtns = document.querySelectorAll('.default-btn');
-  const defaultBadge = document.querySelectorAll('.personal-address-default');
+  const defaultBadge = [
+    ...document.querySelectorAll('.personal-address-default')
+  ];
+  const delBtn = document.querySelectorAll('.del-addr-btn');
+  const OKbtn = document.querySelector('#OK-del-addr-btn');
 
   tinhSelect.innerHTML =
     '<option selected="" value="">Tỉnh/Thành Phố</option>' +
@@ -65,32 +69,93 @@ function afterLoadHCVN() {
     }
   });
 
+  // event change default address
   defaultBtns.forEach(btn => {
     btn.addEventListener('click', function() {
-      // allow all
-      defaultBtns.forEach(b => {
-        b.removeAttribute('disabled');
-        b.classList.remove('not-allowed');
-      });
-
-      // disabled this btn
-      this.setAttribute('disabled', 'disabled');
-      this.classList.add('not-allowed');
-
+      // put to server
       axios
         .put('http://localhost:3000/account/address/default', {
           data: this.dataset.address
         })
         .then(res => {
-          defaultBadge.forEach(badge => {
-            if (badge.dataset.address === this.dataset.address) {
-              badge.style.display = 'block';
-            } else {
-              badge.style.display = 'none';
-            }
-          });
-          console.log(this);
+          // check status res
+          if (res.status === 200) {
+            // allow all btn press
+            defaultBtns.forEach(b => {
+              b.removeAttribute('disabled');
+              b.classList.remove('not-allowed');
+            });
+
+            // disabled this btn
+            this.setAttribute('disabled', 'disabled');
+            this.classList.add('not-allowed');
+
+            // change default badge
+            defaultBadge.forEach(badge => {
+              if (badge.dataset.address === this.dataset.address) {
+                badge.style.display = 'block';
+              } else {
+                badge.style.display = 'none';
+              }
+            });
+          }
+        })
+        .catch(err => {
+          let alertHtml = `<div class="alert alert-danger alert-dismissible fade show mx-auto" role="alert">
+                              <span>Thiết lập địa chỉ mặc định thất bại</span>
+                              <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>`;
+          document.querySelector('#message').innerHTML = alertHtml;
         });
     });
   });
+
+  // delele address
+  delBtn.forEach(btn => {
+    btn.addEventListener('click', function() {
+      OKbtn.dataset.address = this.dataset.address;
+    });
+  });
+
+  // OK delete
+  OKbtn.addEventListener('click', function() {
+    if (delBtn.length <= 1) {
+      // delete
+      deleteAddress(this.dataset.address);
+    } else {
+      let defBadgeCurrent = defaultBadge.find(badge => {
+        return badge.style.display === 'block';
+      });
+      if (this.dataset.address === defBadgeCurrent.dataset.address) {
+        // show modal warning
+        $('#delete-address').modal('hide');
+        $('#warning-address').modal('show');
+      } else {
+        // delete
+        deleteAddress(this.dataset.address);
+      }
+    }
+  });
+}
+
+function deleteAddress(data) {
+  axios
+    .delete('http://localhost:3000/account/address', { data: { data } })
+    .then(res => {
+      if (res.status === 200) {
+        location.href = 'http://localhost:3000/account/address';
+      }
+    })
+    .catch(err => {
+      $('#delete-address').modal('hide');
+      let alertHtml = `<div class="alert alert-danger alert-dismissible fade show mx-auto" role="alert">
+                      <span>Xóa địa chỉ thất bại</span>
+                      <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>`;
+      document.querySelector('#message').innerHTML = alertHtml;
+    });
 }

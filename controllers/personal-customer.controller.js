@@ -367,6 +367,27 @@ module.exports.putAddressDefault = async (req, res, next) => {
 
     res.sendStatus(200);
   } catch (error) {
-    next(error);
+    res.sendStatus(400);
+  }
+};
+
+module.exports.deleteAddress = async (req, res, next) => {
+  try {
+    // get data from client
+    let { data: addr } = req.body;
+
+    // decode data and split data
+    // [name, phone, tinh. huyen, xa, duong] of address
+    addr = myDecode(addr).split('$');
+
+    // unshift id user into addr
+    addr.unshift(req.userId);
+
+    // put db and get new addresses
+    await querySQL('call DELETE_ADDRESS(?, ?, ?, ?, ?, ?, ?)', addr);
+
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(400);
   }
 };

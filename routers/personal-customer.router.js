@@ -54,4 +54,6 @@ router.post(
 
 router.put('/address/default', controller.putAddressDefault);
 
+router.delete('/address', controller.deleteAddress);
+
 module.exports = router;
