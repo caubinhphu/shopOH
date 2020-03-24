@@ -26,9 +26,8 @@ block main-personal
               .d-flex.align-items-center
                 .personal-address-label Tên
                 .personal-address-content= address.ten
-                if (address.macdinh)
-                  .personal-address-default.ml-2
-                    span.badge.badge-success Mặc định
+                .personal-address-default.ml-2(style=`display: ${address.macdinh?'block':'none'}`, data-address=address.encode)
+                  span.badge.badge-success Mặc định
               .d-flex.align-items-center.mt-3
                 .personal-address-label Số điện thoại
                 .personal-address-content= address.dienthoai
@@ -48,7 +47,7 @@ block main-personal
                 button.btn.btn-link(type="button", data-toggle='modal', data-target='#add-address', data-address=address.encode) Sửa
                 button.btn.btn-link(type="button", data-toggle='modal', data-target='#delete-address', data-address=address.encode) Xóa
               .personal-address-right-bottom
-                button.btn.btn-light(type="button" disabled=address.macdinh?true:false, class=address.macdinh?'not-allowed':'', data-address=address.encode) Thiết lập mặc định
+                button.default-btn.btn.btn-light(type="button" disabled=address.macdinh?true:false, class=address.macdinh?'not-allowed':'', data-address=address.encode) Thiết lập mặc định
   
   #add-address.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel-addAddress', aria-hidden='true', class)
     .modal-dialog(role='document')

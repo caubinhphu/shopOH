@@ -25,6 +25,8 @@ function afterLoadHCVN() {
   const huyenSelect = document.getElementById('address-huyen');
   const xaSelect = document.getElementById('address-xa');
   const formAddress = document.addressForm;
+  const defaultBtns = document.querySelectorAll('.default-btn');
+  const defaultBadge = document.querySelectorAll('.personal-address-default');
 
   tinhSelect.innerHTML =
     '<option selected="" value="">Tỉnh/Thành Phố</option>' +
@@ -61,5 +63,34 @@ function afterLoadHCVN() {
     } else {
       xaSelect.innerHTML = '';
     }
+  });
+
+  defaultBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      // allow all
+      defaultBtns.forEach(b => {
+        b.removeAttribute('disabled');
+        b.classList.remove('not-allowed');
+      });
+
+      // disabled this btn
+      this.setAttribute('disabled', 'disabled');
+      this.classList.add('not-allowed');
+
+      axios
+        .put('http://localhost:3000/account/address/default', {
+          data: this.dataset.address
+        })
+        .then(res => {
+          defaultBadge.forEach(badge => {
+            if (badge.dataset.address === this.dataset.address) {
+              badge.style.display = 'block';
+            } else {
+              badge.style.display = 'none';
+            }
+          });
+          console.log(this);
+        });
+    });
   });
 }

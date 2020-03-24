@@ -52,4 +52,6 @@ router.post(
   controller.postAddress
 );
 
+router.put('/address/default', controller.putAddressDefault);
+
 module.exports = router;
