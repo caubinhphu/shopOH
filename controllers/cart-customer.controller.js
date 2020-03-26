@@ -26,7 +26,7 @@ module.exports.deleteCart = async (req, res, next) => {
     // send to client
     res.status(200).json({ cartNum, cartProduct });
   } catch (error) {
-    next(error);
+    res.sendStatus(400);
   }
 };
 
@@ -60,7 +60,7 @@ module.exports.postAddCart = async (req, res, next) => {
     // send to client
     res.status(200).json({ cartNum, cartProduct });
   } catch (error) {
-    next(error);
+    res.sendStatus(400);
   }
 };
 
@@ -105,7 +105,7 @@ module.exports.putCart = async (req, res, next) => {
     // send Ok status to client
     res.sendStatus(200);
   } catch (error) {
-    next(error);
+    res.sendStatus(400);
   }
 };
 
@@ -130,6 +130,6 @@ module.exports.getCartData = async (req, res, next) => {
     // res.json([cartNum, cartProduct]);
     res.status(200).json({ cartNum, cartProduct });
   } catch (error) {
-    next(error);
+    res.sendStatus(400);
   }
 };

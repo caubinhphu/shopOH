@@ -25,6 +25,7 @@ block main-personal
       #message
       form#form-profile.row.py-4(action="/account/profile", method="POST", name="profileForm")
         input(type="hidden", name="_csrf", value=csrfToken)
+        input(type="hidden", name="_method", value='PUT')
         #form-left.col-md-8
           .form-group.d-flex.align-items-center
             label.mb-0(for='name') Tên

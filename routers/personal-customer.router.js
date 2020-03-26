@@ -1,7 +1,6 @@
 const express = require('express');
 const csurf = require('csurf');
 const path = require('path');
-const querySQL = require('../configure/querySQL');
 // mimi cart middlware
 const miniCartMiddleware = require('../middlewares/miniCart.middleware');
 
@@ -19,7 +18,7 @@ router.get(
   controller.getProfile
 );
 
-router.post('/profile', csrfProtection, controller.postProfile);
+router.put('/profile', csrfProtection, controller.putProfile);
 
 router.put('/profile/avatar', controller.putAvatar);
 
@@ -32,7 +31,7 @@ router.get(
   controller.getProfilePassword
 );
 
-router.post('/password', csrfProtection, controller.postProfilePassword);
+router.put('/password', csrfProtection, controller.putProfilePassword);
 
 router.get('/notification', miniCartMiddleware, controller.getNotification);
 
@@ -55,5 +54,14 @@ router.post(
 router.put('/address/default', controller.putAddressDefault);
 
 router.delete('/address', controller.deleteAddress);
+
+router.get('/address/decode', controller.decodeAddress);
+
+router.put(
+  '/address',
+  miniCartMiddleware,
+  csrfProtection,
+  controller.putAddress
+);
 
 module.exports = router;

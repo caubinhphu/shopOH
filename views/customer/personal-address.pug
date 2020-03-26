@@ -7,7 +7,7 @@ block main-personal
   #personal-right.col-md-8.col-lg-9
     #personnal-right-top.d-flex.justify-content-between
       div Địa chỉ của tôi
-      button.btn.btn-danger(type="button", data-toggle='modal', data-target='#add-address')
+      button#add-new-addr.btn.btn-danger(type="button")
         i.fas.fa-plus
         span &nbsp;Thêm địa chỉ mới
     if (successMgs)
@@ -36,16 +36,16 @@ block main-personal
                 .personal-address-label Địa chỉ
                 .personal-address-content
                   span
-                    span= address['sonha/duong']
+                    span= address.nha
                     br
-                    span= address['phuong/xa']
+                    span= address.xa
                     br
-                    span= address['quan/huyen']
+                    span= address.huyen
                     br
-                    span= address['tinh/thanhpho']
+                    span= address.tinh
             .personal-address-right.text-right
               .personal-address-right-top
-                button.btn.btn-link(type="button", data-toggle='modal', data-target='#add-address', data-address=address.encode) Sửa
+                button.edit-addr-btn.btn.btn-link(type="button", data-toggle='modal', data-target='#add-address', data-address=address.encode) Sửa
                 button.del-addr-btn.btn.btn-link(type="button", data-toggle='modal', data-target='#delete-address', data-address=address.encode) Xóa
               .personal-address-right-bottom
                 button.default-btn.btn.btn-light(type="button" disabled=address.macdinh?true:false, class=address.macdinh?'not-allowed':'', data-address=address.encode) Thiết lập mặc định
@@ -63,6 +63,10 @@ block main-personal
                 span(aria-hidden='true') &times;
           form(name="addressForm", action="/account/address", method="POST")
             input(type="hidden", name="_csrf", value=csrfToken)
+            if (putMethod)
+              input(type="hidden", name="_method", value='PUT')
+            if (addrId)
+              input(type="hidden", name="addrId", value=addrId)
             .form-group
               .input-group
                 .input-group-prepend
@@ -95,7 +99,7 @@ block main-personal
                 input#address-homenum.form-control(type="text" placeholder="Tòa nhà, tên đường" name="homenum" required, , value=body?body.homenum:"")
             .modal-footer
               button.btn.btn-light(type='button', data-dismiss='modal') TRỞ LẠI
-              button.btn.btn-danger(type='submit') HOÀN THÀNH
+              button#add-addr-btn.btn.btn-danger(type='submit') HOÀN THÀNH
   
   #delete-address.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')

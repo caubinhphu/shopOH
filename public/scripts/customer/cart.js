@@ -88,19 +88,22 @@ soluongInput.forEach(input => {
         sl: +this.value
       })
       .then(res => {
-        let priceText = document.querySelector(
-          `.cart-price-item[data-product="${this.dataset.product}"]`
-        );
-        let donGia = document.querySelector(
-          `.cart-dongia[data-product="${this.dataset.product}"]`
-        );
-        priceText.innerHTML = +donGia.innerHTML * +this.value;
-        totalPrice.innerHTML = getSumPrice();
-        let sumPro = getSumProduct();
-        totalProCheck.innerHTML = `Tổng tiền hàng (${sumPro} sản phẩm):`;
-        let numAll = soluongInput.reduce((acc, cur) => acc + +cur.value, 0);
-        selectAllLabel.innerHTML = `Chọn tất cả (${numAll})`;
-      });
+        if (res.status === 200) {
+          let priceText = document.querySelector(
+            `.cart-price-item[data-product="${this.dataset.product}"]`
+          );
+          let donGia = document.querySelector(
+            `.cart-dongia[data-product="${this.dataset.product}"]`
+          );
+          priceText.innerHTML = +donGia.innerHTML * +this.value;
+          totalPrice.innerHTML = getSumPrice();
+          let sumPro = getSumProduct();
+          totalProCheck.innerHTML = `Tổng tiền hàng (${sumPro} sản phẩm):`;
+          let numAll = soluongInput.reduce((acc, cur) => acc + +cur.value, 0);
+          selectAllLabel.innerHTML = `Chọn tất cả (${numAll})`;
+        }
+      })
+      .catch(err => location.reload());
   });
 });
 
@@ -109,7 +112,10 @@ deleteBtn.forEach(btn => {
     axios
       .delete('/cart', { data: { info: this.dataset.product } })
       .then(res => {
-        location.reload();
-      });
+        if (res.status === 200) {
+          location.reload();
+        }
+      })
+      .catch(err => location.reload());
   });
 });

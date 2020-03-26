@@ -2,6 +2,7 @@ const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
 const bcrypt = require('bcrypt');
+const { v4 } = require('uuid');
 const querySQL = require('../configure/querySQL');
 const { myEncode, myDecode } = require('../configure/myEncode');
 
@@ -87,68 +88,8 @@ module.exports.getProfile = async (req, res, next) => {
   }
 };
 
-// get purchase
-module.exports.getPurchase = (req, res, next) => {
-  res.render('customer/personal-profile', {
-    titleSite: 'ShopOH - Tài khoản của tôi',
-    active: 'purchase'
-  });
-};
-
-// get profile password
-module.exports.getProfilePassword = (req, res, next) => {
-  res.render('customer/personal-password', {
-    titleSite: 'ShopOH - Tài khoản của tôi',
-    active: 'password',
-    csrfToken: req.csrfToken(), // csrf token
-    errorMgs: req.flash('error_mgs'), // error mgs flash
-    successMgs: req.flash('success_mgs') // success mgs flash
-  });
-};
-
-// get notification
-module.exports.getNotification = (req, res, next) => {
-  res.render('customer/personal-notification', {
-    titleSite: 'ShopOH - Tài khoản của tôi',
-    active: 'notification'
-  });
-};
-
-// get address
-module.exports.getAddress = async (req, res, next) => {
-  // get data address
-  let data = await querySQL('call SELECT_ADDRESS(?)', [req.userId]);
-  let addresses = data[0];
-
-  // add encode field to addresses
-  for (let addr of addresses) {
-    addr.encode = myEncode(
-      addr.ten.concat(
-        '$',
-        addr.dienthoai,
-        '$',
-        addr['tinh/thanhpho'],
-        '$',
-        addr['quan/huyen'],
-        '$',
-        addr['phuong/xa'],
-        '$',
-        addr['sonha/duong']
-      )
-    );
-  }
-
-  res.render('customer/personal-address', {
-    titleSite: 'ShopOH - Tài khoản của tôi',
-    active: 'address',
-    csrfToken: req.csrfToken(),
-    successMgs: req.flash('success_mgs'),
-    addresses: data[0]
-  });
-};
-
 // edit profile
-module.exports.postProfile = async (req, res, next) => {
+module.exports.putProfile = async (req, res, next) => {
   try {
     // get data form
     let { username, gender, birthday, phone } = req.body;
@@ -230,7 +171,27 @@ module.exports.putAvatar = async (req, res) => {
   });
 };
 
-module.exports.postProfilePassword = async (req, res, next) => {
+// get purchase
+module.exports.getPurchase = (req, res, next) => {
+  res.render('customer/personal-profile', {
+    titleSite: 'ShopOH - Tài khoản của tôi',
+    active: 'purchase'
+  });
+};
+
+// get profile password
+module.exports.getProfilePassword = (req, res, next) => {
+  res.render('customer/personal-password', {
+    titleSite: 'ShopOH - Tài khoản của tôi',
+    active: 'password',
+    csrfToken: req.csrfToken(), // csrf token
+    errorMgs: req.flash('error_mgs'), // error mgs flash
+    successMgs: req.flash('success_mgs') // success mgs flash
+  });
+};
+
+// change password
+module.exports.putProfilePassword = async (req, res, next) => {
   try {
     // get data from form body
     let {
@@ -294,10 +255,40 @@ module.exports.postProfilePassword = async (req, res, next) => {
   }
 };
 
-module.exports.getHCVN = (req, res) => {
-  res.status(200).sendFile(path.join(__dirname, '..', 'hcvnmini.json'));
+// get notification
+module.exports.getNotification = (req, res, next) => {
+  res.render('customer/personal-notification', {
+    titleSite: 'ShopOH - Tài khoản của tôi',
+    active: 'notification'
+  });
 };
 
+// get address
+module.exports.getAddress = async (req, res, next) => {
+  try {
+    // get data address
+    let data = await querySQL('call SELECT_ADDRESS(?)', [req.userId]);
+    let addresses = data[0];
+
+    // add encode field (encode id address) to addresses
+    for (let addr of addresses) {
+      addr.encode = myEncode(addr.ma_diachi);
+    }
+
+    // render
+    res.render('customer/personal-address', {
+      titleSite: 'ShopOH - Tài khoản của tôi',
+      active: 'address',
+      csrfToken: req.csrfToken(), // csrf token
+      successMgs: req.flash('success_mgs'), // success message
+      addresses: data[0] // addresses
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// post add new addresss
 module.exports.postAddress = async (req, res, next) => {
   try {
     // get data form
@@ -325,69 +316,162 @@ module.exports.postAddress = async (req, res, next) => {
       return res.render('customer/personal-address', {
         titleSite: 'ShopOH - Tài khoản của tôi',
         active: 'address',
-        csrfToken: req.csrfToken(),
-        errorMgs: errorText,
-        body: { name, phone, tinh, huyen, xa, homenum },
-        showModalAddress: true
+        csrfToken: req.csrfToken(), // csrf token
+        errorMgs: errorText, // error message
+        body: { name, phone, tinh, huyen, xa, homenum }, // data
+        showModalAddress: true // show modal add addr if error
       });
     }
 
     // pass validate
     // insert db
-    await querySQL('call ADD_ADDRESS(?, ?, ?, ?, ?, ?, ?)', [
-      req.userId,
-      name,
-      phone,
-      tinh,
-      huyen,
-      xa,
-      homenum
+    await querySQL('call ADD_ADDRESS(?, ?, ?, ?, ?, ?, ?, ?)', [
+      req.userId, // user id
+      v4(), // add uuid for new address
+      name, // addr name
+      phone, // addr phone
+      tinh, // addr tinh
+      huyen, // addr huyen
+      xa, // addr xa
+      homenum // addr nha
     ]);
+
+    // add addr succes
     req.flash('success_mgs', 'Thêm địa chỉ thành công');
     res.redirect('/account/address');
   } catch (err) {
-    next(err);
+    // add addr error
+    req.flash('error_mgs', 'Thêm địa chỉ thất bại');
+    res.redirect('/account/address');
   }
 };
 
-module.exports.putAddressDefault = async (req, res, next) => {
+// change default address
+module.exports.putAddressDefault = async (req, res) => {
   try {
     // get data from client
-    let { data: addr } = req.body;
+    let { data: addrId } = req.body;
 
-    // decode data and split data
-    // [name, phone, tinh. huyen, xa, duong] of address
-    addr = myDecode(addr).split('$');
-
-    // unshift id user into addr
-    addr.unshift(req.userId);
+    // decode data => address id
+    addrId = myDecode(addrId);
 
     // put db and get new addresses
-    await querySQL('call CHANGE_DEFAULT_ADDRESS(?, ?, ?, ?, ?, ?, ?)', addr);
+    await querySQL('call CHANGE_DEFAULT_ADDRESS(?, ?)', [req.userId, addrId]);
 
+    // change success
+    res.sendStatus(200);
+  } catch (error) {
+    // change error
+    res.sendStatus(400);
+  }
+};
+
+// delete address
+module.exports.deleteAddress = async (req, res) => {
+  try {
+    // get data from client
+    let { data: addrId } = req.body;
+
+    // decode data => address id
+    addrId = myDecode(addrId);
+
+    // put db and get new addresses
+    await querySQL('call DELETE_ADDRESS(?, ?)', [req.userId, addrId]);
+
+    // delete success
     res.sendStatus(200);
   } catch (error) {
     res.sendStatus(400);
   }
 };
 
-module.exports.deleteAddress = async (req, res, next) => {
+// get a address
+module.exports.decodeAddress = async (req, res) => {
   try {
-    // get data from client
-    let { data: addr } = req.body;
+    // get query encode address
+    let { encode } = req.query;
 
-    // decode data and split data
-    // [name, phone, tinh. huyen, xa, duong] of address
-    addr = myDecode(addr).split('$');
+    // decode query => address id
+    let addrId = myDecode(encode);
 
-    // unshift id user into addr
-    addr.unshift(req.userId);
+    // get address from db
+    let data = await querySQL('call SELECT_INFO_ADDRESS(?, ?)', [
+      req.userId,
+      addrId
+    ]);
+    let infoAddr = data[0][0];
+    // encode address id
+    infoAddr.ma_diachi = myEncode(infoAddr.ma_diachi);
 
-    // put db and get new addresses
-    await querySQL('call DELETE_ADDRESS(?, ?, ?, ?, ?, ?, ?)', addr);
-
-    res.sendStatus(200);
-  } catch (error) {
+    // send info address to client
+    res.status(200).json({ addr: infoAddr });
+  } catch (err) {
     res.sendStatus(400);
   }
+};
+
+// edit address
+module.exports.putAddress = async (req, res, next) => {
+  try {
+    // get data form
+    let { name, phone, tinh, huyen, xa, homenum, addrId } = req.body;
+
+    // decode addrId
+    addrId = myDecode(addrId);
+
+    // validate
+    let { error } = addressValidate({ name, phone, tinh, huyen, xa, homenum });
+    // validate error
+    let errorText = '';
+    if (error) {
+      if (error.details[0].path[0] === 'name') {
+        errorText =
+          'Tên không hợp lệ (dài tối đa 100 kí tự, không chứa các kí tự đặt biệt)';
+      } else if (error.details[0].path[0] === 'phone') {
+        errorText = 'Số điện thoại không hợp lệ';
+      } else if (error.details[0].path[0] === 'tinh') {
+        errorText = 'Tỉnh/Thành phố không hợp lệ';
+      } else if (error.details[0].path[0] === 'huyen') {
+        errorText = 'Quận/Huyện không hợp lệ';
+      } else if (error.details[0].path[0] === 'xa') {
+        errorText = 'Xã/Phường không hợp lệ';
+      } else if (error.details[0].path[0] === 'homenum') {
+        errorText = 'Tòa nhà, tên đường không hợp lệ';
+      }
+      return res.render('customer/personal-address', {
+        titleSite: 'ShopOH - Tài khoản của tôi',
+        active: 'address',
+        csrfToken: req.csrfToken(),
+        errorMgs: errorText,
+        body: { name, phone, tinh, huyen, xa, homenum, addrId },
+        showModalAddress: true,
+        putMethod: true
+      });
+    }
+
+    // pass validate
+    // insert db
+    await querySQL('call EDIT_ADDRESS(?, ?, ?, ?, ?, ?, ?, ?)', [
+      req.userId, // user id
+      addrId, // addr id
+      name, // addr name
+      phone, // addr phone
+      tinh, // addr tinh
+      huyen, // addr huyen
+      xa, // addr xa
+      homenum // addr nha
+    ]);
+
+    // edit success
+    req.flash('success_mgs', 'Sửa địa chỉ thành công');
+    res.redirect('/account/address');
+  } catch (err) {
+    // edit error
+    req.flash('error_mgs', 'Sửa địa chỉ thất bại');
+    res.redirect('/account/address');
+  }
+};
+
+module.exports.getHCVN = (req, res) => {
+  res.status(200).sendFile(path.join(__dirname, '..', 'hcvnmini.json'));
 };

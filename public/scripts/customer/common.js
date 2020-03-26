@@ -91,9 +91,14 @@ function renderMiniCart(dataCart) {
 }
 
 function handleDeleteCart() {
-  axios.delete('/cart', { data: { info: this.dataset.product } }).then(res => {
-    renderMiniCart(res.data);
-  });
+  axios
+    .delete('/cart', { data: { info: this.dataset.product } })
+    .then(res => {
+      if (res.status === 200) {
+        renderMiniCart(res.data);
+      }
+    })
+    .catch(err => location.reload());
 }
 
 addEventDeleteCartBtn();

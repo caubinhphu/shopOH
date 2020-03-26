@@ -31,6 +31,8 @@ function afterLoadHCVN() {
   ];
   const delBtn = document.querySelectorAll('.del-addr-btn');
   const OKbtn = document.querySelector('#OK-del-addr-btn');
+  const editBtn = document.querySelectorAll('.edit-addr-btn');
+  const editOK = document.querySelector('#edit-addr-btn');
 
   tinhSelect.innerHTML =
     '<option selected="" value="">Tỉnh/Thành Phố</option>' +
@@ -138,6 +140,81 @@ function afterLoadHCVN() {
       }
     }
   });
+
+  // edit address
+  editBtn.forEach(btn => {
+    btn.addEventListener('click', function() {
+      // get data address decode
+      axios
+        .get(
+          `http://localhost:3000/account/address/decode?encode=${this.dataset.address}`
+        )
+        .then(res => {
+          // get address decode to server
+          let { addr } = res.data;
+
+          // change value in from address
+          formAddress.name.value = addr.ten;
+          formAddress.phone.value = addr.dienthoai;
+          formAddress.tinh.value = addr.tinh;
+
+          let huyenData = hcvn.data.find(tinh => tinh.name === tinhSelect.value)
+            .c2;
+          huyenSelect.innerHTML =
+            '<option selected="" value="">Quận/Huyện</option>' +
+            huyenData
+              .map(
+                huyen => `<option value="${huyen.name}">${huyen.name}</option>`
+              )
+              .join('');
+          formAddress.huyen.value = addr.huyen;
+          let xaData =
+            huyenData.find(huyen => huyen.name === huyenSelect.value).c3 || '';
+          xaSelect.innerHTML =
+            '<option selected="" value="">Xã/Phường</option>' +
+            xaData
+              .map(xa => `<option value="${xa.name}">${xa.name}</option>`)
+              .join('');
+
+          formAddress.xa.value = addr.xa;
+          formAddress.homenum.value = addr.nha;
+
+          if (!('_method' in formAddress)) {
+            let putMethod = document.createElement('input');
+            putMethod.type = 'hidden';
+            putMethod.name = '_method';
+            putMethod.value = 'PUT';
+            formAddress.appendChild(putMethod);
+
+            let addrIdInput = document.createElement('input');
+            addrIdInput.type = 'hidden';
+            addrIdInput.name = 'addrId';
+            addrIdInput.value = addr.ma_diachi;
+
+            formAddress.appendChild(addrIdInput);
+          }
+        })
+        .catch(err => {
+          location.reload();
+        });
+    });
+  });
+
+  document.querySelector('#add-new-addr').addEventListener('click', function() {
+    if ('_method' in formAddress) {
+      formAddress.name.value = '';
+      formAddress.phone.value = '';
+      formAddress.tinh.value = '';
+      formAddress.huyen.value = '';
+      formAddress.xa.value = '';
+      formAddress.homenum.value = '';
+      huyenSelect.innerHTML = '';
+      xaSelect.innerHTML = '';
+      formAddress._method.remove();
+      formAddress.addrId.remove();
+    }
+    $('#add-address').modal('show');
+  });
 }
 
 function deleteAddress(data) {
@@ -150,12 +227,18 @@ function deleteAddress(data) {
     })
     .catch(err => {
       $('#delete-address').modal('hide');
-      let alertHtml = `<div class="alert alert-danger alert-dismissible fade show mx-auto" role="alert">
-                      <span>Xóa địa chỉ thất bại</span>
-                      <button class="close" type="button" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>`;
-      document.querySelector('#message').innerHTML = alertHtml;
+      document.querySelector('#message').innerHTML = createMessage(
+        'alert-danger',
+        'Xóa địa chỉ thất bại'
+      );
     });
+}
+
+function createMessage(type, mgs) {
+  return `<div class="alert ${type} alert-dismissible fade show mx-auto" role="alert">
+            <span>${mgs}</span>
+            <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>`;
 }
