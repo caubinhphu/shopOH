@@ -173,7 +173,7 @@ module.exports.putAvatar = async (req, res) => {
 
 // get purchase
 module.exports.getPurchase = (req, res, next) => {
-  res.render('customer/personal-profile', {
+  res.render('customer/personal-order', {
     titleSite: 'ShopOH - Tài khoản của tôi',
     active: 'purchase'
   });

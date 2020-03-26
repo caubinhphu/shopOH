@@ -1,0 +1,78 @@
+extends ./personal-common
+
+append style
+  link(rel="stylesheet", href="/styles/customer/personal-order.css")
+
+block main-personal
+  .flex-fill
+    .d-flex.justify-content-between.bg-white.p-2
+      div
+        a.text-secondary(href="#") TRỞ LẠI
+      div
+        span ID ĐƠN HÀNG: 
+        span.mr-3 wehrqwenasdf
+        span.text-danger.ml-3.outline-left ĐÃ ĐÁNH GIÁ
+    #order-status.bg-white.p-3.px-5
+      .order-status-item.mb-2
+        span.mr-2 13:06 23-03-2020
+        span giao hàng/Chưa đối soát
+      .order-status-item.mb-2.text-secondary
+        span.mr-2 13:06 23-03-2020
+        span giao hàng/Chưa đối soát
+      .order-status-item.mb-2.text-secondary
+        span.mr-2 13:06 23-03-2020
+        span giao hàng/Chưa đối soát
+      .order-status-item.mb-2.text-secondary
+        span.mr-2 13:06 23-03-2020
+        span giao hàng/Chưa đối soát
+    #order-sell-again.p-3.text-right
+      button.btn.btn-danger(type="button") Mua lần nữa
+    #order-address.mt-2.bg-white.p-2
+      .border-pro
+      #order-address-content.py-3.pl-3
+        div(style="font-size: 20px") Địa Chỉ Nhận Hàng
+        div name
+        small.text-secondary phone
+        br
+        small.text-secondary address
+      .border-pro
+    #orders
+      .order
+        a(href="#").order-list
+          .order-item.py-2.d-flex.align-items-center
+            .order-item-img
+              img(src="/images/shop/logo_3.png", width="80px")
+            .order-item-content.flex-fill.mx-2
+              .order-item-title Ten san pham
+              .order-item-type
+                small Phan loai hang
+              .order-item-amount x1
+            .order-item-price
+              del ₫340.000
+              br
+              span.text-danger ₫340.000
+          .order-item.py-2.d-flex.align-items-center
+            .order-item-img
+              img(src="/images/shop/logo_3.png", width="80px")
+            .order-item-content.flex-fill.mx-2
+              .order-item-title Ten san pham
+              .order-item-type
+                small Phan loai hang
+              .order-item-amount x1
+            .order-item-price
+              del ₫340.000
+              br
+              span.text-danger ₫340.000
+        .order-price.pt-4
+          .order-price-item.text-secondary.d-flex.justify-content-between
+            small Tổng tiền hàng 
+            span ₫427.500
+          .order-price-item.text-secondary.d-flex.justify-content-between
+            small Phí vận chuyển: 
+            span ₫427.500
+          .order-price-item.text-secondary.d-flex.justify-content-between
+            small Tổng số tiền: 
+            span.text-danger(style="font-size: 30px") ₫427.500
+          .order-price-item.text-secondary.d-flex.justify-content-between
+            small Phương thức Thanh toán
+            span Thanh toán khi nhận hàng

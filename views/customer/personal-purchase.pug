@@ -1,0 +1,63 @@
+extends ./personal-common
+
+append style
+  link(rel="stylesheet", href="/styles/customer/personal-purchase.css")
+
+block main-personal
+  .flex-fill
+    #nav-purchase.d-flex.justify-content-between.text-center
+      a.flex-fill(href="#") Tất cả
+      a.flex-fill(href="#") Chờ xác nhận
+      a.flex-fill(href="#") Đã xác nhận
+      a.flex-fill(href="#") Đang giao
+      a.flex-fill(href="#") Đã giao
+      a.flex-fill(href="#") Đã hủy
+
+    #search-purchase.my-2
+      form(action='', method="GET")
+        .input-group
+          input.form-control(type="text", name="keyword", placeholder="Tìm theo id đơn hàng, tên sản phẩm", value=keyword?keyword:"")
+          .input-group-append
+            button#search-btn.btn.btn-secondary(type="submit")
+              i.fas.fa-search
+
+    #orders
+      //- .order
+      //-   .status-order.text-right.py-2
+      //-     span.text-danger ĐÃ ĐÁNH GIÁ
+      //-   a(href="#").order-list
+      //-     .order-item.py-2.d-flex.align-items-center
+      //-       .order-item-img
+      //-         img(src="/images/shop/logo_3.png", width="80px")
+      //-       .order-item-content.flex-fill.mx-2
+      //-         .order-item-title Ten san pham
+      //-         .order-item-type
+      //-           small Phan loai hang
+      //-         .order-item-amount x1
+      //-       .order-item-price
+      //-         del ₫340.000
+      //-         br
+      //-         span.text-danger ₫340.000
+      //-     .order-item.py-2.d-flex.align-items-center
+      //-       .order-item-img
+      //-         img(src="/images/shop/logo_3.png", width="80px")
+      //-       .order-item-content.flex-fill.mx-2
+      //-         .order-item-title Ten san pham
+      //-         .order-item-type
+      //-           small Phan loai hang
+      //-         .order-item-amount x1
+      //-       .order-item-price
+      //-         del ₫340.000
+      //-         br
+      //-         span.text-danger ₫340.000
+      //-   .order-price.pt-4.text-right
+      //-     span Tổng số tiền: 
+      //-     span.text-danger ₫427.500
+      //-   .order-footer.text-right
+      //-     button.m-1.btn.btn-danger(type="button") Mua lần nữa
+      //-     button.m-1.btn.btn-light(type="button") Xem chi tiết đơn hàng
+      .nooder.d-flex.flex-column.justify-content-center.align-items-center
+        img(src="/images/shop/noorder.png", width="80px")
+        span Chưa có đơn hàng
+//- append script
+//-   script(src="/scripts/customer/personal-purchase.js")
