@@ -102,10 +102,19 @@ create table sanpham (
 );
 alter table sanpham convert to character set utf16 collate utf16_general_ci;
 alter table sanpham add column ngaythem datetime;
+alter table sanpham add column trangthai varchar(5) default '1';
+
+-- trang thai san pham:
+  -- 0: khong con ban
+  -- 1: dang ban
+  -- 2: cho ban
 
 update sanpham
 set ngaythem = now()
 where ma_sanpham = '3';
+
+update sanpham
+set trangthai = '1';
 
 insert into sanpham (ma_sanpham, ten_sanpham, ma_loai2, ma_thuonghieu, ma_chatlieu, mota, giaban, khuyenmai, hinhanh)
 values ('1', 'áo sơ mi nam cổ tàu dài tay ikemen smt01', 3, 1, 6, 'áo sơ mi nam cổ tàu dài tay ikemen :
@@ -1699,32 +1708,34 @@ values ('Chờ xác nhận'),
       ('Trả hàng/Hoàn tiền');
 
 create table dondathang (
-	ma_dondathang int not null,
+	ma_dondathang varchar(50) not null,
   ma_khachhang varchar(50) not null,
-  ngay_dathang date,
   ma_trangthai int not null,
   ten_nguoinhan varchar(100) not null,
   dienthoai_nguoinhan varchar(20) not null,
-	`tinh/thanhpho` varchar(100) not null,
-  `quan/huyen` varchar(100) not null,
-  `phuong/xa` varchar(100) not null,
-  `sonha/duong` varchar(100) not null,
+	tinh varchar(100) not null,
+  huyen varchar(100) not null,
+  xa varchar(100) not null,
+  nha varchar(100) not null,
   phi_vanchuyen int default 0,
-  ngay_xuathang date,
-  ngay_giaohang date,
+  ngay_dathang datetime, -- ngay khach dat hang tren shop
+  ngay_xacnhan datetime, -- ngay chu shop xac nhan don hang
+  ngay_giaohang datetime, -- ngay bat dau giao hang
+  ngay_nhanhang datetime, -- ngay khach nhan duoc hang
+  ngay_huyhang datetime, -- ngay khach huy hang
   primary key (ma_dondathang),
   foreign key (ma_khachhang) references khachhang (ma_khachhang),
   foreign key (ma_trangthai) references trangthai_donhang (ma_trangthai)
 );
 
 create table ct_dondathang (
-	ma_dondathang int not null,
+	ma_dondathang varchar(50) not null,
   ma_sanpham varchar(50) not null,
   soluong int default 1,
   giagoc int default 0,
   khuyenmai int default 0,
   primary key (ma_dondathang, ma_sanpham),
-  foreign key (ma_dondathang) references dondathang (ma_dondathang),
+  foreign key (ma_dondathang) references dondathang (ma_dondathang) on delete cascade,
   foreign key (ma_sanpham) references sanpham (ma_sanpham)
 );
 -- ---------------------------------------------------- --
@@ -1744,6 +1755,24 @@ create table giohang (
 -- insert into giohang(ma_khachhang, ma_sanpham, soluong, mausac, size, ngaythem)
 -- values ('1', '1', 2, 'ĐEN', 'M', null);
 
+create table thongbao (
+	ma_thongbao varchar(50) not null,
+  tieude varchar(255),
+  noidung text,
+  ngaydang datetime,
+  primary key (ma_thongbao)
+);
+
+create table thongbao_khachhang (
+  ma_thongbao varchar(50) not null,
+	ma_khachhang varchar(50) not null,
+  daxem boolean default false,
+  primary key (ma_khachhang, ma_thongbao),
+  foreign key (ma_khachhang) references khachhang (ma_khachhang) on delete cascade,
+  foreign key (ma_thongbao) references thongbao (ma_thongbao) on delete cascade
+);
+
+
 -- -------------------procedure -------------------- --
 
 drop procedure SP_SELECT_PRODUCT_SUGGESTION;
@@ -1753,6 +1782,7 @@ create procedure SP_SELECT_PRODUCT_SUGGESTION()
 begin
 	select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, ma_loai2, hinhanh, ma_chatlieu
   from sanpham
+  where trangthai = '1'
   order by ngaythem desc
   limit 24;
 end $$
@@ -1770,7 +1800,7 @@ begin
     where ma_khachhang = _iduser;
     
   -- lấy từng sản phẩm
-  select gh.ma_sanpham, sp.ten_sanpham, mausac, size, soluong, hinhanh, giaban, khuyenmai
+  select gh.ma_sanpham, sp.ten_sanpham, mausac, size, soluong, hinhanh, giaban, khuyenmai, sp.trangthai
   from giohang gh join sanpham sp on gh.ma_sanpham = sp.ma_sanpham
 	where ma_khachhang = _iduser
   order by gh.ngaythem desc;
@@ -1791,7 +1821,8 @@ begin
   -- lấy sản phẩm tương tự (cùng mã loại 2 và cùng mã chất liệu)
   select ma_sanpham, ten_sanpham, giaban, daban, khuyenmai, hinhanh
   from sanpham
-  where ma_loai2 = _idcategory2 and ma_chatlieu = _idmaterial and ma_sanpham != _idpro
+  where ma_loai2 = _idcategory2 and ma_chatlieu = _idmaterial
+    and ma_sanpham != _idpro and trangthai = '1'
   order by daban desc;
 end $$
 delimiter ;
@@ -1904,12 +1935,14 @@ create procedure sp_select_product_all(_offset int, _linmit int)
 begin
 	select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, ma_loai2, hinhanh, ma_chatlieu
   from sanpham
+  where trangthai = '1'
   order by ngaythem desc
   limit _offset, _linmit;
 
   -- select sum product
   select count(ma_sanpham) as tong
-  from sanpham;
+  from sanpham
+  where trangthai = '1';
 end $$
 delimiter ;
 call sp_select_product_all();
@@ -1924,6 +1957,7 @@ begin
   from sanpham sp join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
                   join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
   where l1.ma_loai0 = _style
+    and sp.trangthai = '1'
   order by ngaythem desc
   limit _offset, _limit;
 
@@ -1931,7 +1965,7 @@ begin
   select count(ma_sanpham) as tong
   from sanpham sp join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
                   join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
-  where l1.ma_loai0 = _style;
+  where l1.ma_loai0 = _style and sp.trangthai = '1';
 end $$
 delimiter ;
 call sp_select_product_style(2);
@@ -1959,12 +1993,14 @@ delimiter ;
 
 select * from sanpham;
 
+drop procedure SP_INSERT_CART;
 delimiter $$
 create procedure SP_INSERT_CART(_idpro varchar(50), _iduser varchar(50), _color varchar(30), _size varchar(20), _sl int)
 spinsertcartlabel:begin
 	-- check
   if not exists (select * from sanpham sp join phanloaisanpham pl on sp.ma_sanpham = pl.ma_sanpham
-                  where sp.ma_sanpham = _idpro and pl.mausac = _color and pl.size = _size)
+                  where sp.ma_sanpham = _idpro and pl.mausac = _color
+                    and pl.size = _size and sp.trangthai = '1')
     then signal sqlstate '45000' set message_text = 'product not exists';
 	end if;
     
@@ -2041,7 +2077,7 @@ begin
                     join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
                     join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
                     join loai_sp0 l0 on l1.ma_loai0 = l0.ma_loai0
-    where l0.ma_loai0 = ', _loai0, ' and (l1.ma_loai1 in (', _loai1, ') or \'', _loai1, '\' = \'-1\')',
+    where sp.trangthai = \'1\' and l0.ma_loai0 = ', _loai0, ' and (l1.ma_loai1 in (', _loai1, ') or \'', _loai1, '\' = \'-1\')',
       ' and (l2.ma_loai2 in (', _loai2, ') or \'', _loai2, '\' = \'-1\')',
       ' and (cl.ma_chatlieu in (', _material, ') or \'', _material, '\' = \'-1\')',
       ' and ((sp.giaban * (1 - sp.khuyenmai / 100)) >= ', _minRange, ' or ', _minRange, ' = 0)',
@@ -2059,6 +2095,7 @@ call SP_SEARCH_STYLE(1, '-1', '-1', '-1', 0, 0, '(sp.giaban * (1 - sp.khuyenmai 
 
 select ma_loai2 from sanpham;
 
+drop procedure SP_SELECT_PRODCUT_FOR_SEARCH;
 delimiter $$
 create procedure SP_SELECT_PRODCUT_FOR_SEARCH()
 begin
@@ -2069,6 +2106,7 @@ begin
                   join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
                   join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
                   join loai_sp0 l0 on l1.ma_loai0 = l0.ma_loai0
+  where sp.trangthai = '1'
   order by ngaythem desc;
 end $$
 delimiter ;
