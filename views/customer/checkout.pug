@@ -1,0 +1,82 @@
+extends ./common
+
+append style
+  link(rel="stylesheet", href="/styles/customer/checkout.css")
+
+block main
+  #checkout-header.bg-white.p-4
+    a(href="/")
+      img(src="/images/shop/logo_3.png", alt="ShopOH", title="ShopOH", width="50px")
+    span.text-danger THANH TOÁN
+  #checkout-main
+    #checkout-address.bg-white
+      .border-pro
+      #checkout-address-main.p-3
+        .text-danger
+          i.fas.fa-map-marker-alt
+          span  Địa Chỉ Nhận Hàng
+        #address-choose.mt-3
+          .d-flex.justify-content-between
+            .flex-fill
+              b Ten (so dien thoai)
+              br
+              span dia chi
+            div
+              button#change-address-btn.btn.btn-light(type="button") THAY ĐỔI
+        #address-select(style="display: none")
+          .text-right
+            a.btn.btn-light(role="button", href="/account/address") Thiết Lập Địa Chỉ
+          .custom-control.custom-radio
+            input.custom-control-input(id=`x`, type="radio", name="address", value='x', checked=true)
+            label.custom-control-label(for=`x`)
+              b Ten (so dien thoai)
+              br
+              span dia chi
+          .custom-control.custom-radio
+            input.custom-control-input(id=`x`, type="radio", name="address", value='x')
+            label.custom-control-label(for=`x`)
+              b Ten (so dien thoai)
+              br
+              span dia chi
+          .mt-2
+            button.btn.btn-danger.mr-3(type="button") Hoàn thành
+            button#address-cancel.btn.btn-light(type="button") Trở Lại
+    #checkout-product.bg-white.mt-3
+      table.table.bg-white
+        thead
+          tr.text-center
+            th.text-left Sản phẩm
+            th Đơn giá
+            th Số lượng
+            th Thành tiền
+        tbody
+          tr.text-center
+            td.d-flex
+              img(src='/images/shop/logo_3.png', width="40px", height="40px")
+              div.text-left.ml-2
+                div product.ten_sanpham
+                small `Loại: màu ${product.mausac}, size: ${product.size}`
+            td ₫00000
+            td 1
+            td ₫00000
+    #checkout-type-checkout.mt-3.bg-white.p-3
+      div
+        span Phương thức thanh toán: 
+        span.text-danger Thanh toán khi nhận hàng
+    #checkout-price.pt-4.bg-white.p-3
+      .checkout-price-item.text-secondary.d-flex.justify-content-between
+        span Tổng tiền hàng 
+        span ₫427.500
+      .checkout-price-item.text-secondary.d-flex.justify-content-between
+        span Phí vận chuyển: 
+        span ₫427.500
+      .checkout-price-item.text-secondary.d-flex.justify-content-between
+        span Tổng số tiền: 
+        span.text-danger(style="font-size: 30px") ₫427.500
+    #checkout-OK.bg-white.p-3.text-right
+      button.btn.btn-danger(type="button") Đặt Hàng
+    
+
+append script
+  script(src="/scripts/customer/checkout.js")
+

@@ -1,0 +1,46 @@
+#header-middle {
+  display: none !important;
+}
+
+#checkout-header > span {
+  font-size: 25px;
+  padding-left: 10px;
+  border-left: 1px solid #ea4d2b;
+}
+
+#checkout-header > a {
+  padding-right: 10px;
+}
+
+#checkout-main {
+  padding: 15px 25px 40px 25px;
+  background-color: #f5f5f5;
+}
+
+.border-pro {
+  height: .1875rem;
+  width: 100%;
+  background-position-x: -1.875rem;
+  background-size: 7.25rem .1875rem;
+  background-image: repeating-linear-gradient(45deg,#6fa6d6,#6fa6d6 33px,transparent 0,transparent 41px,#f18d9b 0,#f18d9b 74px,transparent 0,transparent 82px);
+}
+
+.text-danger {
+  font-size: 18px;
+}
+
+.checkout-price-item {
+  padding: 10px;
+}
+
+#checkout-price {
+  border-top: 1px dotted rgba(0,0,0,.09);
+}
+
+#checkout-OK > button {
+  width: 200px;
+}
+
+#checkout-OK {
+  border-top: 1px dotted rgba(0,0,0,.09);
+}

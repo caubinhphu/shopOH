@@ -257,7 +257,7 @@ module.exports.putProfilePassword = async (req, res, next) => {
 
 // get notification
 module.exports.getNotification = (req, res, next) => {
-  res.render('customer/personal-notification', {
+  res.render('customer/checkout', {
     titleSite: 'ShopOH - Tài khoản của tôi',
     active: 'notification'
   });
