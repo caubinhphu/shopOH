@@ -13,6 +13,7 @@ const customerAccountRoute = require('./routers/personal-customer.router');
 const customerProductRoute = require('./routers/product-customer.router');
 const customerCartRoute = require('./routers/cart-customer.router');
 const authRouter = require('./routers/auth.router');
+const checkoutRoute = require('./routers/checkout.router');
 
 // middleware
 const authMiddleware = require('./middlewares/auth.middleware');
@@ -63,6 +64,7 @@ app.use('/', usernameMiddleware, customerProductRoute);
 app.use('/login', authRouter);
 app.use('/account', authMiddleware, usernameMiddleware, customerAccountRoute);
 app.use('/cart', authMiddleware, usernameMiddleware, customerCartRoute);
+app.use('/checkout', authMiddleware, usernameMiddleware, checkoutRoute);
 
 // handle errors
 app.use((err, req, res, next) => {

@@ -1701,22 +1701,23 @@ create table trangthai_donhang (
 
 insert into trangthai_donhang(ten_trangthai)
 values ('Chờ xác nhận'),
-	    ('Chờ lấy hàng'),
+	    ('Đã xác nhận'),
       ('Đang giao'),
       ('Đã giao'),
       ('Đã huỷ'),
       ('Trả hàng/Hoàn tiền');
 
+drop table dondathang;
 create table dondathang (
 	ma_dondathang varchar(50) not null,
   ma_khachhang varchar(50) not null,
   ma_trangthai int not null,
-  ten_nguoinhan varchar(100) not null,
-  dienthoai_nguoinhan varchar(20) not null,
-	tinh varchar(100) not null,
-  huyen varchar(100) not null,
-  xa varchar(100) not null,
-  nha varchar(100) not null,
+  ten_nguoinhan varchar(100),
+  dienthoai_nguoinhan varchar(20),
+	tinh varchar(100),
+  huyen varchar(100),
+  xa varchar(100),
+  nha varchar(100),
   phi_vanchuyen int default 0,
   ngay_dathang datetime, -- ngay khach dat hang tren shop
   ngay_xacnhan datetime, -- ngay chu shop xac nhan don hang
@@ -1728,11 +1729,14 @@ create table dondathang (
   foreign key (ma_trangthai) references trangthai_donhang (ma_trangthai)
 );
 
+drop table ct_dondathang;
 create table ct_dondathang (
 	ma_dondathang varchar(50) not null,
   ma_sanpham varchar(50) not null,
+  mausac varchar(30) not null,
+  size varchar(20) not null,
   soluong int default 1,
-  giagoc int default 0,
+  giaban int default 0,
   khuyenmai int default 0,
   primary key (ma_dondathang, ma_sanpham),
   foreign key (ma_dondathang) references dondathang (ma_dondathang) on delete cascade,
@@ -2362,3 +2366,55 @@ begin
   end if;
 end $$
 delimiter ;
+
+drop procedure CHECK_PRODUCT_CHECKOUT;
+delimiter $$
+create procedure CHECK_PRODUCT_CHECKOUT(_idpro varchar(50), _color varchar(30), _size varchar(20), _sl int)
+begin
+  select pl.*, sp.ten_sanpham, sp.hinhanh, sp.giaban, sp.khuyenmai, _sl as sl
+  from phanloaisanpham pl join sanpham sp on pl.ma_sanpham = sp.ma_sanpham
+  where pl.ma_sanpham = _idpro and mausac = _color
+    and size = _size and soluongton >= _sl and sp.trangthai = '1';
+end $$
+delimiter ;
+
+drop procedure CREATE_ORDER;
+delimiter $$
+create procedure CREATE_ORDER(_iduser varchar(50), _idorder varchar(50))
+begin
+  insert into dondathang (ma_dondathang, ma_khachhang, ngay_dathang, phi_vanchuyen, ma_trangthai)
+  values (_idorder, _iduser, now(), 50000, 1);
+end $$
+delimiter ;
+
+drop procedure INSERT_ADDRESS_ORDER;
+delimiter $$
+create procedure INSERT_ADDRESS_ORDER(_idorder varchar(50), _ten varchar(100), _sdt varchar(20),
+  _tinh varchar(100), _huyen varchar(100), _xa varchar(100), _nha varchar(100))
+begin
+  update dondathang
+  set ten_nguoinhan = _ten,
+    dienthoai_nguoinhan = _sdt,
+    tinh = _tinh,
+    huyen = _huyen,
+    xa = _xa,
+    nha = _nha
+  where ma_dondathang = _idorder;
+end $$
+delimiter ;
+
+drop procedure INSERT_ORDER;
+delimiter $$
+create procedure INSERT_ORDER(
+  _idorder varchar(50), _idpro varchar(50), _mau varchar(30), _size varchar(20),
+  _sl int, _gia int, _khuyenmai int
+)
+begin
+  insert into ct_dondathang(ma_dondathang, ma_sanpham, mausac, size, soluong, giaban, khuyenmai)
+  values (_idorder, _idpro, _mau, _size, _sl, _gia, _khuyenmai);
+end $$
+delimiter ;
+
+select * from dondathang;
+select * from ct_dondathang;
+delete from dondathang;

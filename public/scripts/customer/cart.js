@@ -119,3 +119,30 @@ deleteBtn.forEach(btn => {
       .catch(err => location.reload());
   });
 });
+
+document.getElementById('sell-btn').addEventListener('click', function() {
+  let checked = [...document.querySelectorAll('input[name="product"]:checked')];
+  if (checked.length === 0) {
+    alert('Chưa chọn sản phẩm nào!');
+  } else {
+    let querySring = new URLSearchParams();
+    checked.forEach(check => {
+      let qs = check.dataset.checkout;
+      // get sl
+      qs +=
+        '$' +
+        check.parentElement.parentElement.children[3].firstElementChild.value;
+      querySring.append('item', qs);
+    });
+    axios
+      .get(`/checkout/gettoken?${querySring.toString()}`)
+      .then(res => {
+        if (res.status === 200) {
+          location.href = `/checkout?token=${res.data.token}`;
+        }
+      })
+      .catch(err => {
+        location.reload();
+      });
+  }
+});

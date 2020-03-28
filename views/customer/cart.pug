@@ -23,7 +23,7 @@ block main
             each product in cartProduct
               tr.text-center
                 td.cart-checkbox.custom-control.custom-checkbox.text-center
-                  input.custom-control-input(data-product=product.encode, checked, type='checkbox', name="product", id=`select-${product.encode}`)
+                  input.custom-control-input(data-product=product.encode, checked, type='checkbox', name="product", id=`select-${product.encode}`, data-checkout=`${product.ma_sanpham}$${product.mausac}$${product.size}`)
                   label.custom-control-label(for=`select-${product.encode}`)
                 td.text-left.cart-name-product
                   a(href=`/product/${product.ma_sanpham}`)
@@ -37,7 +37,7 @@ block main
                   span
                     span ₫
                     span.cart-dongia(data-product=product.encode)= Math.round(product.giaban * (1 - product.khuyenmai / 100))
-                td
+                td(style="max-width: 100px")
                   input.text-center.form-control(data-product=product.encode, type="number", min="1", max=`${product.soluongton}`, value=product.soluong, name="soluong")
                 td.text-danger
                   span ₫
@@ -54,7 +54,7 @@ block main
             .text-danger.cart-price
               span ₫
               span#cart-price= Math.round(sumPrice.tongtien)
-            button.btn.btn-danger.px-1.px-md-5(type="button") Mua hàng
+            button#sell-btn.btn.btn-danger.px-1.px-md-5(type="button") Mua hàng
       else
         .d-flex.flex-column.justify-content-center.align-items-center
           img(src="/images/shop/nocart.png", alt="no cart", style="width: 10%")

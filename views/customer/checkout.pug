@@ -1,9 +1,58 @@
-extends ./common
+extends ../common
 
 append style
   link(rel="stylesheet", href="/styles/customer/checkout.css")
 
-block main
+block content
+  #header-background
+    #header.container
+      #header-top.d-md-flex.justify-content-between.pt-1
+        #header-top-left
+          ul.d-flex
+            li
+              a(href="#") Kênh bán hàng
+            li
+              span Kết nối 
+              a(href="#")
+                i.fab.fa-facebook
+              span &nbsp;
+              a(href="#")
+                i.fab.fa-instagram
+        #header-top-right.text-md-right
+          ul.d-flex.justify-content-end
+            li
+              .popover__wrapper
+                a.d-flex(href='#')
+                  .position-root
+                    i.far.fa-bell
+                  span &nbsp;Thông báo
+                  .position-child
+                    span.badge.badge-pill.badge-light 0
+                if (user)
+                  .popover__content
+                    p.popover__message Thông báo mới nhận
+                    .popover__content__main.p-2.d-flex
+                      .popover__content__img(style='background-image: url("/images/shop/917385.jpg")')
+                      .popover__content__thongbao
+                        .popover__content__thongbao__title Tên thông báo
+                        .popover__content__thongbao__content Nội dung thông báo
+            li
+              a.d-flex(href='#')
+                i.far.fa-question-circle
+                span Trợ giúp
+            if (user)
+              li
+                .popover__wrapper__user
+                  a.d-flex(href='/account/purchase')
+                    img#img-avatar-mini(src=`${avatarUser}`, width="20px", height="20px")
+                    span= ` ${user}`
+                  .popover__content__user.d-none.d-md-inline
+                    .popover__content__main__user.p-2.d-flex
+                      a.color-default(href="/account/profile") Tài khoản của tôi
+                    .popover__content__main__user.p-2.d-flex
+                      a.color-default(href="/account/purchase") Đơn mua
+                    .popover__content__main__user.p-2.d-flex
+                      a.color-default(href="/login/logout") Đăng xuất
   #checkout-header.bg-white.p-4
     a(href="/")
       img(src="/images/shop/logo_3.png", alt="ShopOH", title="ShopOH", width="50px")
@@ -15,31 +64,26 @@ block main
         .text-danger
           i.fas.fa-map-marker-alt
           span  Địa Chỉ Nhận Hàng
-        #address-choose.mt-3
+        #address-choose.mt-3(style=`display: ${addrs.length <= 0 ? 'none' : 'block'}`)
           .d-flex.justify-content-between
-            .flex-fill
-              b Ten (so dien thoai)
+            #address.flex-fill
+              b= `${addrDefault.ten} (${addrDefault.dienthoai})`
               br
-              span dia chi
+              span= `${addrDefault.nha}, ${addrDefault.xa}, ${addrDefault.huyen}, ${addrDefault.tinh}`
             div
               button#change-address-btn.btn.btn-light(type="button") THAY ĐỔI
-        #address-select(style="display: none")
+        #address-select(style=`display: ${addrs.length > 0 ? 'none' : 'block'}`)
           .text-right
             a.btn.btn-light(role="button", href="/account/address") Thiết Lập Địa Chỉ
-          .custom-control.custom-radio
-            input.custom-control-input(id=`x`, type="radio", name="address", value='x', checked=true)
-            label.custom-control-label(for=`x`)
-              b Ten (so dien thoai)
-              br
-              span dia chi
-          .custom-control.custom-radio
-            input.custom-control-input(id=`x`, type="radio", name="address", value='x')
-            label.custom-control-label(for=`x`)
-              b Ten (so dien thoai)
-              br
-              span dia chi
+          each addr in addrs
+            .custom-control.custom-radio
+              input.custom-control-input(id=`addr-${addr.ma_diachi}`, type="radio", name="address", value=addr.encode, checked=addr.macdinh?true:false)
+              label.custom-control-label(for=`addr-${addr.ma_diachi}`)
+                b= `${addr.ten} (${addr.dienthoai})`
+                br
+                span= `${addr.nha}, ${addr.xa}, ${addr.huyen}, ${addr.tinh}`
           .mt-2
-            button.btn.btn-danger.mr-3(type="button") Hoàn thành
+            button#address-complete-btn.btn.btn-danger.mr-3(type="button") Hoàn thành
             button#address-cancel.btn.btn-light(type="button") Trở Lại
     #checkout-product.bg-white.mt-3
       table.table.bg-white
@@ -50,15 +94,16 @@ block main
             th Số lượng
             th Thành tiền
         tbody
-          tr.text-center
-            td.d-flex
-              img(src='/images/shop/logo_3.png', width="40px", height="40px")
-              div.text-left.ml-2
-                div product.ten_sanpham
-                small `Loại: màu ${product.mausac}, size: ${product.size}`
-            td ₫00000
-            td 1
-            td ₫00000
+          each item in items
+            tr.text-center
+              td.d-flex
+                img(src=item.hinhanh.split(',')[0], width="40px", height="40px")
+                div.text-left.ml-2
+                  div= item.ten_sanpham
+                  small= `Loại: màu ${item.mausac}, size: ${item.size}`
+              td= `₫${Math.round(item.giaban * (1 - item.khuyenmai / 100))}`
+              td= item.sl
+              td= `₫${Math.round(item.giaban * (1 - item.khuyenmai / 100)) * item.sl}`
     #checkout-type-checkout.mt-3.bg-white.p-3
       div
         span Phương thức thanh toán: 
@@ -66,15 +111,15 @@ block main
     #checkout-price.pt-4.bg-white.p-3
       .checkout-price-item.text-secondary.d-flex.justify-content-between
         span Tổng tiền hàng 
-        span ₫427.500
+        span= `₫${sumPrice}`
       .checkout-price-item.text-secondary.d-flex.justify-content-between
         span Phí vận chuyển: 
-        span ₫427.500
+        span ₫50000
       .checkout-price-item.text-secondary.d-flex.justify-content-between
         span Tổng số tiền: 
-        span.text-danger(style="font-size: 30px") ₫427.500
+        span.text-danger(style="font-size: 30px")= `₫${sumPrice + 50000}`
     #checkout-OK.bg-white.p-3.text-right
-      button.btn.btn-danger(type="button") Đặt Hàng
+      button#checkout-btn.btn.btn-danger(type="button") Đặt Hàng
     
 
 append script
