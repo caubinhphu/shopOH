@@ -64,4 +64,6 @@ router.put(
   controller.putAddress
 );
 
+router.get('/purchase/order/:idOrder', miniCartMiddleware, controller.getOrder);
+
 module.exports = router;

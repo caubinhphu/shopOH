@@ -9,7 +9,12 @@
 }
 
 #nav-purchase > a:hover {
+  text-decoration: none;
   color: #ee4d2d;
+}
+
+.purchase-active {
+  color: #ee4d2d !important;
   text-decoration: none;
   border-bottom: 2px solid #ee4d2d;
 }
@@ -45,7 +50,7 @@
   font-size: 35px;
 }
 
-.nooder {
+.noorder {
   height: 500px;
   background-color: white;
 }

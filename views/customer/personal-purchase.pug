@@ -6,12 +6,12 @@ append style
 block main-personal
   .flex-fill
     #nav-purchase.d-flex.justify-content-between.text-center
-      a.flex-fill(href="#") Tất cả
-      a.flex-fill(href="#") Chờ xác nhận
-      a.flex-fill(href="#") Đã xác nhận
-      a.flex-fill(href="#") Đang giao
-      a.flex-fill(href="#") Đã giao
-      a.flex-fill(href="#") Đã hủy
+      a.flex-fill(href="/account/purchase", class=type===0?'purchase-active':'') Tất cả
+      a.flex-fill(href="/account/purchase?type=1", class=type===1?'purchase-active':'') Chờ xác nhận
+      a.flex-fill(href="/account/purchase?type=2", class=type===2?'purchase-active':'') Đã xác nhận
+      a.flex-fill(href="/account/purchase?type=3", class=type===3?'purchase-active':'') Đang giao
+      a.flex-fill(href="/account/purchase?type=4", class=type===4?'purchase-active':'') Đã giao
+      a.flex-fill(href="/account/purchase?type=5", class=type===5?'purchase-active':'') Đã hủy
 
     #search-purchase.my-2
       form(action='', method="GET")
@@ -22,42 +22,35 @@ block main-personal
               i.fas.fa-search
 
     #orders
-      //- .order
-      //-   .status-order.text-right.py-2
-      //-     span.text-danger ĐÃ ĐÁNH GIÁ
-      //-   a(href="#").order-list
-      //-     .order-item.py-2.d-flex.align-items-center
-      //-       .order-item-img
-      //-         img(src="/images/shop/logo_3.png", width="80px")
-      //-       .order-item-content.flex-fill.mx-2
-      //-         .order-item-title Ten san pham
-      //-         .order-item-type
-      //-           small Phan loai hang
-      //-         .order-item-amount x1
-      //-       .order-item-price
-      //-         del ₫340.000
-      //-         br
-      //-         span.text-danger ₫340.000
-      //-     .order-item.py-2.d-flex.align-items-center
-      //-       .order-item-img
-      //-         img(src="/images/shop/logo_3.png", width="80px")
-      //-       .order-item-content.flex-fill.mx-2
-      //-         .order-item-title Ten san pham
-      //-         .order-item-type
-      //-           small Phan loai hang
-      //-         .order-item-amount x1
-      //-       .order-item-price
-      //-         del ₫340.000
-      //-         br
-      //-         span.text-danger ₫340.000
-      //-   .order-price.pt-4.text-right
-      //-     span Tổng số tiền: 
-      //-     span.text-danger ₫427.500
-      //-   .order-footer.text-right
-      //-     button.m-1.btn.btn-danger(type="button") Mua lần nữa
-      //-     button.m-1.btn.btn-light(type="button") Xem chi tiết đơn hàng
-      .nooder.d-flex.flex-column.justify-content-center.align-items-center
-        img(src="/images/shop/noorder.png", width="80px")
-        span Chưa có đơn hàng
+      if (orders.length === 0)
+        .noorder.d-flex.flex-column.justify-content-center.align-items-center
+          img(src="/images/shop/noorder.png", width="80px")
+          span Chưa có đơn hàng
+      else
+        each order in orders
+          .order
+            .status-order.text-right.py-2
+              span.text-danger= order.purchase.ten_trangthai.toUpperCase()
+            a.order-list(href=`/account/purchase/order/${order.purchase.ma_dondathang}`)
+              each item in order.items
+                .order-item.py-2.d-flex.align-items-center
+                  .order-item-img
+                    img(src=item.hinhanh.split(',')[0], width="80px")
+                  .order-item-content.flex-fill.mx-2
+                    .order-item-title= item.ten_sanpham
+                    .order-item-type
+                      small= `Loại: màu ${item.mausac}, size: ${item.size}`
+                    .order-item-amount= `x${item.soluong}`
+                  .order-item-price
+                    if (item.khuyenmai > 0)
+                      del= `₫${item.giaban * item.soluong}`
+                      br
+                    span.text-danger= `₫${Math.round(item.giaban * (1 - item.khuyenmai / 100)) * item.soluong}`
+            .order-price.pt-4.text-right
+              span Tổng số tiền: 
+              span.text-danger= `₫${order.sumPrice + order.purchase.phi_vanchuyen}`
+            .order-footer.text-right
+              //- button.m-1.btn.btn-danger(type="button") Mua lần nữa
+              a.m-1.btn.btn-light(role="button", href=`/account/purchase/order/${order.purchase.ma_dondathang}`) Xem chi tiết đơn hàng
 //- append script
 //-   script(src="/scripts/customer/personal-purchase.js")

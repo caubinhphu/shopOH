@@ -172,11 +172,98 @@ module.exports.putAvatar = async (req, res) => {
 };
 
 // get purchase
-module.exports.getPurchase = (req, res, next) => {
+module.exports.getPurchase = async (req, res, next) => {
+  // get type purchase
+  let type = +req.query.type || 0;
+
+  // get purchase
+  let data = await querySQL('call SELECT_PURCHASE(?, ?)', [req.userId, type]);
+  let purchases = data[0];
+  let orders = [];
+  // get item in each purchase / order
+  for (let purchase of purchases) {
+    let order = { purchase };
+    let itemData = await querySQL('call SELECT_CT_PURCHASE(?)', [
+      purchase.ma_dondathang
+    ]);
+    let items = itemData[0];
+    let sumPrice = 0;
+    for (let item of items) {
+      sumPrice += Math.round(
+        item.giaban * (1 - item.khuyenmai / 100) * item.soluong
+      );
+    }
+    order.items = items;
+    order.sumPrice = sumPrice;
+    orders.push(order);
+  }
+
   res.render('customer/personal-purchase', {
     titleSite: 'ShopOH - Tài khoản của tôi',
-    active: 'purchase'
+    active: 'purchase',
+    orders,
+    type
   });
+};
+
+// get order
+module.exports.getOrder = async (req, res, next) => {
+  try {
+    // get id order
+    let { idOrder } = req.params;
+
+    // get info of order
+    let data = await querySQL('call SELECT_INFO_ORDER(?, ?)', [
+      req.userId,
+      idOrder
+    ]);
+    let order = data[0][0],
+      items = data[1];
+
+    // caculator sum price
+    let sumPrice = 0;
+    for (let item of items) {
+      sumPrice += Math.round(
+        item.giaban * (1 - item.khuyenmai / 100) * item.soluong
+      );
+    }
+
+    // get time list status order
+    let statuses = [];
+    if (order.ngay_dathang) {
+      statuses.unshift({ time: order.ngay_dathang, st: 'Đặt đơn hàng' });
+    }
+    if (order.ngay_xacnhan) {
+      statuses.unshift({
+        time: order.ngay_xacnhan,
+        st: 'Đã xác nhận đơn hàng'
+      });
+    }
+    if (order.ngay_giaohang) {
+      statuses.unshift({
+        time: order.ngay_giaohang,
+        st: 'Bắt đầu giao đơn hàng'
+      });
+    }
+    if (order.ngay_nhanhang) {
+      statuses.unshift({ time: order.ngay_nhanhang, st: 'Giao đơn hàng' });
+    }
+    if (order.ngay_huyhang) {
+      statuses.unshift({ time: order.ngay_huyhang, st: 'Hủy đơn hàng' });
+    }
+
+    // render
+    res.render('customer/personal-order', {
+      titleSite: 'ShopOH - Order',
+      active: 'purchase',
+      order,
+      items,
+      sumPrice,
+      statuses
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 // get profile password

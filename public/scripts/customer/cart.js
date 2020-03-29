@@ -89,12 +89,10 @@ soluongInput.forEach(input => {
       })
       .then(res => {
         if (res.status === 200) {
-          let priceText = document.querySelector(
-            `.cart-price-item[data-product="${this.dataset.product}"]`
-          );
-          let donGia = document.querySelector(
-            `.cart-dongia[data-product="${this.dataset.product}"]`
-          );
+          let priceText = this.parentElement.nextElementSibling
+            .lastElementChild;
+          let donGia = this.parentElement.previousSibling.lastElementChild
+            .lastElementChild;
           priceText.innerHTML = +donGia.innerHTML * +this.value;
           totalPrice.innerHTML = getSumPrice();
           let sumPro = getSumProduct();

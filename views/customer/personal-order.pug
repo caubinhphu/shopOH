@@ -7,72 +7,57 @@ block main-personal
   .flex-fill
     .d-flex.justify-content-between.bg-white.p-2
       div
-        a.text-secondary(href="#") TRỞ LẠI
+        a.text-secondary(href="/account/purchase") TRỞ LẠI
       div
         span ID ĐƠN HÀNG: 
-        span.mr-3 wehrqwenasdf
-        span.text-danger.ml-3.outline-left ĐÃ ĐÁNH GIÁ
+        span.mr-3= order.ma_dondathang
+        span.text-danger.ml-3.outline-left= order.ten_trangthai.toUpperCase()
     #order-status.bg-white.p-3.px-5
-      .order-status-item.mb-2
-        span.mr-2 13:06 23-03-2020
-        span giao hàng/Chưa đối soát
-      .order-status-item.mb-2.text-secondary
-        span.mr-2 13:06 23-03-2020
-        span giao hàng/Chưa đối soát
-      .order-status-item.mb-2.text-secondary
-        span.mr-2 13:06 23-03-2020
-        span giao hàng/Chưa đối soát
-      .order-status-item.mb-2.text-secondary
-        span.mr-2 13:06 23-03-2020
-        span giao hàng/Chưa đối soát
-    #order-sell-again.p-3.text-right
-      button.btn.btn-danger(type="button") Mua lần nữa
+      each status in statuses
+        .order-status-item.mb-2.text-secondary
+          i.fas.fa-check
+          span &nbsp;
+          span.mr-2= status.time.toLocaleString()
+          span.text-info= status.st
+    //- #order-sell-again.p-3.text-right
+    //-   button.btn.btn-danger(type="button") Mua lần nữa
     #order-address.mt-2.bg-white.p-2
       .border-pro
       #order-address-content.py-3.pl-3
         div(style="font-size: 20px") Địa Chỉ Nhận Hàng
-        div name
-        small.text-secondary phone
+        div= order.ten_nguoinhan
+        small.text-secondary= order.dienthoai_nguoinhan
         br
-        small.text-secondary address
+        small.text-secondary= `${order.nha}, ${order.xa}, ${order.huyen}, ${order.tinh}`
       .border-pro
     #orders
       .order
-        a(href="#").order-list
-          .order-item.py-2.d-flex.align-items-center
-            .order-item-img
-              img(src="/images/shop/logo_3.png", width="80px")
-            .order-item-content.flex-fill.mx-2
-              .order-item-title Ten san pham
-              .order-item-type
-                small Phan loai hang
-              .order-item-amount x1
-            .order-item-price
-              del ₫340.000
-              br
-              span.text-danger ₫340.000
-          .order-item.py-2.d-flex.align-items-center
-            .order-item-img
-              img(src="/images/shop/logo_3.png", width="80px")
-            .order-item-content.flex-fill.mx-2
-              .order-item-title Ten san pham
-              .order-item-type
-                small Phan loai hang
-              .order-item-amount x1
-            .order-item-price
-              del ₫340.000
-              br
-              span.text-danger ₫340.000
+        .order-list
+          each item in items
+            a(href=`/product/${item.ma_sanpham}`)
+              .order-item.py-2.d-flex.align-items-center
+                .order-item-img
+                  img(src=item.hinhanh.split(',')[0], width="80px")
+                .order-item-content.flex-fill.mx-2
+                  .order-item-title= item.ten_sanpham
+                  .order-item-type
+                    small= `Loại: màu ${item.mausac}, size: ${item.size}`
+                  .order-item-amount= `x${item.soluong}`
+                .order-item-price
+                  if (item.khuyenmai > 0)
+                    del= `₫${item.giaban}`
+                    br
+                  span.text-danger= `₫${Math.round(item.giaban * (1 - item.khuyenmai / 100)) * item.soluong}`
         .order-price.pt-4
           .order-price-item.text-secondary.d-flex.justify-content-between
             small Tổng tiền hàng 
-            span ₫427.500
+            span= `₫${sumPrice}`
           .order-price-item.text-secondary.d-flex.justify-content-between
             small Phí vận chuyển: 
-            span ₫427.500
+            span= `₫${order.phi_vanchuyen}`
           .order-price-item.text-secondary.d-flex.justify-content-between
             small Tổng số tiền: 
-            span.text-danger(style="font-size: 30px") ₫427.500
+            span.text-danger(style="font-size: 30px")= `₫${sumPrice + order.phi_vanchuyen}`
           .order-price-item.text-secondary.d-flex.justify-content-between
             small Phương thức Thanh toán
             span Thanh toán khi nhận hàng

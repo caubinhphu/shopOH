@@ -2418,3 +2418,50 @@ delimiter ;
 select * from dondathang;
 select * from ct_dondathang;
 delete from dondathang;
+
+select * from trangthai_donhang;
+
+drop procedure SELECT_PURCHASE;
+delimiter $$
+create procedure SELECT_PURCHASE(_iduser varchar(50), _type int)
+begin
+  select dh.*, tt.ten_trangthai
+  from dondathang dh join trangthai_donhang tt on dh.ma_trangthai = tt.ma_trangthai
+  where dh.ma_khachhang = _iduser
+    and (_type = 0 or dh.ma_trangthai = _type)
+  order by ngay_dathang desc;
+end $$
+delimiter ;
+
+drop procedure SELECT_CT_PURCHASE;
+delimiter $$
+create procedure SELECT_CT_PURCHASE(_idorder varchar(50))
+begin
+  select ct.*, sp.ten_sanpham, sp.hinhanh
+  from ct_dondathang ct join sanpham sp on ct.ma_sanpham = sp.ma_sanpham
+  where ct.ma_dondathang = _idorder;
+end $$
+delimiter ;
+
+
+drop procedure SELECT_INFO_ORDER;
+delimiter $$
+create procedure SELECT_INFO_ORDER(_iduser varchar(50), _idorder varchar(50))
+begin
+  if exists (select * from dondathang where ma_khachhang = _iduser and ma_dondathang = _idorder)
+  then
+    select dh.*, tt.ten_trangthai
+    from dondathang dh join trangthai_donhang tt on dh.ma_trangthai = tt.ma_trangthai
+    where ma_dondathang = _idorder;
+
+    select ct.*, sp.ten_sanpham, sp.hinhanh
+    from ct_dondathang ct join sanpham sp on ct.ma_sanpham = sp.ma_sanpham
+    where ma_dondathang = _idorder;
+  else signal sqlstate '45000' set message_text = 'order not exists'; -- throw error
+  end if;
+end $$
+delimiter ;
+
+update dondathang
+set ma_trangthai = '2'
+where ma_dondathang = 'e6f3ef98-7090-493b-88e4-30634ef84ab5';
