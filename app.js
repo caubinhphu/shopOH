@@ -12,12 +12,15 @@ const methodOverride = require('method-override');
 const customerAccountRoute = require('./routers/personal-customer.router');
 const customerProductRoute = require('./routers/product-customer.router');
 const customerCartRoute = require('./routers/cart-customer.router');
-const authRouter = require('./routers/auth.router');
+const authRoute = require('./routers/auth.router');
 const checkoutRoute = require('./routers/checkout.router');
+const adminRoute = require('./routers/admin.route');
+const adminAuthRoute = require('./routers/adminAuth.route');
 
 // middleware
 const authMiddleware = require('./middlewares/auth.middleware');
 const usernameMiddleware = require('./middlewares/usermame.middleware');
+const adminAuthMiddleware = require('./middlewares/adminAuth.middleware');
 
 // init app
 const app = express();
@@ -52,7 +55,7 @@ app.use(
 app.use(morgan('dev'));
 app.use(
   session({
-    secret: 'sadfalsd&^#$SDFGSDsdf*%&HDSARF',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true
   })
@@ -61,10 +64,12 @@ app.use(flash());
 
 // route
 app.use('/', usernameMiddleware, customerProductRoute);
-app.use('/login', authRouter);
+app.use('/login', authRoute);
 app.use('/account', authMiddleware, usernameMiddleware, customerAccountRoute);
 app.use('/cart', authMiddleware, usernameMiddleware, customerCartRoute);
 app.use('/checkout', authMiddleware, usernameMiddleware, checkoutRoute);
+app.use('/adminAuth', adminAuthRoute);
+app.use('/admin', adminAuthMiddleware, adminRoute);
 
 // handle errors
 app.use((err, req, res, next) => {

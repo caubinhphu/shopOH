@@ -10,7 +10,7 @@ block header
         #header-top-left
           ul.d-flex
             li
-              a(href="#") Kênh bán hàng
+              a(href="/admin") Kênh bán hàng
             li
               span Kết nối 
               a(href="#")
@@ -27,7 +27,7 @@ block header
                     i.far.fa-bell
                   span &nbsp;Thông báo
                   .position-child
-                    span.badge.badge-pill.badge-light= notifications.length
+                    span.badge.badge-pill.badge-light= notifications?notifications.length:0
                 if (user)
                   .popover__content
                     if (notifications.length === 0)

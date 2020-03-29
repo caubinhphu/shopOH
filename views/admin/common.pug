@@ -1,0 +1,28 @@
+extends ../common
+
+append style
+  link(rel="stylesheet", href="/styles/admin/common.css")
+
+block content
+  #header.bg-dark
+    .container.py-1.d-flex.justify-content-between
+      img(src="/images/shop/logo_3.png", alt="ShopOH", title="ShopOH")
+      a.btn.btn-info.align-self-center(href="/adminAuth/logout", role="button") Logout
+  #main.row
+    #nav-left.col-2.bg-dark.p-2
+      .nav-title Quản Lý Đơn Hàng
+      a(href="#").nav-left-item.nav-left-active Tất cả
+      a(href="#").nav-left-item Xử lý đơn hàng loạt
+      
+      .nav-title Quản Lý Sản Phẩm
+      a(href="#").nav-left-item Tất cả sản phẩm
+      a(href="#").nav-left-item Thêm sản phẩm
+
+      .nav-title Thông báo
+      a(href="#").nav-left-item Quản lý thông báo
+      a(href="#").nav-left-item Thêm thông báo
+
+      .nav-title Tài chính
+      a(href="#").nav-left-item Doanh thu
+    #main-right.col-10.text-white
+      block main
