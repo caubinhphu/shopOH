@@ -98,13 +98,22 @@ body {
   background-color: beige;
 }
 
-.popover__content__img {
+.popover__content__img__noti {
   width: 80px;
   height: 80px;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 }
+
+.popover__content__img {
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 
 .popover__content__thongbao {
   margin-left: 10px;
@@ -293,10 +302,10 @@ body {
   margin: 0 auto;
 }
 
-.popover__content__main {
+.popover__content__main_noti {
   background-color: #fdf2ee;
 }
 
-.popover__content__main:hover {
+.popover__content__main_noti:hover {
   background-color: #f8f8f8 !important;
 }
