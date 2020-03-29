@@ -27,15 +27,25 @@ block header
                     i.far.fa-bell
                   span &nbsp;Thông báo
                   .position-child
-                    span.badge.badge-pill.badge-light 0
+                    span.badge.badge-pill.badge-light= notifications.length
                 if (user)
                   .popover__content
-                    p.popover__message Thông báo mới nhận
-                    .popover__content__main.p-2.d-flex
-                      .popover__content__img(style='background-image: url("/images/shop/917385.jpg")')
-                      .popover__content__thongbao
-                        .popover__content__thongbao__title Tên thông báo
-                        .popover__content__thongbao__content Nội dung thông báo
+                    if (notifications.length === 0)
+                      .no-notification
+                        img.d-block(src="/images/shop/notification.png")
+                        span.text-secondary Không có thông báo nào
+                    else
+                      p.popover__message Thông báo mới nhận
+                      - var i = 0;
+                      while i < notifications.length && i < 5
+                        a(href=notifications[i].link)
+                          .popover__content__main.p-2.d-flex(style=notifications[i].daxem?"background-color: white":"")
+                            .popover__content__img(style=`background-image: url("${notifications[i].hinhanh}")`)
+                            .popover__content__thongbao.d-flex.flex-column.justify-content-center
+                              .popover__content__thongbao__title.text-left= notifications[i].tieude
+                              .popover__content__thongbao__content.text-left= notifications[i].noidung
+                        - i++;
+                      a.btn.btn-light.w-100(role="button", href="/account/notification?type=1") Xem tất cả
                 else
                   .popover__content.d-md-flex.flex-column.d-none
                     .text-center.flex-fill.d-flex.flex-column.justify-content-center.py-5

@@ -344,9 +344,19 @@ module.exports.putProfilePassword = async (req, res, next) => {
 
 // get notification
 module.exports.getNotification = (req, res, next) => {
+  // get type nitification
+  let type = +req.query.type || 1;
+
+  let active = '';
+  if (type === 1) {
+    active = 'noti_t1';
+  } else {
+    active = 'noti_t2';
+  }
   res.render('customer/personal-notification', {
     titleSite: 'ShopOH - Tài khoản của tôi',
-    active: 'notification'
+    active,
+    type
   });
 };
 

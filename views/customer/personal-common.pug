@@ -28,7 +28,10 @@ block main
         a(href="/account/purchase", class=active==="purchase"?"personal-active":"")
           i.bg-info.far.fa-file-alt
           sapn Đơn mua
-        a(href="/account/notification", class=active==="notification"?"personal-active":"")
+        a(href="/account/notification?type=1")
           i.bg-danger.far.fa-bell
-          sapn Thông báo
+          span Thông báo
+        .personal-dropdown-menu(class=/(noti_t1|noti_t2)/.test(active)?"":"d-none")
+          a.personal-dropdown-item(href='/account/notification?type=1', class=active==="noti_t1"?"personal-active":"") Cập Nhật Đơn Hàng
+          a.personal-dropdown-item(href='/account/notification?type=2', class=active==="noti_t2"?"personal-active":"") Khuyến Mãi
     block main-personal

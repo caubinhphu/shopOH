@@ -1691,8 +1691,6 @@ create table likesanpham (
   foreign key (ma_sanpham) references sanpham (ma_sanpham) on delete cascade
 );
 
-
--- ----------- chưa tạo bảng -------------------------- --
 create table trangthai_donhang (
 	ma_trangthai int auto_increment not null,
   ten_trangthai varchar(50) not null,
@@ -1742,7 +1740,6 @@ create table ct_dondathang (
   foreign key (ma_dondathang) references dondathang (ma_dondathang) on delete cascade,
   foreign key (ma_sanpham) references sanpham (ma_sanpham)
 );
--- ---------------------------------------------------- --
 
 create table giohang (
 	ma_khachhang varchar(50) not null,
@@ -1759,14 +1756,19 @@ create table giohang (
 -- insert into giohang(ma_khachhang, ma_sanpham, soluong, mausac, size, ngaythem)
 -- values ('1', '1', 2, 'ĐEN', 'M', null);
 
+drop table thongbao;
 create table thongbao (
 	ma_thongbao varchar(50) not null,
   tieude varchar(255),
   noidung text,
   ngaydang datetime,
+  loai_thongbao int default 1,
+  hinhanh varchar(100),
+  link varchar(255),
   primary key (ma_thongbao)
 );
 
+drop table thongbao_khachhang;
 create table thongbao_khachhang (
   ma_thongbao varchar(50) not null,
 	ma_khachhang varchar(50) not null,
@@ -1776,6 +1778,21 @@ create table thongbao_khachhang (
   foreign key (ma_thongbao) references thongbao (ma_thongbao) on delete cascade
 );
 
+insert into thongbao (ma_thongbao, tieude, noidung, ngaydang, loai_thongbao, hinhanh, link)
+values ('1', 'tieu de 1', 'bla bla bla bla bla bla bla bla bla blabla bla bla bla', now(), 2, '/images/shop/917385.jpg', '/');
+
+insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
+values ('1', '1');
+
+insert into thongbao (ma_thongbao, tieude, noidung, ngaydang, loai_thongbao, hinhanh, link)
+values ('2', 'tieu de 2', 'bla bla bla bla bla bla bla bla bla blabla bla bla bla', now(), 1, '/images/shop/917385.jpg', '/');
+
+insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
+values ('2', '1');
+
+update thongbao_khachhang
+set daxem = true
+where ma_thongbao = '2';
 
 -- -------------------procedure -------------------- --
 
@@ -2465,3 +2482,14 @@ delimiter ;
 update dondathang
 set ma_trangthai = '2'
 where ma_dondathang = 'e6f3ef98-7090-493b-88e4-30634ef84ab5';
+
+drop procedure SELECT_NOTIFICATION;
+delimiter $$
+create procedure SELECT_NOTIFICATION(_iduser varchar(50))
+begin
+  select tb.*, tk.daxem
+  from thongbao tb join thongbao_khachhang tk on tb.ma_thongbao = tk.ma_thongbao
+  where tk.ma_khachhang = _iduser
+  order by ngaydang desc;
+end $$
+delimiter ;

@@ -99,8 +99,8 @@ body {
 }
 
 .popover__content__img {
-  width: 100%;
-  height: 100%;
+  width: 80px;
+  height: 80px;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -115,7 +115,7 @@ body {
 }
 
 .popover__content__thongbao__content {
-  color: burlywood;
+  color: #555;
   font-size: small;
 }
 
@@ -280,4 +280,23 @@ body {
 
 .popover__content a {
   color: #ee4d2d !important;
+}
+
+.no-notification {
+  padding: 50px 0;
+  text-align: center;
+}
+
+.no-notification img {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+}
+
+.popover__content__main {
+  background-color: #fdf2ee;
+}
+
+.popover__content__main:hover {
+  background-color: #f8f8f8 !important;
 }
