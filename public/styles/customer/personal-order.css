@@ -1,0 +1,67 @@
+.order {
+  background-color: white;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.order-item-price {
+  font-size: 15px;
+}
+
+.order > a:hover {
+  text-decoration: none;
+  color: #555;
+}
+
+.order > a {
+  color: #555;
+}
+
+.order-item {
+  border-top: 1px solid gray;
+}
+
+.order-price {
+  border-top: 1px dotted gray;
+}
+
+.order-price > span:last-child {
+  font-size: 35px;
+}
+
+.nooder {
+  height: 500px;
+  background-color: white;
+}
+
+#order-sell-again {
+  background-color: #fefcf5;
+  border-top: 1px dotted rgba(0,0,0,.09);
+  border-bottom: 1px dotted rgba(0,0,0,.09);
+}
+
+.border-pro {
+  height: .1875rem;
+  width: 100%;
+  background-position-x: -1.875rem;
+  background-size: 7.25rem .1875rem;
+  background-image: repeating-linear-gradient(45deg,#6fa6d6,#6fa6d6 33px,transparent 0,transparent 41px,#f18d9b 0,#f18d9b 74px,transparent 0,transparent 82px);
+}
+
+.order-price-item {
+  border-top: 1px dotted rgba(0,0,0,.09);
+  padding: 10px;
+}
+
+.order-list > a {
+  color: #212529;
+}
+
+.order-list > a:hover {
+  color: #212529;
+  text-decoration: none;
+}
+
+#order-status > .order-status-item:first-child {
+  color: #212529 !important;
+}

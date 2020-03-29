@@ -54,11 +54,11 @@
 }
 
 #personal-top-middle a:hover {
-  color: #ee4d2d;
+  color: #222222;
   text-decoration: none;
 }
 
-.personal-dropdown-menu {
+/* .personal-dropdown-menu {
   padding-left: 40px;
   opacity: 0;
   height: 0;
@@ -69,6 +69,10 @@
 .personal-dropdown:focus-within .personal-dropdown-menu {
   opacity: 1;
   height: auto;
+} */
+
+.personal-dropdown-menu {
+  padding-left: 40px;
 }
 
 #personal-top-middle i {

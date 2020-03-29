@@ -88,19 +88,20 @@ soluongInput.forEach(input => {
         sl: +this.value
       })
       .then(res => {
-        let priceText = document.querySelector(
-          `.cart-price-item[data-product="${this.dataset.product}"]`
-        );
-        let donGia = document.querySelector(
-          `.cart-dongia[data-product="${this.dataset.product}"]`
-        );
-        priceText.innerHTML = +donGia.innerHTML * +this.value;
-        totalPrice.innerHTML = getSumPrice();
-        let sumPro = getSumProduct();
-        totalProCheck.innerHTML = `Tổng tiền hàng (${sumPro} sản phẩm):`;
-        let numAll = soluongInput.reduce((acc, cur) => acc + +cur.value, 0);
-        selectAllLabel.innerHTML = `Chọn tất cả (${numAll})`;
-      });
+        if (res.status === 200) {
+          let priceText = this.parentElement.nextElementSibling
+            .lastElementChild;
+          let donGia = this.parentElement.previousSibling.lastElementChild
+            .lastElementChild;
+          priceText.innerHTML = +donGia.innerHTML * +this.value;
+          totalPrice.innerHTML = getSumPrice();
+          let sumPro = getSumProduct();
+          totalProCheck.innerHTML = `Tổng tiền hàng (${sumPro} sản phẩm):`;
+          let numAll = soluongInput.reduce((acc, cur) => acc + +cur.value, 0);
+          selectAllLabel.innerHTML = `Chọn tất cả (${numAll})`;
+        }
+      })
+      .catch(err => location.reload());
   });
 });
 
@@ -109,7 +110,37 @@ deleteBtn.forEach(btn => {
     axios
       .delete('/cart', { data: { info: this.dataset.product } })
       .then(res => {
+        if (res.status === 200) {
+          location.reload();
+        }
+      })
+      .catch(err => location.reload());
+  });
+});
+
+document.getElementById('sell-btn').addEventListener('click', function() {
+  let checked = [...document.querySelectorAll('input[name="product"]:checked')];
+  if (checked.length === 0) {
+    alert('Chưa chọn sản phẩm nào!');
+  } else {
+    let querySring = new URLSearchParams();
+    checked.forEach(check => {
+      let qs = check.dataset.checkout;
+      // get sl
+      qs +=
+        '$' +
+        check.parentElement.parentElement.children[3].firstElementChild.value;
+      querySring.append('item', qs);
+    });
+    axios
+      .get(`/checkout/gettoken?${querySring.toString()}`)
+      .then(res => {
+        if (res.status === 200) {
+          location.href = `/checkout?token=${res.data.token}`;
+        }
+      })
+      .catch(err => {
         location.reload();
       });
-  });
+  }
 });

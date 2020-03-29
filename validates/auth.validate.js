@@ -7,7 +7,7 @@ module.exports.loginValidation = data => {
       .pattern(/^\w{6,24}$/)
       .required(),
     password: Joi.string()
-      .min(4)
+      .min(6)
       .required()
   });
   // validate => get error

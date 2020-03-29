@@ -12,7 +12,7 @@ function getCartProductHTML(dataCart) {
   let textHtml = `<div class="popover__content__cart d-none d-md-inline">
                     <p class="popover__message">Sản phẩm mới thêm</p>
                     <div class="popover__content__main" id="product_cart_list">`;
-  textHtml += dataCart[1]
+  textHtml += dataCart.cartProduct
     .map((product, index) => {
       if (index < 5) {
         return (
@@ -48,7 +48,7 @@ function getCartProductHTML(dataCart) {
           `</div>
                     <div class="popover__content__cart__delete text-right">
                       <button class="btn btn-link delete-product-cart-btn" type="button"
-                              data-product="${product.ma_sanpham}$${product.mausac}$${product.size}">
+                              data-product="${product.encode}">
                                 Xóa
                       </button>
                     </div>
@@ -64,7 +64,7 @@ function getCartProductHTML(dataCart) {
 
   textHtml += `</div>
               <div class="text-right p-2 d-flex justify-content-between align-items-center">
-                <small>${dataCart[0][0].sl} loại sản phẩm trong giỏ</small>
+                <small>${dataCart.cartNum.sl} loại sản phẩm trong giỏ</small>
                 <a class="btn btn-danger" href="/cart">Xem giỏ hàng</a>
               </div>
             </div>`;
@@ -72,7 +72,7 @@ function getCartProductHTML(dataCart) {
 }
 
 function renderMiniCart(dataCart) {
-  if (dataCart[0][0].slsp >= 1) {
+  if (dataCart.cartNum.slsp >= 1) {
     let textHtml = getCartProductHTML(dataCart);
     mainCart.innerHTML = textHtml;
 
@@ -87,13 +87,18 @@ function renderMiniCart(dataCart) {
                             <img class="w-25 d-block mx-auto" src="/images/shop/nocart.png") />\
                             <span> Chưa có sản phẩm </span>';
   }
-  cartBadge.innerHTML = dataCart[0][0].slsp;
+  cartBadge.innerHTML = dataCart.cartNum.slsp;
 }
 
 function handleDeleteCart() {
-  axios.delete('/cart', { data: { info: this.dataset.product } }).then(res => {
-    renderMiniCart(res.data);
-  });
+  axios
+    .delete('/cart', { data: { info: this.dataset.product } })
+    .then(res => {
+      if (res.status === 200) {
+        renderMiniCart(res.data);
+      }
+    })
+    .catch(err => location.reload());
 }
 
 addEventDeleteCartBtn();

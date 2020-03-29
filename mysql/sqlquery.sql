@@ -102,10 +102,19 @@ create table sanpham (
 );
 alter table sanpham convert to character set utf16 collate utf16_general_ci;
 alter table sanpham add column ngaythem datetime;
+alter table sanpham add column trangthai varchar(5) default '1';
+
+-- trang thai san pham:
+  -- 0: khong con ban
+  -- 1: dang ban
+  -- 2: cho ban
 
 update sanpham
 set ngaythem = now()
 where ma_sanpham = '3';
+
+update sanpham
+set trangthai = '1';
 
 insert into sanpham (ma_sanpham, ten_sanpham, ma_loai2, ma_thuonghieu, ma_chatlieu, mota, giaban, khuyenmai, hinhanh)
 values ('1', 'áo sơ mi nam cổ tàu dài tay ikemen smt01', 3, 1, 6, 'áo sơ mi nam cổ tàu dài tay ikemen :
@@ -1648,20 +1657,28 @@ create table khachhang (
   primary key (ma_khachhang)
 );
 alter table khachhang convert to character set utf16 collate utf16_general_ci;
+alter table khachhang add column gioitinh varchar(10);
+alter table khachhang add column ngaysinh date;
+alter table khachhang
+change column avatar avatar varchar(50) after dienthoai;
+
 
 insert into khachhang (ma_khachhang, taikhoan, matkhau, ten_khachhang, email, dienthoai, avatar)
 values ('1', 'caubinhphu', '1234', null, 'abc@gmail.com', null, null);
 
+drop table diachikhachhang;
 create table diachikhachhang (
+  ma_diachi varchar(50),
 	ma_khachhang varchar(50),
   ten varchar(100),
   dienthoai varchar(20),
-  `tinh/thanhpho` varchar(100),
-	`quan/huyen` varchar(100),
-  `phuong/xa` varchar(100),
-  `sonha/duong` varchar(100),
-  macdinh bit default false,
-  primary key (ma_khachhang, ten, dienthoai, `tinh/thanhpho`, `quan/huyen`, `phuong/xa`, `sonha/duong`),
+  tinh varchar(100),
+	huyen varchar(100),
+  xa varchar(100),
+  nha varchar(100),
+  macdinh boolean default false,
+  -- primary key (ma_khachhang, ten, dienthoai, `tinh/thanhpho`, `quan/huyen`, `phuong/xa`, `sonha/duong`),
+  primary key (ma_diachi),
   foreign key (ma_khachhang) references khachhang (ma_khachhang) on delete cascade
 );
 alter table diachikhachhang convert to character set utf16 collate utf16_general_ci;
@@ -1674,8 +1691,6 @@ create table likesanpham (
   foreign key (ma_sanpham) references sanpham (ma_sanpham) on delete cascade
 );
 
-
--- ----------- chưa tạo bảng -------------------------- --
 create table trangthai_donhang (
 	ma_trangthai int auto_increment not null,
   ten_trangthai varchar(50) not null,
@@ -1684,42 +1699,47 @@ create table trangthai_donhang (
 
 insert into trangthai_donhang(ten_trangthai)
 values ('Chờ xác nhận'),
-	    ('Chờ lấy hàng'),
+	    ('Đã xác nhận'),
       ('Đang giao'),
       ('Đã giao'),
       ('Đã huỷ'),
       ('Trả hàng/Hoàn tiền');
 
+drop table dondathang;
 create table dondathang (
-	ma_dondathang int not null,
+	ma_dondathang varchar(50) not null,
   ma_khachhang varchar(50) not null,
-  ngay_dathang date,
   ma_trangthai int not null,
-  ten_nguoinhan varchar(100) not null,
-  dienthoai_nguoinhan varchar(20) not null,
-	`tinh/thanhpho` varchar(100) not null,
-  `quan/huyen` varchar(100) not null,
-  `phuong/xa` varchar(100) not null,
-  `sonha/duong` varchar(100) not null,
+  ten_nguoinhan varchar(100),
+  dienthoai_nguoinhan varchar(20),
+	tinh varchar(100),
+  huyen varchar(100),
+  xa varchar(100),
+  nha varchar(100),
   phi_vanchuyen int default 0,
-  ngay_xuathang date,
-  ngay_giaohang date,
+  ngay_dathang datetime, -- ngay khach dat hang tren shop
+  ngay_xacnhan datetime, -- ngay chu shop xac nhan don hang
+  ngay_giaohang datetime, -- ngay bat dau giao hang
+  ngay_nhanhang datetime, -- ngay khach nhan duoc hang
+  ngay_huyhang datetime, -- ngay khach huy hang
   primary key (ma_dondathang),
   foreign key (ma_khachhang) references khachhang (ma_khachhang),
   foreign key (ma_trangthai) references trangthai_donhang (ma_trangthai)
 );
 
+drop table ct_dondathang;
 create table ct_dondathang (
-	ma_dondathang int not null,
+	ma_dondathang varchar(50) not null,
   ma_sanpham varchar(50) not null,
+  mausac varchar(30) not null,
+  size varchar(20) not null,
   soluong int default 1,
-  giagoc int default 0,
+  giaban int default 0,
   khuyenmai int default 0,
   primary key (ma_dondathang, ma_sanpham),
-  foreign key (ma_dondathang) references dondathang (ma_dondathang),
+  foreign key (ma_dondathang) references dondathang (ma_dondathang) on delete cascade,
   foreign key (ma_sanpham) references sanpham (ma_sanpham)
 );
--- ---------------------------------------------------- --
 
 create table giohang (
 	ma_khachhang varchar(50) not null,
@@ -1736,6 +1756,44 @@ create table giohang (
 -- insert into giohang(ma_khachhang, ma_sanpham, soluong, mausac, size, ngaythem)
 -- values ('1', '1', 2, 'ĐEN', 'M', null);
 
+drop table thongbao;
+create table thongbao (
+	ma_thongbao varchar(50) not null,
+  tieude varchar(255),
+  noidung text,
+  ngaydang datetime,
+  loai_thongbao int default 1,
+  hinhanh varchar(100),
+  link varchar(255),
+  primary key (ma_thongbao)
+);
+
+drop table thongbao_khachhang;
+create table thongbao_khachhang (
+  ma_thongbao varchar(50) not null,
+	ma_khachhang varchar(50) not null,
+  daxem boolean default false,
+  primary key (ma_khachhang, ma_thongbao),
+  foreign key (ma_khachhang) references khachhang (ma_khachhang) on delete cascade,
+  foreign key (ma_thongbao) references thongbao (ma_thongbao) on delete cascade
+);
+
+insert into thongbao (ma_thongbao, tieude, noidung, ngaydang, loai_thongbao, hinhanh, link)
+values ('1', 'tieu de 1', 'bla bla bla bla bla bla bla bla bla blabla bla bla bla', now(), 2, '/images/shop/917385.jpg', '/');
+
+insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
+values ('1', '1');
+
+insert into thongbao (ma_thongbao, tieude, noidung, ngaydang, loai_thongbao, hinhanh, link)
+values ('2', 'tieu de 2', 'bla bla bla bla bla bla bla bla bla blabla bla bla bla', now(), 1, '/images/shop/917385.jpg', '/');
+
+insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
+values ('2', '1');
+
+update thongbao_khachhang
+set daxem = true
+where ma_thongbao = '2';
+
 -- -------------------procedure -------------------- --
 
 drop procedure SP_SELECT_PRODUCT_SUGGESTION;
@@ -1745,6 +1803,7 @@ create procedure SP_SELECT_PRODUCT_SUGGESTION()
 begin
 	select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, ma_loai2, hinhanh, ma_chatlieu
   from sanpham
+  where trangthai = '1'
   order by ngaythem desc
   limit 24;
 end $$
@@ -1762,7 +1821,7 @@ begin
     where ma_khachhang = _iduser;
     
   -- lấy từng sản phẩm
-  select gh.ma_sanpham, sp.ten_sanpham, mausac, size, soluong, hinhanh, giaban, khuyenmai
+  select gh.ma_sanpham, sp.ten_sanpham, mausac, size, soluong, hinhanh, giaban, khuyenmai, sp.trangthai
   from giohang gh join sanpham sp on gh.ma_sanpham = sp.ma_sanpham
 	where ma_khachhang = _iduser
   order by gh.ngaythem desc;
@@ -1783,7 +1842,8 @@ begin
   -- lấy sản phẩm tương tự (cùng mã loại 2 và cùng mã chất liệu)
   select ma_sanpham, ten_sanpham, giaban, daban, khuyenmai, hinhanh
   from sanpham
-  where ma_loai2 = _idcategory2 and ma_chatlieu = _idmaterial and ma_sanpham != _idpro
+  where ma_loai2 = _idcategory2 and ma_chatlieu = _idmaterial
+    and ma_sanpham != _idpro and trangthai = '1'
   order by daban desc;
 end $$
 delimiter ;
@@ -1896,12 +1956,14 @@ create procedure sp_select_product_all(_offset int, _linmit int)
 begin
 	select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, ma_loai2, hinhanh, ma_chatlieu
   from sanpham
+  where trangthai = '1'
   order by ngaythem desc
   limit _offset, _linmit;
 
   -- select sum product
   select count(ma_sanpham) as tong
-  from sanpham;
+  from sanpham
+  where trangthai = '1';
 end $$
 delimiter ;
 call sp_select_product_all();
@@ -1916,6 +1978,7 @@ begin
   from sanpham sp join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
                   join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
   where l1.ma_loai0 = _style
+    and sp.trangthai = '1'
   order by ngaythem desc
   limit _offset, _limit;
 
@@ -1923,7 +1986,7 @@ begin
   select count(ma_sanpham) as tong
   from sanpham sp join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
                   join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
-  where l1.ma_loai0 = _style;
+  where l1.ma_loai0 = _style and sp.trangthai = '1';
 end $$
 delimiter ;
 call sp_select_product_style(2);
@@ -1951,12 +2014,14 @@ delimiter ;
 
 select * from sanpham;
 
+drop procedure SP_INSERT_CART;
 delimiter $$
 create procedure SP_INSERT_CART(_idpro varchar(50), _iduser varchar(50), _color varchar(30), _size varchar(20), _sl int)
 spinsertcartlabel:begin
 	-- check
   if not exists (select * from sanpham sp join phanloaisanpham pl on sp.ma_sanpham = pl.ma_sanpham
-                  where sp.ma_sanpham = _idpro and pl.mausac = _color and pl.size = _size)
+                  where sp.ma_sanpham = _idpro and pl.mausac = _color
+                    and pl.size = _size and sp.trangthai = '1')
     then signal sqlstate '45000' set message_text = 'product not exists';
 	end if;
     
@@ -2033,7 +2098,7 @@ begin
                     join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
                     join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
                     join loai_sp0 l0 on l1.ma_loai0 = l0.ma_loai0
-    where l0.ma_loai0 = ', _loai0, ' and (l1.ma_loai1 in (', _loai1, ') or \'', _loai1, '\' = \'-1\')',
+    where sp.trangthai = \'1\' and l0.ma_loai0 = ', _loai0, ' and (l1.ma_loai1 in (', _loai1, ') or \'', _loai1, '\' = \'-1\')',
       ' and (l2.ma_loai2 in (', _loai2, ') or \'', _loai2, '\' = \'-1\')',
       ' and (cl.ma_chatlieu in (', _material, ') or \'', _material, '\' = \'-1\')',
       ' and ((sp.giaban * (1 - sp.khuyenmai / 100)) >= ', _minRange, ' or ', _minRange, ' = 0)',
@@ -2051,6 +2116,7 @@ call SP_SEARCH_STYLE(1, '-1', '-1', '-1', 0, 0, '(sp.giaban * (1 - sp.khuyenmai 
 
 select ma_loai2 from sanpham;
 
+drop procedure SP_SELECT_PRODCUT_FOR_SEARCH;
 delimiter $$
 create procedure SP_SELECT_PRODCUT_FOR_SEARCH()
 begin
@@ -2061,6 +2127,7 @@ begin
                   join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
                   join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
                   join loai_sp0 l0 on l1.ma_loai0 = l0.ma_loai0
+  where sp.trangthai = '1'
   order by ngaythem desc;
 end $$
 delimiter ;
@@ -2115,7 +2182,314 @@ drop procedure ADD_USER;
 delimiter $$
 create procedure ADD_USER(_iduser varchar(50), _account varchar(50), _password varchar(100))
 begin
-  insert into khachhang (ma_khachhang, taikhoan, matkhau)
-  values (_iduser, _account, _password);
+  insert into khachhang (ma_khachhang, taikhoan, matkhau, avatar)
+  values (_iduser, _account, _password, '/images/users/default-avatar.jpg');
+end $$
+delimiter ;
+
+update khachhang
+set avatar = '/images/users/default-avatar.jpg';
+
+drop procedure UPDATE_PROFILE;
+delimiter $$
+create procedure UPDATE_PROFILE(_iduser varchar(50), _username varchar(100), _gender varchar(10), _birthday varchar(50), _phone varchar(20))
+begin
+  update khachhang
+  set ten_khachhang = _username
+  where ma_khachhang = _iduser;
+
+  update khachhang
+  set dienthoai = _phone
+  where ma_khachhang = _iduser;
+
+  if _gender != ''
+    then update khachhang
+        set gioitinh = _gender
+        where ma_khachhang = _iduser;
+  end if;
+
+  if _birthday != ''
+    then update khachhang
+        set ngaysinh = _birthday
+        where ma_khachhang = _iduser;
+  end if;
+end $$
+delimiter ;
+
+update khachhang
+set ngaysinh = ''
+where ma_khachhang = '1';
+
+select * from khachhang;
+
+
+drop procedure UPDATE_AVATAR;
+delimiter $$
+create procedure UPDATE_AVATAR(_iduser varchar(50), _avatar varchar(50))
+begin
+  select avatar from khachhang where ma_khachhang = _iduser;
+
+  update khachhang
+  set avatar = _avatar
+  where ma_khachhang = _iduser;
+end $$
+delimiter ;
+
+drop procedure UPDATE_PASSWORD;
+delimiter $$
+create procedure UPDATE_PASSWORD(_iduser varchar(50), _password varchar(100))
+begin
+  update khachhang
+  set matkhau = _password
+  where ma_khachhang = _iduser;
+end $$
+delimiter ;
+
+select * from diachikhachhang;
+
+drop procedure ADD_ADDRESS;
+delimiter $$
+create procedure ADD_ADDRESS(
+  _iduser varchar(50), _idaddress varchar(50), _ten varchar(100), _sdt varchar(20),
+  _tinh varchar(100), _huyen varchar(100), _xa varchar(100), _nha varchar(100)
+)
+begin
+  insert into diachikhachhang (ma_diachi, ma_khachhang, ten, dienthoai, tinh, huyen, xa, nha)
+  values (_idaddress, _iduser, _ten, _sdt, _tinh, _huyen, _xa, _nha);
+
+  -- if user only have one address => set this address into default address
+  if (select count(*) from diachikhachhang where ma_khachhang = _iduser) = 1
+    then update diachikhachhang set macdinh = true where ma_khachhang = _iduser;
+  end if;
+end $$
+delimiter ;
+
+call ADD_ADDRESS('1', 'asf', 'asdf', 'asdf', 'asdf', 'asdf', 'afasdfas');
+
+delete from diachikhachhang;
+
+drop procedure SELECT_ADDRESS;
+delimiter $$
+create procedure SELECT_ADDRESS(_iduser varchar(50))
+begin
+  select *
+  from diachikhachhang
+  where ma_khachhang = _iduser
+  order by macdinh desc;
+end $$
+delimiter 
+
+drop procedure CHANGE_DEFAULT_ADDRESS;
+-- delimiter $$
+-- create procedure CHANGE_DEFAULT_ADDRESS(
+--   _iduser varchar(50), _ten varchar(100), _sdt varchar(20),
+--   _tinh varchar(100), _huyen varchar(100), _xa varchar(100), _nha varchar(100)
+-- )
+-- begin
+--   if exists (select * from diachikhachhang where ma_khachhang = _iduser and ten = _ten
+--     and dienthoai = _sdt and `tinh/thanhpho` = _tinh and `quan/huyen` = _huyen
+--     and `phuong/xa` = _xa and `sonha/duong` = _nha)
+--   then
+--     -- begin
+--       update diachikhachhang
+--       set macdinh = false
+--       where ma_khachhang = _iduser and macdinh = true;
+
+--       update diachikhachhang
+--       set macdinh = true
+--       where ma_khachhang = _iduser and ten = _ten and dienthoai = _sdt and `tinh/thanhpho` = _tinh
+--         and `quan/huyen` = _huyen and `phuong/xa` = _xa and `sonha/duong` = _nha;
+--     -- end;
+--   else signal sqlstate '45000' set message_text = 'address not exists'; -- throw error
+--   end if;
+-- end $$
+-- delimiter ;
+delimiter $$
+create procedure CHANGE_DEFAULT_ADDRESS(_iduser varchar(50), _idaddress varchar(50))
+begin
+  if exists (select * from diachikhachhang where ma_khachhang = _iduser and ma_diachi = _idaddress)
+  then
+    update diachikhachhang
+    set macdinh = false
+    where ma_khachhang = _iduser and macdinh = true;
+
+    update diachikhachhang
+    set macdinh = true
+    where ma_diachi = _idaddress;
+  else signal sqlstate '45000' set message_text = 'address not exists'; -- throw error
+  end if;
+end $$
+delimiter ;
+
+drop procedure DELETE_ADDRESS;
+-- delimiter $$
+-- create procedure DELETE_ADDRESS(
+--   _iduser varchar(50), _ten varchar(100), _sdt varchar(20),
+--   _tinh varchar(100), _huyen varchar(100), _xa varchar(100), _duong varchar(100)
+-- )
+-- begin
+--   if exists (select * from diachikhachhang where ma_khachhang = _iduser and ten = _ten
+--     and dienthoai = _sdt and `tinh/thanhpho` = _tinh and `quan/huyen` = _huyen
+--     and `phuong/xa` = _xa and `sonha/duong` = _duong)
+--   then
+--       delete from  diachikhachhang
+--       where ma_khachhang = _iduser and ten = _ten and dienthoai = _sdt and `tinh/thanhpho` = _tinh
+--         and `quan/huyen` = _huyen and `phuong/xa` = _xa and `sonha/duong` = _duong;
+--     -- end;
+--   else signal sqlstate '45000' set message_text = 'address not exists'; -- throw error
+--   end if;
+-- end $$
+-- delimiter ;
+delimiter $$
+create procedure DELETE_ADDRESS(_iduser varchar(50), _idaddress varchar(50))
+begin
+  if exists (select * from diachikhachhang where ma_khachhang = _iduser and ma_diachi = _idaddress)
+  then
+      delete from  diachikhachhang
+      where ma_diachi = _idaddress;
+    -- end;
+  else signal sqlstate '45000' set message_text = 'address not exists'; -- throw error
+  end if;
+end $$
+delimiter ;
+
+drop procedure EDIT_ADDRESS;
+delimiter $$
+create procedure EDIT_ADDRESS(
+  _iduser varchar(50), _idaddress varchar(50),_ten varchar(100), _sdt varchar(20),
+  _tinh varchar(100), _huyen varchar(100), _xa varchar(100), _nha varchar(100)
+)
+begin
+  if exists (select * from diachikhachhang where ma_khachhang = _iduser and ma_diachi = _idaddress)
+  then
+      update diachikhachhang
+      set ten = _ten, dienthoai = _sdt, tinh = _tinh, huyen = _huyen, xa = _xa, nha = _nha
+      where ma_diachi = _idaddress;
+  else signal sqlstate '45000' set message_text = 'address not exists'; -- throw error
+  end if;
+end $$
+delimiter ;
+
+drop procedure SELECT_INFO_ADDRESS;
+delimiter $$
+create procedure SELECT_INFO_ADDRESS(_iduser varchar(50), _idaddress varchar(50))
+begin
+  if exists (select * from diachikhachhang where ma_khachhang = _iduser and ma_diachi = _idaddress)
+  then
+      select ma_diachi, ten, dienthoai, tinh, huyen, xa, nha
+      from diachikhachhang
+      where ma_diachi = _idaddress;
+  else signal sqlstate '45000' set message_text = 'address not exists'; -- throw error
+  end if;
+end $$
+delimiter ;
+
+drop procedure CHECK_PRODUCT_CHECKOUT;
+delimiter $$
+create procedure CHECK_PRODUCT_CHECKOUT(_idpro varchar(50), _color varchar(30), _size varchar(20), _sl int)
+begin
+  select pl.*, sp.ten_sanpham, sp.hinhanh, sp.giaban, sp.khuyenmai, _sl as sl
+  from phanloaisanpham pl join sanpham sp on pl.ma_sanpham = sp.ma_sanpham
+  where pl.ma_sanpham = _idpro and mausac = _color
+    and size = _size and soluongton >= _sl and sp.trangthai = '1';
+end $$
+delimiter ;
+
+drop procedure CREATE_ORDER;
+delimiter $$
+create procedure CREATE_ORDER(_iduser varchar(50), _idorder varchar(50))
+begin
+  insert into dondathang (ma_dondathang, ma_khachhang, ngay_dathang, phi_vanchuyen, ma_trangthai)
+  values (_idorder, _iduser, now(), 50000, 1);
+end $$
+delimiter ;
+
+drop procedure INSERT_ADDRESS_ORDER;
+delimiter $$
+create procedure INSERT_ADDRESS_ORDER(_idorder varchar(50), _ten varchar(100), _sdt varchar(20),
+  _tinh varchar(100), _huyen varchar(100), _xa varchar(100), _nha varchar(100))
+begin
+  update dondathang
+  set ten_nguoinhan = _ten,
+    dienthoai_nguoinhan = _sdt,
+    tinh = _tinh,
+    huyen = _huyen,
+    xa = _xa,
+    nha = _nha
+  where ma_dondathang = _idorder;
+end $$
+delimiter ;
+
+drop procedure INSERT_ORDER;
+delimiter $$
+create procedure INSERT_ORDER(
+  _idorder varchar(50), _idpro varchar(50), _mau varchar(30), _size varchar(20),
+  _sl int, _gia int, _khuyenmai int
+)
+begin
+  insert into ct_dondathang(ma_dondathang, ma_sanpham, mausac, size, soluong, giaban, khuyenmai)
+  values (_idorder, _idpro, _mau, _size, _sl, _gia, _khuyenmai);
+end $$
+delimiter ;
+
+select * from dondathang;
+select * from ct_dondathang;
+delete from dondathang;
+
+select * from trangthai_donhang;
+
+drop procedure SELECT_PURCHASE;
+delimiter $$
+create procedure SELECT_PURCHASE(_iduser varchar(50), _type int)
+begin
+  select dh.*, tt.ten_trangthai
+  from dondathang dh join trangthai_donhang tt on dh.ma_trangthai = tt.ma_trangthai
+  where dh.ma_khachhang = _iduser
+    and (_type = 0 or dh.ma_trangthai = _type)
+  order by ngay_dathang desc;
+end $$
+delimiter ;
+
+drop procedure SELECT_CT_PURCHASE;
+delimiter $$
+create procedure SELECT_CT_PURCHASE(_idorder varchar(50))
+begin
+  select ct.*, sp.ten_sanpham, sp.hinhanh
+  from ct_dondathang ct join sanpham sp on ct.ma_sanpham = sp.ma_sanpham
+  where ct.ma_dondathang = _idorder;
+end $$
+delimiter ;
+
+
+drop procedure SELECT_INFO_ORDER;
+delimiter $$
+create procedure SELECT_INFO_ORDER(_iduser varchar(50), _idorder varchar(50))
+begin
+  if exists (select * from dondathang where ma_khachhang = _iduser and ma_dondathang = _idorder)
+  then
+    select dh.*, tt.ten_trangthai
+    from dondathang dh join trangthai_donhang tt on dh.ma_trangthai = tt.ma_trangthai
+    where ma_dondathang = _idorder;
+
+    select ct.*, sp.ten_sanpham, sp.hinhanh
+    from ct_dondathang ct join sanpham sp on ct.ma_sanpham = sp.ma_sanpham
+    where ma_dondathang = _idorder;
+  else signal sqlstate '45000' set message_text = 'order not exists'; -- throw error
+  end if;
+end $$
+delimiter ;
+
+update dondathang
+set ma_trangthai = '2'
+where ma_dondathang = 'e6f3ef98-7090-493b-88e4-30634ef84ab5';
+
+drop procedure SELECT_NOTIFICATION;
+delimiter $$
+create procedure SELECT_NOTIFICATION(_iduser varchar(50))
+begin
+  select tb.*, tk.daxem
+  from thongbao tb join thongbao_khachhang tk on tb.ma_thongbao = tk.ma_thongbao
+  where tk.ma_khachhang = _iduser
+  order by ngaydang desc;
 end $$
 delimiter ;

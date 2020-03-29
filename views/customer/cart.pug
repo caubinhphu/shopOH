@@ -21,11 +21,10 @@ block main
               th Thao tác
           tbody
             each product in cartProduct
-              - var dataProduct = `${product.ma_sanpham}$${product.mausac}$${product.size}`;
               tr.text-center
                 td.cart-checkbox.custom-control.custom-checkbox.text-center
-                  input.custom-control-input(data-product=dataProduct, checked, type='checkbox', name="product", id=`select-${dataProduct}`)
-                  label.custom-control-label(for=`select-${dataProduct}`)
+                  input.custom-control-input(data-product=product.encode, checked, type='checkbox', name="product", id=`select-${product.encode}`, data-checkout=`${product.ma_sanpham}$${product.mausac}$${product.size}`)
+                  label.custom-control-label(for=`select-${product.encode}`)
                 td.text-left.cart-name-product
                   a(href=`/product/${product.ma_sanpham}`)
                     .cart-product-img(style=`background-image: url('${product.hinhanh.split(',')[0]}')`)
@@ -37,14 +36,14 @@ block main
                     del.mr-2.text-secondary= `₫${product.giaban}`
                   span
                     span ₫
-                    span.cart-dongia(data-product=dataProduct)= Math.round(product.giaban * (1 - product.khuyenmai / 100))
-                td
-                  input.text-center.form-control(data-product=dataProduct, type="number", min="1", max=`${product.soluongton}`, value=product.soluong, name="soluong")
+                    span.cart-dongia(data-product=product.encode)= Math.round(product.giaban * (1 - product.khuyenmai / 100))
+                td(style="max-width: 100px")
+                  input.text-center.form-control(data-product=product.encode, type="number", min="1", max=`${product.soluongton}`, value=product.soluong, name="soluong")
                 td.text-danger
                   span ₫
-                  span.cart-price-item(data-product=dataProduct)= product.soluong * Math.round(product.giaban * (1 - product.khuyenmai / 100))
+                  span.cart-price-item(data-product=product.encode)= product.soluong * Math.round(product.giaban * (1 - product.khuyenmai / 100))
                 td
-                  button.cart-delete-btn.btn.btn-link(type="button", data-product=dataProduct) Xóa
+                  button.cart-delete-btn.btn.btn-link(type="button", data-product=product.encode) Xóa
         
         #cart-muahang.mt-3.p-2.d-flex.flex-md-row.flex-column
           .cart-checkbox.custom-control.custom-checkbox.flex-grow-1.align-self-md-center
@@ -55,7 +54,7 @@ block main
             .text-danger.cart-price
               span ₫
               span#cart-price= Math.round(sumPrice.tongtien)
-            button.btn.btn-danger.px-1.px-md-5(type="button") Mua hàng
+            button#sell-btn.btn.btn-danger.px-1.px-md-5(type="button") Mua hàng
       else
         .d-flex.flex-column.justify-content-center.align-items-center
           img(src="/images/shop/nocart.png", alt="no cart", style="width: 10%")

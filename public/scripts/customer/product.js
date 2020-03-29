@@ -112,3 +112,45 @@ addToCartBtn.addEventListener('click', function() {
 });
 
 $('#alert-add-cart-success').hide();
+
+document.getElementById('sell-now-btn').addEventListener('click', function() {
+  // check form
+  let colorInput = document.querySelectorAll('input[name="color"]:checked');
+  let sizeInput = document.querySelectorAll('input[name="size"]:checked');
+  let quantityInput = document.getElementsByName('soluong')[0];
+  let idProductInput = document.getElementsByName('idPro')[0];
+
+  if (
+    colorInput.length < 1 ||
+    sizeInput.length < 1 ||
+    +quantityInput.value < 1 ||
+    +quantityInput.value > +quantityInput.getAttribute('max')
+  ) {
+    textErrorCart.innerHTML = 'Vui lòng chọn phân loại sản phẩm';
+    areaSelect.style.backgroundColor = '#fff5f5';
+  } else {
+    textErrorCart.innerHTML = '';
+    areaSelect.style.backgroundColor = 'white';
+
+    let querySring = new URLSearchParams({
+      item: idProductInput.value.concat(
+        '$',
+        colorInput[0].value,
+        '$',
+        sizeInput[0].value,
+        '$',
+        quantityInput.value
+      )
+    });
+    axios
+      .get(`/checkout/gettoken?${querySring.toString()}`)
+      .then(res => {
+        if (res.status === 200) {
+          location.href = `/checkout?token=${res.data.token}`;
+        }
+      })
+      .catch(err => {
+        location.reload();
+      });
+  }
+});

@@ -1,0 +1,56 @@
+#nav-purchase {
+  background-color: white;
+  height: max-content;
+}
+
+#nav-purchase > a {
+  color: black;
+  line-height: 44px;
+}
+
+#nav-purchase > a:hover {
+  text-decoration: none;
+  color: #ee4d2d;
+}
+
+.purchase-active {
+  color: #ee4d2d !important;
+  text-decoration: none;
+  border-bottom: 2px solid #ee4d2d;
+}
+
+.order {
+  background-color: white;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.order-item-price {
+  font-size: 15px;
+}
+
+.order > a:hover {
+  text-decoration: none;
+  color: #555;
+}
+
+.order > a {
+  color: #555;
+}
+
+.order-item {
+  border-top: 1px solid gray;
+}
+
+.order-price {
+  border-top: 1px dotted gray;
+}
+
+.order-price > span:last-child {
+  font-size: 35px;
+}
+
+.noorder {
+  height: 500px;
+  background-color: white;
+}

@@ -7,116 +7,119 @@ block main-personal
   #personal-right.col-md-8.col-lg-9
     #personnal-right-top.d-flex.justify-content-between
       div Địa chỉ của tôi
-      button.btn.btn-danger(type="button", data-toggle='modal', data-target='#add-address')
+      button#add-new-addr.btn.btn-danger(type="button")
         i.fas.fa-plus
         span &nbsp;Thêm địa chỉ mới
+    if (successMgs)
+      each sMgs in successMgs
+        .alert.alert-success.alert-dismissible.fade.show.mx-auto.mt-1(role='alert')
+          span= sMgs
+          button.close(type='button', data-dismiss='alert', aria-label='Close')
+            span(aria-hidden='true') &times;
+    #message
     #personnal-right-middle
-      //- div Bạn chưa có địa chỉ
-      .personal-address.py-2.d-flex
-        .personal-address-left.flex-fill
-          .d-flex.align-items-center
-            .personal-address-label Tên
-            .personal-address-content Nguyễn Anh Hải
-            .personal-address-default.ml-2
-              span.badge.badge-success Mặc định
-          .d-flex.align-items-center.mt-3
-            .personal-address-label Số điện thoại
-            .personal-address-content 0971642551
-          .d-flex.align-items-center.mt-3
-            .personal-address-label Địa chỉ
-            .personal-address-content
-              span
-                | Hòa Phú
-                br
-                | Xuân Hòa
-                br
-                | Thị xã Sông Cầu
-                br
-                | Phú Yên
-        .personal-address-right.text-right
-          .personal-address-right-top
-            button.btn.btn-link(type="button", data-toggle='modal', data-target='#add-address') Sửa
-            button.btn.btn-link(type="button", data-toggle='modal', data-target='#delete-address') Xóa
-          .personal-address-right-bottom
-            button.btn.btn-light.not-allowed(type="button" disabled) Thiết lập mặc định
-        
-      .personal-address.py-2.d-flex
-        .personal-address-left.flex-fill
-          .d-flex.align-items-center
-            .personal-address-label Tên
-            .personal-address-content Nguyễn Anh Hải
-            //- .personal-address-default.ml-2
-            //-   span.badge.badge-success Mặc định
-          .d-flex.align-items-center.mt-3
-            .personal-address-label Số điện thoại
-            .personal-address-content 0971642551
-          .d-flex.align-items-center.mt-3
-            .personal-address-label Địa chỉ
-            .personal-address-content
-              span
-                | Hòa Phú
-                br
-                | Xuân Hòa
-                br
-                | Thị xã Sông Cầu
-                br
-                | Phú Yên
-        .personal-address-right.text-right
-          .personal-address-right-top
-            button.btn.btn-link(type="button", data-toggle='modal', data-target='#add-address') Sửa
-            button.btn.btn-link(type="button", data-toggle='modal', data-target='#delete-address') Xóa
-          .personal-address-right-bottom
-            button.btn.btn-light(type="button") Thiết lập mặc định
+      if (addresses.length === 0)
+        div Bạn chưa có địa chỉ
+      else
+        each address in addresses
+          .personal-address.py-2.d-flex
+            .personal-address-left.flex-fill
+              .d-flex.align-items-center
+                .personal-address-label Tên
+                .personal-address-content= address.ten
+                .personal-address-default.ml-2(style=`display: ${address.macdinh?'block':'none'}`, data-address=address.encode)
+                  span.badge.badge-success Mặc định
+              .d-flex.align-items-center.mt-3
+                .personal-address-label Số điện thoại
+                .personal-address-content= address.dienthoai
+              .d-flex.align-items-center.mt-3
+                .personal-address-label Địa chỉ
+                .personal-address-content
+                  span
+                    span= address.nha
+                    br
+                    span= address.xa
+                    br
+                    span= address.huyen
+                    br
+                    span= address.tinh
+            .personal-address-right.text-right
+              .personal-address-right-top
+                button.edit-addr-btn.btn.btn-link(type="button", data-toggle='modal', data-target='#add-address', data-address=address.encode) Sửa
+                button.del-addr-btn.btn.btn-link(type="button", data-toggle='modal', data-target='#delete-address', data-address=address.encode) Xóa
+              .personal-address-right-bottom
+                button.default-btn.btn.btn-light(type="button" disabled=address.macdinh?true:false, class=address.macdinh?'not-allowed':'', data-address=address.encode) Thiết lập mặc định
   
-  #add-address.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel-addAddress', aria-hidden='true')
+  #add-address.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel-addAddress', aria-hidden='true', class)
     .modal-dialog(role='document')
       .modal-content
         .modal-header
           h4#exampleModalLabel-addAddress.modal-title Thêm một địa chỉ mới
         .modal-body
-          form()
+          if (errorMgs)
+            .alert.alert-danger.alert-dismissible.fade.show.mx-auto(role='alert')
+              span= errorMgs
+              button.close(type='button', data-dismiss='alert', aria-label='Close')
+                span(aria-hidden='true') &times;
+          form(name="addressForm", action="/account/address", method="POST")
+            input(type="hidden", name="_csrf", value=csrfToken)
+            if (putMethod)
+              input(type="hidden", name="_method", value='PUT')
+            if (addrId)
+              input(type="hidden", name="addrId", value=addrId)
             .form-group
               .input-group
                 .input-group-prepend
                   label.input-group-text(for="address-name") Tên
-                input#address-name.form-control(type="text" placeholder="Tên" name="name" required)
+                input#address-name.form-control(type="text" placeholder="Tên" name="name" required, value=body?body.name:"")
             .form-group
               .input-group
                 .input-group-prepend
                   label.input-group-text(for="address-phone") Số điện thoại
-                input#address-phone.form-control(type="text" placeholder="Số điện thoại" name="phone" required)
+                input#address-phone.form-control(type="text" placeholder="Số điện thoại" name="phone" required, value=body?body.phone:"")
             .form-group
               .input-group
                 .input-group-prepend
                   label.input-group-text(for="address-tinh") Tỉnh/Thành phố
-                select#address-tinh.custom-select(name="tinh")
+                select#address-tinh.custom-select(name="tinh", required)
             .form-group
               .input-group
                 .input-group-prepend
                   label.input-group-text(for="address-huyen") Quận/Huyện
-                select#address-huyen.custom-select(name="huyen")
+                select#address-huyen.custom-select(name="huyen", required)
             .form-group
               .input-group
                 .input-group-prepend
                   label.input-group-text(for="address-xa") Xã/Phường
-                select#address-xa.custom-select(name="xa")
+                select#address-xa.custom-select(name="xa", required)
             .form-group
               .input-group
                 .input-group-prepend
                   label.input-group-text(for="address-homenum") Tòa nhà, tên đường
-                input#address-homenum.form-control(type="text" placeholder="Tòa nhà, tên đường" name="homenum" required)
-        .modal-footer
-          button.btn.btn-light(type='button', data-dismiss='modal') TRỞ LẠI
-          button.btn.btn-danger(type='button') HOÀN THÀNH
+                input#address-homenum.form-control(type="text" placeholder="Tòa nhà, tên đường" name="homenum" required, , value=body?body.homenum:"")
+            .modal-footer
+              button.btn.btn-light(type='button', data-dismiss='modal') TRỞ LẠI
+              button#add-addr-btn.btn.btn-danger(type='submit') HOÀN THÀNH
+  
   #delete-address.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')
       .modal-content.p-2
         .modal-body
           .py-5 Bạn có chắc muốn xoá địa chỉ này?
           .d-flex
-            button.btn.btn-danger.flex-fill.mr-1(type='button') XÓA
+            button#OK-del-addr-btn.btn.btn-danger.flex-fill.mr-1(type='button') XÓA
             button.btn.btn-light.flex-fill(type='button', data-dismiss='modal') TRỞ LẠI
 
+  #warning-address.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
+    .modal-dialog.modal-dialog-centered(role='document')
+      .modal-content.p-2
+        .modal-body
+          .py-5 Bạn không thể xóa địa chỉ mặc định!
+          .d-flex
+            button.btn.btn-danger.flex-fill(type='button', data-dismiss='modal') ĐÃ HIỂU
+
 append script
-  script(src="/scripts/getDVHCVN.js")
-    
+  script(src="/scripts/customer/personal-address.js")
+  if (showModalAddress)
+    script
+      |window.addEventListener('load', () => $('#add-address').modal('show'));
