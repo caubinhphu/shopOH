@@ -1,0 +1,104 @@
+extends ./common
+
+append style
+  link(rel="stylesheet", href="/styles/admin/product.css")
+
+block main
+  #nav.my-2.p-2
+    a.nav-pro-item.nav-pro-active(href="#") Tất cả
+    a.nav-pro-item(href="#") Còn hàng
+    a.nav-pro-item(href="#") Hết hàng
+    a.nav-pro-item(href="#") Đã ẩn
+  #filter.w-100
+    form.w-100.row()
+      .col-6.row
+        select.form-control.col-4(name="type")
+          option(value="") x
+          option(value="") x
+        input.form-control.col-8(type="text", name="value" placeholder="Nhập vào")
+        .d-flex.mt-2.align-items-center
+          span Giá:&nbsp;&nbsp;&nbsp;&nbsp;
+          input.form-control.col(type="number", name="value" placeholder="min")
+          span &nbsp;-&nbsp;
+          input.form-control.col(type="number", name="value" placeholder="max")
+      .col-6
+        .row
+          span Danh mục: &nbsp;
+          select.form-control.col(name="type")
+            option(value="") x
+            option(value="") x
+          select.form-control.col(name="type")
+            option(value="") x
+            option(value="") x
+          select.form-control.col(name="type")
+            option(value="") x
+            option(value="") x
+        .d-flex.mt-2.align-items-center
+          span Đã bán:&nbsp;&nbsp;&nbsp;&nbsp;
+          input.form-control.col(type="number", name="value" placeholder="min")
+          span &nbsp;-&nbsp;
+          input.form-control.col(type="number", name="value" placeholder="max")
+      .mt-2
+        button.btn.btn-danger(type="submit") Tìm
+        button.btn.btn-light.ml-2(type="button") Nhập lại
+  #product-area.mt-3
+    .d-flex.justify-content-between
+      h3 0 Sản Phẩm
+      a.btn.btn-danger(href="#", role="button") Thêm 1 sản phẩm mới
+    #sort
+      form().row
+        select.form-control.col-2(name="type")
+          option(value="") Thời gian thêm
+          option(value="") Giá
+          option(value="") Đã bán
+          option(value="") Like
+        select.form-control.col-2(name="type")
+          option(value="") Tăng dần
+          option(value="") Giảm dần
+        button.btn.btn-light.ml-2(type="submit") Sort
+        
+    table.table.table-sm.text-center.text-white.mt-2
+      thead
+        tr
+          th Tên sản phẩm
+          th Màu
+          th Size
+          th Số lượng
+          th Đã bán
+          th like
+          th Giá bán
+          th Khuyến mãi
+          th Thao tác
+        tbody
+          tr
+            td.name-pro
+              img.mr-2(src="/images/shop/logo_3.png", alt="hinh", width="40px", height="40px")
+              span ten ten ten ten tente nten tentente ntent entent ente ntente n tente nt entent ente ns
+            td mau
+            td size
+            td so luong
+            td da ban
+            td like
+            td gia
+            td khuyen mai
+            td 
+              button.btn.btn-link(type="button") Xóa
+              button.btn.btn-link(type="button") Sửa
+          tr.w-100
+            td.name-pro
+              img.mr-2(src="/images/shop/logo_3.png", alt="hinh", width="40px", height="40px")
+              span ten ten ten ten tente nten tentente ntent entent ente ntente n tente nt entent ente ns
+            td mau
+            td size
+            td so luong
+            td da ban
+            td like
+            td gia
+            td khuyen mai
+            td 
+              button.btn.btn-link(type="button") Xóa
+              button.btn.btn-link(type="button") Sửa
+          
+
+
+      

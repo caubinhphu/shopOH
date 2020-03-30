@@ -1,0 +1,12 @@
+.tk-item {
+  flex: 1 1 auto !important;
+  text-align: center;
+  background-color: white;
+  padding: 10px;
+  margin: 0 5px;
+}
+
+.tk-item:hover {
+  text-decoration: none;
+  background-color: floralwhite;
+}

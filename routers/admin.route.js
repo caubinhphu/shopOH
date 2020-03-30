@@ -8,4 +8,6 @@ const csrfProtection = csurf({ cookie: true, signed: true });
 
 router.get('/', controller.getHome);
 
+router.get('/product', controller.getProduct);
+
 module.exports = router;

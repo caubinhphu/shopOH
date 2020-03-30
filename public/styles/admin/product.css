@@ -1,0 +1,18 @@
+.nav-pro-item {
+  margin: 0 15px;
+  color: white;
+}
+
+.nav-pro-item:hover {
+  text-decoration: none;
+  color: coral;
+}
+
+.nav-pro-active {
+  border-bottom: 2px solid coral;
+  color: coral;
+}
+
+.name-pro {
+  max-width: 200px;
+}
