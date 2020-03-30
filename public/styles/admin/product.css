@@ -16,3 +16,11 @@
 .name-pro {
   max-width: 200px;
 }
+
+#nav {
+  border-bottom: 1px solid white;
+}
+
+.span-br {
+  display: block;
+}

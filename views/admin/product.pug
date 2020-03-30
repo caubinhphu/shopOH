@@ -12,49 +12,43 @@ block main
   #filter.w-100
     form.w-100.row()
       .col-6.row
-        select.form-control.col-4(name="type")
-          option(value="") x
-          option(value="") x
-        input.form-control.col-8(type="text", name="value" placeholder="Nhập vào")
+        select.form-control.col-4(name="typeFilterName")
+          option(value="name") Tên sản phẩm
+          option(value="id") Mã sản phẩm
+        input.form-control.col-8(type="text", name="filterName" placeholder="Nhập vào")
         .d-flex.mt-2.align-items-center
           span Giá:&nbsp;&nbsp;&nbsp;&nbsp;
-          input.form-control.col(type="number", name="value" placeholder="min")
+          input.form-control.col(type="number", name="filterPriceMin" placeholder="min")
           span &nbsp;-&nbsp;
-          input.form-control.col(type="number", name="value" placeholder="max")
+          input.form-control.col(type="number", name="filterPriceMax" placeholder="max")
       .col-6
         .row
           span Danh mục: &nbsp;
-          select.form-control.col(name="type")
-            option(value="") x
-            option(value="") x
-          select.form-control.col(name="type")
-            option(value="") x
-            option(value="") x
-          select.form-control.col(name="type")
-            option(value="") x
-            option(value="") x
+          select.form-control.col(name="loai0")
+          select.form-control.col(name="loai1")
+          select.form-control.col(name="loai2")
         .d-flex.mt-2.align-items-center
           span Đã bán:&nbsp;&nbsp;&nbsp;&nbsp;
-          input.form-control.col(type="number", name="value" placeholder="min")
+          input.form-control.col(type="number", name="filterSellMin" placeholder="min")
           span &nbsp;-&nbsp;
-          input.form-control.col(type="number", name="value" placeholder="max")
+          input.form-control.col(type="number", name="filterSellMax" placeholder="max")
       .mt-2
         button.btn.btn-danger(type="submit") Tìm
-        button.btn.btn-light.ml-2(type="button") Nhập lại
+        button#re-enter-btn.btn.btn-light.ml-2(type="button") Nhập lại
   #product-area.mt-3
     .d-flex.justify-content-between
-      h3 0 Sản Phẩm
+      h3= `${products.length} Sản Phẩm`
       a.btn.btn-danger(href="#", role="button") Thêm 1 sản phẩm mới
     #sort
       form().row
-        select.form-control.col-2(name="type")
-          option(value="") Thời gian thêm
-          option(value="") Giá
-          option(value="") Đã bán
-          option(value="") Like
-        select.form-control.col-2(name="type")
-          option(value="") Tăng dần
-          option(value="") Giảm dần
+        select.form-control.col-2(name="sortType")
+          option(value="time") Thời gian thêm
+          option(value="price") Giá
+          option(value="selles") Đã bán
+          option(value="like") Like
+        select.form-control.col-2(name="sortValue")
+          option(value="increase") Giảm dần
+          option(value="decrease") Tăng dần
         button.btn.btn-light.ml-2(type="submit") Sort
         
     table.table.table-sm.text-center.text-white.mt-2
@@ -70,35 +64,36 @@ block main
           th Khuyến mãi
           th Thao tác
         tbody
-          tr
-            td.name-pro
-              img.mr-2(src="/images/shop/logo_3.png", alt="hinh", width="40px", height="40px")
-              span ten ten ten ten tente nten tentente ntent entent ente ntente n tente nt entent ente ns
-            td mau
-            td size
-            td so luong
-            td da ban
-            td like
-            td gia
-            td khuyen mai
-            td 
-              button.btn.btn-link(type="button") Xóa
-              button.btn.btn-link(type="button") Sửa
-          tr.w-100
-            td.name-pro
-              img.mr-2(src="/images/shop/logo_3.png", alt="hinh", width="40px", height="40px")
-              span ten ten ten ten tente nten tentente ntent entent ente ntente n tente nt entent ente ns
-            td mau
-            td size
-            td so luong
-            td da ban
-            td like
-            td gia
-            td khuyen mai
-            td 
-              button.btn.btn-link(type="button") Xóa
-              button.btn.btn-link(type="button") Sửa
-          
+          each product in products
+            tr
+              td.name-pro
+                img.mr-2(src=product.img, alt="hinh", width="40px", height="40px")
+                span= product.name
+              td
+                each t in product.type
+                  span.span-br= t.color
+              td
+                each t in product.type
+                  span.span-br= t.size
+              td
+                each t in product.type
+                  span.span-br= t.amount
+              td= product.selled
+              td= product.like
+              td= product.price
+              td= product.promotion
+              td 
+                button.del-pro-btn.btn.btn-link(type="button", data-idpro=product.id, data-toggle='modal', data-target='#delete-product') Xóa
+                button.edit-pro-btn.btn.btn-link(type="button", data-idpro=product.id) Sửa
 
-
-      
+  #delete-product.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
+    .modal-dialog.modal-dialog-centered(role='document')
+      .modal-content.p-2
+        .modal-body
+          .py-5.text-dark Xóa thiệt ha m?
+          .d-flex
+            button#OK-del-btn.btn.btn-danger.flex-fill.mr-1(type='button') Ừ
+            button.btn.btn-light.flex-fill(type='button', data-dismiss='modal') HÔNG
+  
+append script
+  script(src="/scripts/admin/product.js")

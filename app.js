@@ -39,7 +39,9 @@ app.use(bodyParser.json());
 // cookie parse with secret
 app.use(cookieParser(process.env.SECRET_COOKIE));
 
-// method htttp override
+// method htttp override using string query
+// app.use(methodOverride('_method'));
+// method htttp override using form
 app.use(
   methodOverride((req, res) => {
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {

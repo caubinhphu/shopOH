@@ -2493,3 +2493,34 @@ begin
   order by ngaydang desc;
 end $$
 delimiter ;
+
+drop procedure ADMIN_SELECT_PRODUCT;
+delimiter $$
+create procedure ADMIN_SELECT_PRODUCT()
+begin
+  -- select info all product
+  select ma_sanpham, ten_sanpham, hinhanh, daban, giaban, khuyenmai
+  from sanpham;
+
+  -- select type all product
+  select *
+  from phanloaisanpham;
+
+  -- get like each product
+  select ma_sanpham, count(*) as solike
+  from likesanpham
+  group by ma_sanpham; 
+end $$
+delimiter ;
+
+drop procedure ADMIN_DELETE_PRODUCT;
+delimiter $$
+create procedure ADMIN_DELETE_PRODUCT(_idpro varchar(50))
+begin
+  if exists (select * from sanpham where ma_sanpham = _idpro)
+  then
+    delete from sanpham where ma_sanpham = _idpro;
+  else signal sqlstate '45000' set message_text = 'product not exists'; -- throw error
+  end if;
+end $$
+delimiter ;
