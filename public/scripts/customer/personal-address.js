@@ -1,7 +1,6 @@
 const hcvn = {};
 
 if (!sessionStorage.getItem('hcvn')) {
-  console.log('get hcvn');
   axios
     .get('http://localhost:3000/account/address/hcvn')
     .then(res => {

@@ -10,6 +10,8 @@ router.get('/', controller.getHome);
 
 router.get('/product', controller.getProduct);
 
+router.get('/danhmuc', controller.getDanhMuc);
+
 router.delete('/product/:idPro', controller.deleteProduct);
 
 module.exports = router;

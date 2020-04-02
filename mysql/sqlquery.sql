@@ -2538,7 +2538,7 @@ begin
 end $$
 delimiter ;
 
-call ADMIN_SELECT_PRODUCT('name', '-1', 0, 0, -1, -1, -1, 0, 0, '-1');
+call ADMIN_SELECT_PRODUCT('name', 'áo', 0, 0, -1, -1, -1, 0, 0, '-1');
 
 drop procedure ADMIN_DELETE_PRODUCT;
 delimiter $$
@@ -2553,3 +2553,13 @@ end $$
 delimiter ;
 
 select * from sanpham where ma_sanpham = '3';
+
+drop procedure ADMIN_SELECT_DANHMUC;
+delimiter $$
+create procedure ADMIN_SELECT_DANHMUC()
+begin
+  select * from loai_sp0;
+  select * from loai_sp1;
+  select * from loai_sp2;
+end $$
+delimiter ;

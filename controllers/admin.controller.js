@@ -1,5 +1,6 @@
 const querySQL = require('../configure/querySQL');
 
+// get home
 module.exports.getHome = (req, res, next) => {
   try {
     res.render('admin/index', {
@@ -10,6 +11,7 @@ module.exports.getHome = (req, res, next) => {
   }
 };
 
+// get product (all + filter + sort)
 module.exports.getProduct = async (req, res, next) => {
   try {
     // get req filter
@@ -76,17 +78,6 @@ module.exports.getProduct = async (req, res, next) => {
       }
       products.push(product);
     });
-    // if (filterName !== '-1') {
-    //   if (typeFilterName === 'name') {
-    //   } else if (typeFilterName === 'id') {
-    //     let pro = products.find(pro => pro.id === filterName);
-    //     if (pro) {
-    //       products = [pro];
-    //     } else {
-    //       products = [];
-    //     }
-    //   }
-    // }
 
     // sort products
     // sort default: time decrease
@@ -139,12 +130,36 @@ module.exports.getProduct = async (req, res, next) => {
   }
 };
 
+// delete product
 module.exports.deleteProduct = async (req, res) => {
   try {
     // get id product
     let { idPro } = req.params;
     await querySQL('call ADMIN_DELETE_PRODUCT(?)', [idPro]);
     res.sendStatus(200);
+  } catch (err) {
+    res.sendStatus(400);
+  }
+};
+
+// get danh muc list
+module.exports.getDanhMuc = async (req, res) => {
+  try {
+    let data = await querySQL('call ADMIN_SELECT_DANHMUC()');
+    let danhMuc = data[0].map(itemL0 => {
+      let l0 = { id: itemL0.ma_loai0, name: itemL0.ten_loai0, l1: [] };
+      let l1s = data[1].filter(l1 => l1.ma_loai0 === itemL0.ma_loai0);
+      l0.l1 = l1s.map(itemL1 => {
+        let l1 = { id: itemL1.ma_loai1, name: itemL1.ten_loai1, l2: [] };
+        let l2s = data[2].filter(l2 => l2.ma_loai1 === itemL1.ma_loai1);
+        l1.l2 = l2s.map(itemL2 => {
+          return { id: itemL2.ma_loai2, name: itemL2.ten_loai2 };
+        });
+        return l1;
+      });
+      return l0;
+    });
+    res.status(200).json(danhMuc);
   } catch (err) {
     res.sendStatus(400);
   }
