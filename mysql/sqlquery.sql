@@ -2496,11 +2496,36 @@ delimiter ;
 
 drop procedure ADMIN_SELECT_PRODUCT;
 delimiter $$
-create procedure ADMIN_SELECT_PRODUCT()
+create procedure ADMIN_SELECT_PRODUCT(
+  _type varchar(10), _name varchar(50), _prmi int, _prma int, _l0 varchar(30), _l1 varchar(30),
+  _l2 varchar(30), _semi int, _sema int, _stpr varchar(5)
+)
 begin
   -- select info all product
-  select ma_sanpham, ten_sanpham, hinhanh, daban, giaban, khuyenmai
-  from sanpham;
+  -- select ma_sanpham, ten_sanpham, hinhanh, daban, giaban, khuyenmai, ngaythem
+  -- from sanpham
+  -- order by ngaythem desc;
+   set @sql = concat(
+    'select sp.ma_sanpham, sp.ten_sanpham, sp.giaban, sp.khuyenmai, sp.daban, sp.hinhanh, sp.ngaythem
+    from sanpham sp join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
+                    join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
+                    join loai_sp0 l0 on l1.ma_loai0 = l0.ma_loai0
+    where (sp.trangthai = \'', _stpr, '\' or \'', _stpr, '\' = \'-1\')',
+      ' and ((sp.ma_sanpham = \'', _name, '\' and \'' , _type, '\' = \'id\') or (sp.ten_sanpham like \'%', _name, '%\' and \'' , _type, '\' = \'name\') or \'', _name, '\' = \'-1\')',
+      ' and (l0.ma_loai0 = ', _l0, ' or ' , _l0, ' = -1)',
+      ' and (l1.ma_loai1 = ', _l1, ' or ' , _l1, ' = -1)',
+      ' and (l2.ma_loai2 = ', _l2, ' or ' , _l2, ' = -1)'
+      ' and ((sp.giaban * (1 - sp.khuyenmai / 100)) >= ', _prmi, ' or ', _prmi, ' = 0)',
+      ' and ((sp.giaban * (1 - sp.khuyenmai / 100)) <= ', _prma, ' or ', _prma, ' = 0)',
+      ' and (sp.daban >= ', _semi, ' or ', _semi, ' = 0)',
+      ' and (sp.daban <= ', _sema, ' or ', _sema, ' = 0)',
+    ' order by ngaythem desc;'
+  );
+  '
+  -- ------------ '
+  prepare stmt from @sql;
+  execute stmt;
+  deallocate prepare stmt;
 
   -- select type all product
   select *
@@ -2513,6 +2538,8 @@ begin
 end $$
 delimiter ;
 
+call ADMIN_SELECT_PRODUCT('name', '-1', 0, 0, -1, -1, -1, 0, 0, '-1');
+
 drop procedure ADMIN_DELETE_PRODUCT;
 delimiter $$
 create procedure ADMIN_DELETE_PRODUCT(_idpro varchar(50))
@@ -2524,3 +2551,5 @@ begin
   end if;
 end $$
 delimiter ;
+
+select * from sanpham where ma_sanpham = '3';

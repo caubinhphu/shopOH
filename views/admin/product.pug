@@ -10,17 +10,18 @@ block main
     a.nav-pro-item(href="#") Hết hàng
     a.nav-pro-item(href="#") Đã ẩn
   #filter.w-100
-    form.w-100.row()
+    form.w-100.row(action="/admin/product", method="GET", name="formFilterSort")
+      input(type="hidden", name="status" value=statusPro)
       .col-6.row
         select.form-control.col-4(name="typeFilterName")
-          option(value="name") Tên sản phẩm
-          option(value="id") Mã sản phẩm
-        input.form-control.col-8(type="text", name="filterName" placeholder="Nhập vào")
+          option(value="name" selected=typeFilterName==='name'?true:false) Tên sản phẩm
+          option(value="id" selected=typeFilterName==='id'?true:false) Mã sản phẩm
+        input.form-control.col-8(type="text", name="filterName" placeholder="Nhập vào" value=filterName!=='-1'?filterName:"")
         .d-flex.mt-2.align-items-center
           span Giá:&nbsp;&nbsp;&nbsp;&nbsp;
-          input.form-control.col(type="number", name="filterPriceMin" placeholder="min")
+          input.form-control.col(type="number", name="filterPriceMin" placeholder="min" value=filterPriceMin!==0?filterPriceMin:"")
           span &nbsp;-&nbsp;
-          input.form-control.col(type="number", name="filterPriceMax" placeholder="max")
+          input.form-control.col(type="number", name="filterPriceMax" placeholder="max" value=filterPriceMax!==0?filterPriceMax:"")
       .col-6
         .row
           span Danh mục: &nbsp;
@@ -29,28 +30,28 @@ block main
           select.form-control.col(name="loai2")
         .d-flex.mt-2.align-items-center
           span Đã bán:&nbsp;&nbsp;&nbsp;&nbsp;
-          input.form-control.col(type="number", name="filterSellMin" placeholder="min")
+          input.form-control.col(type="number", name="filterSelledMin" placeholder="min",  value=filterSelledMin!==0?filterSelledMin:"")
           span &nbsp;-&nbsp;
-          input.form-control.col(type="number", name="filterSellMax" placeholder="max")
+          input.form-control.col(type="number", name="filterSelledMax" placeholder="max", value=filterSelledMax!==0?filterSelledMax:"")
       .mt-2
         button.btn.btn-danger(type="submit") Tìm
         button#re-enter-btn.btn.btn-light.ml-2(type="button") Nhập lại
-  #product-area.mt-3
-    .d-flex.justify-content-between
-      h3= `${products.length} Sản Phẩm`
-      a.btn.btn-danger(href="#", role="button") Thêm 1 sản phẩm mới
-    #sort
-      form().row
-        select.form-control.col-2(name="sortType")
-          option(value="time") Thời gian thêm
-          option(value="price") Giá
-          option(value="selles") Đã bán
-          option(value="like") Like
-        select.form-control.col-2(name="sortValue")
-          option(value="increase") Giảm dần
-          option(value="decrease") Tăng dần
-        button.btn.btn-light.ml-2(type="submit") Sort
-        
+      #sort.col-12.mt-3
+        //- form(action="/admin/product", method="GET")
+        .row
+          select.form-control.col-2(name="sortType")
+            option(value="time", selected=typeSort==='time'?true:false) Thời gian thêm
+            option(value="price", selected=typeSort==='price'?true:false) Giá
+            option(value="selled", selected=typeSort==='selled'?true:false) Đã bán
+            option(value="like", selected=typeSort==='like'?true:false) Like
+          select.form-control.col-2(name="sortValue")
+            option(value="decrease", selected=valueSort==='decrease'?true:false) Giảm dần
+            option(value="increase", selected=valueSort==='increase'?true:false) Tăng dần
+          button.btn.btn-light.ml-2(type="submit") Sort
+    #product-area.mt-3
+      .d-flex.justify-content-between
+        h3= `${products.length} Sản Phẩm`
+        a.btn.btn-danger(href="/admin/product/add", role="button") Thêm 1 sản phẩm mới
     table.table.table-sm.text-center.text-white.mt-2
       thead
         tr
@@ -60,8 +61,9 @@ block main
           th Số lượng
           th Đã bán
           th like
-          th Giá bán
+          th Giá
           th Khuyến mãi
+          th Giá bán
           th Thao tác
         tbody
           each product in products
@@ -82,6 +84,7 @@ block main
               td= product.like
               td= product.price
               td= product.promotion
+              td= Math.round(product.price * (1 - product.promotion/ 100))
               td 
                 button.del-pro-btn.btn.btn-link(type="button", data-idpro=product.id, data-toggle='modal', data-target='#delete-product') Xóa
                 button.edit-pro-btn.btn.btn-link(type="button", data-idpro=product.id) Sửa
