@@ -1,0 +1,89 @@
+extends ./common
+
+append style
+  link(rel="stylesheet", href="/styles/croppie.css")
+  link(rel="stylesheet", href="/styles/admin/addproduct.css")
+
+block main
+  div
+    big Thêm sản phẩm mới
+    form.mt-4(method="POST", enctype="multipart/form-data", name="addProForm")
+      .d-flex.align-items-center
+        label.col-2(for="namePro") Tên sản phẩm:
+        input#namePro.form-control.col.ml-2(type="text", name="nameProduct", placeholder="Tên sản phẩm", required)
+      .d-flex.mt-2.align-items-center
+        span.col-2.mr-2 Danh mục: &nbsp;
+        select.form-control.col(name="loai0", required)
+        select.form-control.col(name="loai1", required)
+        select.form-control.col(name="loai2", required)
+      .d-flex.mt-2
+        label.col-2(for="describePro") Mô tả sản phẩm:
+        textarea#describePro.col.ml-2(name="describePro", rows="10", required)
+      .d-flex.mt-2.align-items-center
+        label.col-2(for="brand") Thương hiệu:
+        select#brand.form-control.col.ml-2(name="brand", required)
+          each brand in brands
+            option(value=brand.ma_thuonghieu)= brand.ten_thuonghieu
+      .d-flex.mt-2.align-items-center
+        label.col-2(for="material") Chất liệu:
+        select#material.form-control.col.ml-2(name="material", required)
+          each material in materials
+            option(value=material.ma_chatlieu)= material.ten_chatlieu
+      .d-flex.mt-2.align-items-center
+        label.col-2(for="price") Giá:
+        input#price.form-control.col.ml-2(type="number", name="price", placeholder="₫", required)
+      .d-flex.mt-2.align-items-center
+        label.col-2(for="promotion")  Khuyến mãi:
+        input#promotion.form-control.col.ml-2(type="number", name="promotion", required , value="0")
+      .d-flex.mt-2.align-items-center
+        span.col-2 Hình ảnh sản phẩm:
+        .d-flex.col.ml-2.justify-content-between
+          .img-pro.text-center
+            .review-img
+            label.btn.btn-light(for="image1", role="button") Hình 1
+            input#image1.form-control(type="file", name="image", required)
+          .img-pro.text-center
+            .review-img
+            label.btn.btn-light(for="image2", role="button") Hình 2
+            input#image2.form-control(type="file", name="image", required)
+          .img-pro.text-center
+            .review-img
+            label.btn.btn-light(for="image3", role="button") Hình 3
+            input#image3.form-control(type="file", name="image", required)
+          .img-pro.text-center
+            .review-img
+            label.btn.btn-light(for="image4", role="button") Hình 4
+            input#image4.form-control(type="file", name="image", required)
+          .img-pro.text-center
+            .review-img
+            label.btn.btn-light(for="image5", role="button") Hình 5
+            input#image5.form-control(type="file", name="image", required)
+      .d-flex.mt-2.align-items-center.flex-wrap
+        span.col-2 Phân loại sản phẩm:
+        #type-pro.col
+          .d-flex.mb-2
+            input.form-control.col.ml-2(type="text", name="color", placeholder="Màu", required)
+            input.form-control.col.ml-2(type="text", name="size", placeholder="Size", required)
+            input.form-control.col.ml-2(type="number", name="amount", placeholder="Số lượng nhập", required)
+            //- button.btn.btn-danger.ml-2(type="button") x
+        .text-right.col-12
+          button#add-typepro-btn.btn.btn-light(type="button") + phân loại
+      //- .d-flex.mt-2.align-items-center
+      //-   label.col-2(for="transportFee") Phí vận chuyển:
+      //-   input#transportFee.form-control.col.ml-2(type="number", name="transportFee", required)
+      .text-right.my-4
+        a.btn.btn-light.mr-3(href="/admin/product", role="button") Hủy
+        button#save-and-hide-btn.btn.btn-light.mr-3(type="button") Lưu & Ẩn
+        button#save-and-show-btn.btn.btn-success.mr-3(type="button") Lưu & Hiển thị
+
+block modal-full
+  #modal-crop-img
+    #modal-main.d-flex.align-items-center
+      #modal-content
+        #crop-img
+      .text-center.flex-fill
+        button#crop-btn.btn.btn-success(type="button") Cắt và lưu
+
+append script
+  script(src="/scripts/croppie.js")
+  script(src="/scripts/admin/addproduct.js")

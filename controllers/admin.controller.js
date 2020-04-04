@@ -1,3 +1,4 @@
+const { v4 } = require('uuid');
 const querySQL = require('../configure/querySQL');
 
 // get home
@@ -24,8 +25,8 @@ module.exports.getProduct = async (req, res, next) => {
     let loai2 = +req.query.loai2 || -1;
     let filterSelledMin = +req.query.filterSelledMin || 0;
     let filterSelledMax = +req.query.filterSelledMax || 0;
-    let statusPro = req.query.statusPro || '-1';
-
+    let statusPro = req.query.status || '-1';
+    let type = req.query.type || 'all';
     // get data product from db
     let data = await querySQL(
       'call ADMIN_SELECT_PRODUCT(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
@@ -79,6 +80,18 @@ module.exports.getProduct = async (req, res, next) => {
       products.push(product);
     });
 
+    if (type === 'con') {
+      products.forEach(pro => {
+        pro.type = pro.type.filter(type => type.amount > 0);
+      });
+      products = products.filter(pro => pro.type.length > 0);
+    } else if (type === 'het') {
+      products.forEach(pro => {
+        pro.type = pro.type.filter(type => type.amount === 0);
+      });
+      products = products.filter(pro => pro.type.length > 0);
+    }
+
     // sort products
     // sort default: time decrease
     if (typeSort === 'time') {
@@ -109,8 +122,22 @@ module.exports.getProduct = async (req, res, next) => {
       }
     }
 
+    // active tab main
+    let productActive = '';
+    if (statusPro === '-1') {
+      productActive = 'all';
+    } else if (statusPro === '2') {
+      productActive = 'hide';
+    }
+    if (type === 'con') {
+      productActive = 'con';
+    } else if (type === 'het') {
+      productActive = 'het';
+    }
+
     res.render('admin/product', {
       titleSite: 'ShopOH',
+      active: 'prolist',
       products,
       typeSort,
       valueSort,
@@ -123,7 +150,9 @@ module.exports.getProduct = async (req, res, next) => {
       filterSelledMin,
       filterSelledMax,
       typeFilterName,
-      filterName
+      filterName,
+      productActive,
+      type
     });
   } catch (err) {
     next(err);
@@ -160,6 +189,83 @@ module.exports.getDanhMuc = async (req, res) => {
       return l0;
     });
     res.status(200).json(danhMuc);
+  } catch (err) {
+    res.sendStatus(400);
+  }
+};
+
+module.exports.getAddProduct = async (req, res, next) => {
+  try {
+    let data = await querySQL('call ADMIN_SELECT_BRAND_MATERIAL()');
+    let brands = data[0];
+    let materials = data[1];
+    res.render('admin/addproduct', {
+      titleSite: 'ShopOH',
+      active: 'addpro',
+      brands,
+      materials
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+module.exports.postAddProduct = async (req, res) => {
+  try {
+    let name = req.body.nameProduct;
+    // let loai0 = +req.body.loai0;
+    // let loai1 = +req.body.loai1;
+    let loai2 = +req.body.loai2;
+    let describePro = req.body.describePro;
+    let brand = +req.body.brand;
+    let material = +req.body.material;
+    let price = +req.body.price;
+    let promotion = +req.body.promotion;
+    let colors = req.body.color;
+    let sizes = req.body.size;
+    let amounts = req.body.amount;
+    // let transportFee = +req.body.transportFee;
+    let status = req.body.status;
+    let imagePathJoin = req.files
+      .map(file => `/images/products/${file.filename}`)
+      .join(',');
+    // generate id
+    let id = v4();
+
+    // insert product
+    await querySQL('call ADMIN_INSERT_PRODUCT(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+      id,
+      name,
+      loai2,
+      describePro,
+      brand,
+      material,
+      price,
+      promotion,
+      status,
+      imagePathJoin
+    ]);
+
+    // insert type product
+    if (Array.isArray(colors)) {
+      // has many type
+      for (let i in colors) {
+        await querySQL('call ADMIN_INSERT_TYPE_PRODUCT(?, ?, ?, ?)', [
+          id,
+          colors[i],
+          sizes[i],
+          amounts[i]
+        ]);
+      }
+    } else {
+      // only 1 type
+      await querySQL('call ADMIN_INSERT_TYPE_PRODUCT(?, ?, ?, ?)', [
+        id,
+        colors,
+        sizes,
+        amounts
+      ]);
+    }
+    res.sendStatus(200);
   } catch (err) {
     res.sendStatus(400);
   }

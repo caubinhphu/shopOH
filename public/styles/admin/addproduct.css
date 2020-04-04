@@ -1,0 +1,42 @@
+input[type="file"] {
+  display: none;
+}
+
+.review-img {
+  width: 100px;
+  height: 100px;
+  background-color: black;
+  margin-bottom: 5px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+#modal-crop-img {
+  width:100%; 
+  height: 100%;
+  position: fixed; 
+  z-index: 999;
+  left: 0;
+  right: 0;
+  top: 0;
+  background-color: #9999;
+}
+
+#modal-main {
+  width: 780px;
+  height: 630px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 10px;
+  border-radius: 2%;
+}
+
+#modal-content {
+  height: 100%;
+  width: 580px;
+}
+
+#modal-main button {
+  width: 100px;
+}

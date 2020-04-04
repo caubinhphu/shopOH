@@ -1895,6 +1895,7 @@ begin
     select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, hinhanh
     from sanpham
     where ma_sanpham != _idpro
+      and trangthai = '1'
 		  and ma_loai2 = (select ma_loai2 from sanpham where ma_sanpham = _idpro)
 		  and ma_chatlieu = (select ma_chatlieu from sanpham where ma_sanpham = _idpro)
     limit 10;
@@ -2563,3 +2564,55 @@ begin
   select * from loai_sp2;
 end $$
 delimiter ;
+
+drop procedure ADMIN_SELECT_BRAND_MATERIAL;
+delimiter $$
+create procedure ADMIN_SELECT_BRAND_MATERIAL()
+begin
+  select * from thuonghieu;
+  select * from chatlieu;
+end $$
+delimiter ;
+
+select * from phanloaisanpham where ma_sanpham = 'a7dd2836-a6ce-4035-be9d-1ebad989d749';
+update phanloaisanpham
+set soluongton = 0
+where ma_sanpham = 'a7dd2836-a6ce-4035-be9d-1ebad989d749' and size = 'L';
+
+update sanpham
+set trangthai = '2'
+where ma_sanpham = 'f6fde233-a3de-44bd-a559-4c9d26abb68c';
+
+drop procedure ADMIN_INSERT_PRODUCT;
+delimiter $$
+create procedure ADMIN_INSERT_PRODUCT(
+  _id varchar(50), _name varchar(250), _l2 int, _mt text, _thieu int, _cl int,
+  _gia int, _km int, _st varchar(5), _img varchar(1000)
+)
+begin
+  insert
+  into sanpham(ma_sanpham, ten_sanpham, ma_loai2, ma_thuonghieu, ma_chatlieu, mota, giaban, 
+    khuyenmai, hinhanh, trangthai, ngaythem)
+  values(_id, _name, _l2, _thieu, _cl, _mt, _gia, _km, _img, _st, now());
+end $$
+delimiter ;
+
+drop procedure ADMIN_INSERT_TYPE_PRODUCT;
+delimiter $$
+create procedure ADMIN_INSERT_TYPE_PRODUCT(
+  _id varchar(50), _color varchar(30), _size varchar(20), _amount int
+)
+begin
+  insert
+  into phanloaisanpham(ma_sanpham, mausac, size, soluongton)
+  values(_id, _color, _size, _amount);
+end $$
+delimiter ;
+
+select * from sanpham
+where ten_sanpham = '1';
+select * from phanloaisanpham
+where ma_sanpham = 'a767fce0-f3f5-43f8-b050-5cea3cde1c0c';
+update sanpham
+set trangthai = '1'
+where ten_sanpham = '1';

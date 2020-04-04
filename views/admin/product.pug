@@ -5,13 +5,14 @@ append style
 
 block main
   #nav.my-2.p-2
-    a.nav-pro-item.nav-pro-active(href="#") Tất cả
-    a.nav-pro-item(href="#") Còn hàng
-    a.nav-pro-item(href="#") Hết hàng
-    a.nav-pro-item(href="#") Đã ẩn
+    a.nav-pro-item(href="/admin/product", class=productActive==='all'?'nav-pro-active':'') Tất cả
+    a.nav-pro-item(href="/admin/product?type=con", class=productActive==='con'?'nav-pro-active':'') Còn hàng
+    a.nav-pro-item(href="/admin/product?type=het", class=productActive==='het'?'nav-pro-active':'') Hết hàng
+    a.nav-pro-item(href="/admin/product?status=2", class=productActive==='hide'?'nav-pro-active':'') Đã ẩn
   #filter.w-100
     form.w-100.row(action="/admin/product", method="GET", name="formFilterSort")
       input(type="hidden", name="status" value=statusPro)
+      input(type="hidden", name="type" value=type)
       .col-6.row
         select.form-control.col-4(name="typeFilterName")
           option(value="name" selected=typeFilterName==='name'?true:false) Tên sản phẩm
@@ -73,13 +74,13 @@ block main
                 span= product.name
               td
                 each t in product.type
-                  span.span-br= t.color
+                  small.span-br= t.color
               td
                 each t in product.type
-                  span.span-br= t.size
+                  small.span-br= t.size
               td
                 each t in product.type
-                  span.span-br= t.amount
+                  small.span-br= t.amount
               td= product.selled
               td= product.like
               td= product.price
