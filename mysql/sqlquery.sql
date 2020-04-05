@@ -2523,7 +2523,7 @@ begin
     ' order by ngaythem desc;'
   );
   '
-  -- ------------ '
+  -- ''''''''''''''''''
   prepare stmt from @sql;
   execute stmt;
   deallocate prepare stmt;
@@ -2547,6 +2547,7 @@ create procedure ADMIN_DELETE_PRODUCT(_idpro varchar(50))
 begin
   if exists (select * from sanpham where ma_sanpham = _idpro)
   then
+    select hinhanh from sanpham where ma_sanpham = _idpro;
     delete from sanpham where ma_sanpham = _idpro;
   else signal sqlstate '45000' set message_text = 'product not exists'; -- throw error
   end if;
@@ -2616,3 +2617,57 @@ where ma_sanpham = 'a767fce0-f3f5-43f8-b050-5cea3cde1c0c';
 update sanpham
 set trangthai = '1'
 where ten_sanpham = '1';
+
+drop procedure ADMIN_SELECT_INFO_PRODUCT;
+delimiter $$
+create procedure ADMIN_SELECT_INFO_PRODUCT(_id varchar(50))
+begin
+  select sp.*, l1.ma_loai1, l1.ma_loai0
+  from sanpham sp join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
+                  join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
+  where ma_sanpham = _id;
+
+  select * from phanloaisanpham where ma_sanpham = _id;
+end $$
+delimiter ;
+
+drop procedure ADMIN_UPDATE_PRODUCT;
+delimiter $$
+create procedure ADMIN_UPDATE_PRODUCT(
+  _id varchar(50), _name varchar(250), _l2 int, _mt text,
+  _thieu int, _cl int, _gia int, _km int, _st varchar(5)
+)
+begin
+  update sanpham
+  set ten_sanpham = _name,
+    ma_loai2 = _l2,
+    ma_thuonghieu = _thieu,
+    mota = _mt,
+    giaban = _gia,
+    khuyenmai = _km,
+    trangthai = _st,
+    ngaythem = now()
+  where ma_sanpham = _id;
+end $$
+delimiter ;
+
+drop procedure ADMIN_UPDATE_TYPE_PRODUCT;
+delimiter $$
+create procedure ADMIN_UPDATE_TYPE_PRODUCT(
+  _id varchar(50), _color varchar(30), _size varchar(20), _amount int
+)
+begin
+  insert
+  into phanloaisanpham(ma_sanpham, mausac, size, soluongton)
+  values(_id, _color, _size, _amount);
+end $$
+delimiter ;
+
+drop procedure ADMIN_DELETE_TYPE_PRODUCT;
+delimiter $$
+create procedure ADMIN_DELETE_TYPE_PRODUCT(_id varchar(50))
+begin
+  delete from phanloaisanpham
+  where ma_sanpham = _id;
+end $$
+delimiter ;

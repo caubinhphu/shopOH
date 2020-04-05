@@ -12,12 +12,12 @@ const storage = multer.diskStorage({
       null,
       file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname)
     );
-  }
+  },
 });
 
 // upload file
 const upload = multer({
-  storage: storage
+  storage: storage,
 }).array('image');
 
 const router = express.Router();
@@ -32,7 +32,11 @@ router.get('/danhmuc', controller.getDanhMuc);
 
 router.get('/product/add', controller.getAddProduct);
 
+router.get('/product/edit/:idPro', controller.getEditProduct);
+
 router.post('/product/add', upload, controller.postAddProduct);
+
+router.put('/product/edit/:idPro', controller.putEditProduct);
 
 router.delete('/product/:idPro', controller.deleteProduct);
 

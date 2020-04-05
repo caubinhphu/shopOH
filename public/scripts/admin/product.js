@@ -3,7 +3,7 @@ let danhMuc = [];
 if (!sessionStorage.getItem('danhmuc')) {
   axios
     .get('http://localhost:3000/admin/danhmuc')
-    .then(res => {
+    .then((res) => {
       if (
         res.status === 200 &&
         /application\/json/.test(res.headers['content-type'])
@@ -17,7 +17,7 @@ if (!sessionStorage.getItem('danhmuc')) {
       danhMuc = JSON.parse(sessionStorage.getItem('danhmuc'));
       afterLoadDanhMuc();
     })
-    .catch(err => (location.href = 'http://localhost:3000/adminAuth'));
+    .catch((err) => (location.href = 'http://localhost:3000/adminAuth'));
 } else {
   danhMuc = JSON.parse(sessionStorage.getItem('danhmuc'));
   afterLoadDanhMuc();
@@ -27,16 +27,16 @@ function afterLoadDanhMuc() {
   const delProBtns = document.querySelectorAll('.del-pro-btn');
   const delOkBtn = document.getElementById('OK-del-btn');
 
-  delProBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
+  delProBtns.forEach((btn) => {
+    btn.addEventListener('click', function () {
       delOkBtn.dataset.idpro = this.dataset.idpro;
     });
   });
 
-  delOkBtn.addEventListener('click', function() {
+  delOkBtn.addEventListener('click', function () {
     axios
       .delete(`/admin/product/${this.dataset.idpro}`)
-      .then(res => {
+      .then((res) => {
         if (res.status === 200) {
           // location.reload();
           document
@@ -44,12 +44,12 @@ function afterLoadDanhMuc() {
             .parentElement.parentElement.remove();
         }
       })
-      .catch(err => location.reload());
+      .catch((err) => location.reload());
   });
 
-  document.formFilterSort.addEventListener('submit', function(e) {
+  document.formFilterSort.addEventListener('submit', function (e) {
     e.preventDefault();
-    [...this.elements].forEach(item => {
+    [...this.elements].forEach((item) => {
       if (item.value === '') {
         item.setAttribute('disabled', 'disabled');
       }
@@ -86,9 +86,11 @@ function afterLoadDanhMuc() {
     // return false;
   }
 
-  document.getElementById('re-enter-btn').addEventListener('click', function() {
-    resetForm(document.formFilterSort);
-  });
+  document
+    .getElementById('re-enter-btn')
+    .addEventListener('click', function () {
+      resetForm(document.formFilterSort);
+    });
 
   // danh muc
   let selectL0 = document.querySelector('select[name="loai0"]');
@@ -97,28 +99,34 @@ function afterLoadDanhMuc() {
 
   selectL0.innerHTML =
     '<option value="">Loại 0</option>' +
-    danhMuc.map(l0 => `<option value="${l0.id}">${l0.name}</option>`).join('');
+    danhMuc
+      .map((l0) => `<option value="${l0.id}">${l0.name}</option>`)
+      .join('');
 
-  selectL0.addEventListener('change', function() {
+  selectL0.addEventListener('change', function () {
     console.log(this);
     if (this.value !== '') {
-      let l1s = danhMuc.find(l0 => l0.id === +this.value).l1;
+      let l1s = danhMuc.find((l0) => l0.id === +this.value).l1;
       selectL1.innerHTML =
         '<option value="">Loại 1</option>' +
-        l1s.map(l1 => `<option value="${l1.id}">${l1.name}</option>`).join('');
+        l1s
+          .map((l1) => `<option value="${l1.id}">${l1.name}</option>`)
+          .join('');
     } else {
       selectL1.innerHTML = '';
     }
     selectL2.innerHTML = '';
   });
 
-  selectL1.addEventListener('change', function() {
+  selectL1.addEventListener('change', function () {
     if (this.value !== '') {
-      let l1s = danhMuc.find(l0 => l0.id === +selectL0.value).l1 || '';
-      let l2s = l1s.find(l1 => l1.id === +this.value).l2 || '';
+      let l1s = danhMuc.find((l0) => l0.id === +selectL0.value).l1 || '';
+      let l2s = l1s.find((l1) => l1.id === +this.value).l2 || '';
       selectL2.innerHTML =
         '<option value="">Loại 2</option>' +
-        l2s.map(l2 => `<option value="${l2.id}">${l2.name}</option>`).join('');
+        l2s
+          .map((l2) => `<option value="${l2.id}">${l2.name}</option>`)
+          .join('');
     } else {
       selectL2.innerHTML = '';
     }
@@ -126,27 +134,38 @@ function afterLoadDanhMuc() {
 
   let search = new URLSearchParams(location.search);
   if (search.has('loai0')) {
+    // loai 0
     selectL0.querySelector(
       `option[value="${search.get('loai0')}"]`
     ).selected = true;
-  }
-  if (search.has('loai1')) {
-    let l1s = danhMuc.find(l0 => l0.id === +selectL0.value).l1;
+
+    // get l1s
+    let l1s = danhMuc.find((l0) => l0.id === +selectL0.value).l1;
     selectL1.innerHTML =
       '<option value="">Loại 1</option>' +
-      l1s.map(l1 => `<option value="${l1.id}">${l1.name}</option>`).join('');
-    selectL1.querySelector(
-      `option[value="${search.get('loai1')}"]`
-    ).selected = true;
-  }
-  if (search.has('loai2')) {
-    let l1s = danhMuc.find(l0 => l0.id === +selectL0.value).l1 || '';
-    let l2s = l1s.find(l1 => l1.id === +selectL1.value).l2 || '';
-    selectL2.innerHTML =
-      '<option value="">Loại 2</option>' +
-      l2s.map(l2 => `<option value="${l2.id}">${l2.name}</option>`).join('');
-    selectL2.querySelector(
-      `option[value="${search.get('loai2')}"]`
-    ).selected = true;
+      l1s.map((l1) => `<option value="${l1.id}">${l1.name}</option>`).join('');
+
+    // has l1 in search string
+    if (search.has('loai1')) {
+      selectL1.querySelector(
+        `option[value="${search.get('loai1')}"]`
+      ).selected = true;
+
+      // get l2s
+      let l1s = danhMuc.find((l0) => l0.id === +selectL0.value).l1 || '';
+      let l2s = l1s.find((l1) => l1.id === +selectL1.value).l2 || '';
+      selectL2.innerHTML =
+        '<option value="">Loại 2</option>' +
+        l2s
+          .map((l2) => `<option value="${l2.id}">${l2.name}</option>`)
+          .join('');
+
+      // has l2 in search tring
+      if (search.has('loai2')) {
+        selectL2.querySelector(
+          `option[value="${search.get('loai2')}"]`
+        ).selected = true;
+      }
+    }
   }
 }

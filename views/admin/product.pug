@@ -53,6 +53,12 @@ block main
       .d-flex.justify-content-between
         h3= `${products.length} Sản Phẩm`
         a.btn.btn-danger(href="/admin/product/add", role="button") Thêm 1 sản phẩm mới
+    if (successMgs)
+      each sMgs in successMgs
+        .alert.alert-success.alert-dismissible.fade.show.mx-auto.mt-1(role='alert')
+          span= sMgs
+          button.close(type='button', data-dismiss='alert', aria-label='Close')
+            span(aria-hidden='true') &times;
     table.table.table-sm.text-center.text-white.mt-2
       thead
         tr
@@ -88,7 +94,7 @@ block main
               td= Math.round(product.price * (1 - product.promotion/ 100))
               td 
                 button.del-pro-btn.btn.btn-link(type="button", data-idpro=product.id, data-toggle='modal', data-target='#delete-product') Xóa
-                button.edit-pro-btn.btn.btn-link(type="button", data-idpro=product.id) Sửa
+                a.edit-pro-btn.btn.btn-link(href=`/admin/product/edit/${product.id}`, role="button") Sửa
 
   #delete-product.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')
