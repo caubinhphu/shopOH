@@ -1,0 +1,43 @@
+*, ::after, ::before {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0 auto;
+}
+
+.row {
+  margin: 0;
+  padding: 0;
+}
+
+.nav-title {
+  color: lightsteelblue;
+}
+
+.nav-left-item {
+  display: block;
+  color: white;
+  margin-left: 15px;
+}
+
+.nav-left-item:hover {
+  color: bisque;
+  text-decoration: none;
+}
+
+.nav-left-active {
+  color: chocolate;
+}
+
+#nav-left {
+  line-height: 35px;
+}
+
+#main-right {
+  background-color: #555;
+}
+
+#main {
+  min-height: 100vh;
+}

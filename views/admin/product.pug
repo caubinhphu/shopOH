@@ -1,0 +1,109 @@
+extends ./common
+
+append style
+  link(rel="stylesheet", href="/styles/admin/product.css")
+
+block main
+  #nav.my-2.p-2
+    a.nav-pro-item(href="/admin/product", class=productActive==='all'?'nav-pro-active':'') Tất cả
+    a.nav-pro-item(href="/admin/product?type=con", class=productActive==='con'?'nav-pro-active':'') Còn hàng
+    a.nav-pro-item(href="/admin/product?type=het", class=productActive==='het'?'nav-pro-active':'') Hết hàng
+    a.nav-pro-item(href="/admin/product?status=2", class=productActive==='hide'?'nav-pro-active':'') Đã ẩn
+  #filter.w-100
+    form.w-100.row(action="/admin/product", method="GET", name="formFilterSort")
+      input(type="hidden", name="status" value=statusPro)
+      input(type="hidden", name="type" value=type)
+      .col-6.row
+        select.form-control.col-4(name="typeFilterName")
+          option(value="name" selected=typeFilterName==='name'?true:false) Tên sản phẩm
+          option(value="id" selected=typeFilterName==='id'?true:false) Mã sản phẩm
+        input.form-control.col-8(type="text", name="filterName" placeholder="Nhập vào" value=filterName!=='-1'?filterName:"")
+        .d-flex.mt-2.align-items-center
+          span Giá:&nbsp;&nbsp;&nbsp;&nbsp;
+          input.form-control.col(type="number", name="filterPriceMin" placeholder="min" value=filterPriceMin!==0?filterPriceMin:"")
+          span &nbsp;-&nbsp;
+          input.form-control.col(type="number", name="filterPriceMax" placeholder="max" value=filterPriceMax!==0?filterPriceMax:"")
+      .col-6
+        .row
+          span Danh mục: &nbsp;
+          select.form-control.col(name="loai0")
+          select.form-control.col(name="loai1")
+          select.form-control.col(name="loai2")
+        .d-flex.mt-2.align-items-center
+          span Đã bán:&nbsp;&nbsp;&nbsp;&nbsp;
+          input.form-control.col(type="number", name="filterSelledMin" placeholder="min",  value=filterSelledMin!==0?filterSelledMin:"")
+          span &nbsp;-&nbsp;
+          input.form-control.col(type="number", name="filterSelledMax" placeholder="max", value=filterSelledMax!==0?filterSelledMax:"")
+      .mt-2
+        button.btn.btn-danger(type="submit") Tìm
+        button#re-enter-btn.btn.btn-light.ml-2(type="button") Nhập lại
+      #sort.col-12.mt-3
+        //- form(action="/admin/product", method="GET")
+        .row
+          select.form-control.col-2(name="sortType")
+            option(value="time", selected=typeSort==='time'?true:false) Thời gian thêm
+            option(value="price", selected=typeSort==='price'?true:false) Giá
+            option(value="selled", selected=typeSort==='selled'?true:false) Đã bán
+            option(value="like", selected=typeSort==='like'?true:false) Like
+          select.form-control.col-2(name="sortValue")
+            option(value="decrease", selected=valueSort==='decrease'?true:false) Giảm dần
+            option(value="increase", selected=valueSort==='increase'?true:false) Tăng dần
+          button.btn.btn-light.ml-2(type="submit") Sort
+    #product-area.mt-3
+      .d-flex.justify-content-between
+        h3= `${products.length} Sản Phẩm`
+        a.btn.btn-danger(href="/admin/product/add", role="button") Thêm 1 sản phẩm mới
+    if (successMgs)
+      each sMgs in successMgs
+        .alert.alert-success.alert-dismissible.fade.show.mx-auto.mt-1(role='alert')
+          span= sMgs
+          button.close(type='button', data-dismiss='alert', aria-label='Close')
+            span(aria-hidden='true') &times;
+    table.table.table-sm.text-center.text-white.mt-2
+      thead
+        tr
+          th Tên sản phẩm
+          th Màu
+          th Size
+          th Số lượng
+          th Đã bán
+          th like
+          th Giá
+          th Khuyến mãi
+          th Giá bán
+          th Thao tác
+        tbody
+          each product in products
+            tr
+              td.name-pro
+                img.mr-2(src=product.img, alt="hinh", width="40px", height="40px")
+                span= product.name
+              td
+                each t in product.type
+                  small.span-br= t.color
+              td
+                each t in product.type
+                  small.span-br= t.size
+              td
+                each t in product.type
+                  small.span-br= t.amount
+              td= product.selled
+              td= product.like
+              td= product.price
+              td= product.promotion
+              td= Math.round(product.price * (1 - product.promotion/ 100))
+              td 
+                button.del-pro-btn.btn.btn-link(type="button", data-idpro=product.id, data-toggle='modal', data-target='#delete-product') Xóa
+                a.edit-pro-btn.btn.btn-link(href=`/admin/product/edit/${product.id}`, role="button") Sửa
+
+  #delete-product.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
+    .modal-dialog.modal-dialog-centered(role='document')
+      .modal-content.p-2
+        .modal-body
+          .py-5.text-dark Xóa thiệt ha m?
+          .d-flex
+            button#OK-del-btn.btn.btn-danger.flex-fill.mr-1(type='button') Ừ
+            button.btn.btn-light.flex-fill(type='button', data-dismiss='modal') HÔNG
+  
+append script
+  script(src="/scripts/admin/product.js")

@@ -1,0 +1,21 @@
+extends ../common
+
+block content
+  .bg-secondary.py-5(style="height: 100vh")
+    .w-25.bg-light.mx-auto
+      if (errMgs)
+        each mgs in errMgs
+          .alert.alert-danger.alert-dismissible.fade.show.mx-auto(role='alert', style="max-width: 400px")
+            span= mgs
+            button.close(type='button', data-dismiss='alert', aria-label='Close')
+              span(aria-hidden='true') &times;
+      form.p-2.mt-1(action="/adminAuth", method="POST")
+        input(type="hidden", name="_csrf", value=csrfToken)
+        .form-group
+          label(for="code1") Mã xác minh 1
+          input#code1.form-control(type="password", placeholder="Nhập mã xác minh 1", name="code1", required)
+        .form-group
+          label(for="code2") Mã xác minh 2
+          input#code2.form-control(type="password", placeholder="Nhập mã xác minh 2", name="code2", required)
+        .text-right
+          button.btn.btn-danger(type='submit') XÁC MINH

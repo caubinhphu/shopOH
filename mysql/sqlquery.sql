@@ -1895,6 +1895,7 @@ begin
     select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, hinhanh
     from sanpham
     where ma_sanpham != _idpro
+      and trangthai = '1'
 		  and ma_loai2 = (select ma_loai2 from sanpham where ma_sanpham = _idpro)
 		  and ma_chatlieu = (select ma_chatlieu from sanpham where ma_sanpham = _idpro)
     limit 10;
@@ -2491,5 +2492,182 @@ begin
   from thongbao tb join thongbao_khachhang tk on tb.ma_thongbao = tk.ma_thongbao
   where tk.ma_khachhang = _iduser
   order by ngaydang desc;
+end $$
+delimiter ;
+
+drop procedure ADMIN_SELECT_PRODUCT;
+delimiter $$
+create procedure ADMIN_SELECT_PRODUCT(
+  _type varchar(10), _name varchar(50), _prmi int, _prma int, _l0 varchar(30), _l1 varchar(30),
+  _l2 varchar(30), _semi int, _sema int, _stpr varchar(5)
+)
+begin
+  -- select info all product
+  -- select ma_sanpham, ten_sanpham, hinhanh, daban, giaban, khuyenmai, ngaythem
+  -- from sanpham
+  -- order by ngaythem desc;
+   set @sql = concat(
+    'select sp.ma_sanpham, sp.ten_sanpham, sp.giaban, sp.khuyenmai, sp.daban, sp.hinhanh, sp.ngaythem
+    from sanpham sp join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
+                    join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
+                    join loai_sp0 l0 on l1.ma_loai0 = l0.ma_loai0
+    where (sp.trangthai = \'', _stpr, '\' or \'', _stpr, '\' = \'-1\')',
+      ' and ((sp.ma_sanpham = \'', _name, '\' and \'' , _type, '\' = \'id\') or (sp.ten_sanpham like \'%', _name, '%\' and \'' , _type, '\' = \'name\') or \'', _name, '\' = \'-1\')',
+      ' and (l0.ma_loai0 = ', _l0, ' or ' , _l0, ' = -1)',
+      ' and (l1.ma_loai1 = ', _l1, ' or ' , _l1, ' = -1)',
+      ' and (l2.ma_loai2 = ', _l2, ' or ' , _l2, ' = -1)'
+      ' and ((sp.giaban * (1 - sp.khuyenmai / 100)) >= ', _prmi, ' or ', _prmi, ' = 0)',
+      ' and ((sp.giaban * (1 - sp.khuyenmai / 100)) <= ', _prma, ' or ', _prma, ' = 0)',
+      ' and (sp.daban >= ', _semi, ' or ', _semi, ' = 0)',
+      ' and (sp.daban <= ', _sema, ' or ', _sema, ' = 0)',
+    ' order by ngaythem desc;'
+  );
+  '
+  -- ''''''''''''''''''
+  prepare stmt from @sql;
+  execute stmt;
+  deallocate prepare stmt;
+
+  -- select type all product
+  select *
+  from phanloaisanpham;
+
+  -- get like each product
+  select ma_sanpham, count(*) as solike
+  from likesanpham
+  group by ma_sanpham; 
+end $$
+delimiter ;
+
+call ADMIN_SELECT_PRODUCT('name', 'áo', 0, 0, -1, -1, -1, 0, 0, '-1');
+
+drop procedure ADMIN_DELETE_PRODUCT;
+delimiter $$
+create procedure ADMIN_DELETE_PRODUCT(_idpro varchar(50))
+begin
+  if exists (select * from sanpham where ma_sanpham = _idpro)
+  then
+    select hinhanh from sanpham where ma_sanpham = _idpro;
+    delete from sanpham where ma_sanpham = _idpro;
+  else signal sqlstate '45000' set message_text = 'product not exists'; -- throw error
+  end if;
+end $$
+delimiter ;
+
+select * from sanpham where ma_sanpham = '3';
+
+drop procedure ADMIN_SELECT_DANHMUC;
+delimiter $$
+create procedure ADMIN_SELECT_DANHMUC()
+begin
+  select * from loai_sp0;
+  select * from loai_sp1;
+  select * from loai_sp2;
+end $$
+delimiter ;
+
+drop procedure ADMIN_SELECT_BRAND_MATERIAL;
+delimiter $$
+create procedure ADMIN_SELECT_BRAND_MATERIAL()
+begin
+  select * from thuonghieu;
+  select * from chatlieu;
+end $$
+delimiter ;
+
+select * from phanloaisanpham where ma_sanpham = 'a7dd2836-a6ce-4035-be9d-1ebad989d749';
+update phanloaisanpham
+set soluongton = 0
+where ma_sanpham = 'a7dd2836-a6ce-4035-be9d-1ebad989d749' and size = 'L';
+
+update sanpham
+set trangthai = '2'
+where ma_sanpham = 'f6fde233-a3de-44bd-a559-4c9d26abb68c';
+
+drop procedure ADMIN_INSERT_PRODUCT;
+delimiter $$
+create procedure ADMIN_INSERT_PRODUCT(
+  _id varchar(50), _name varchar(250), _l2 int, _mt text, _thieu int, _cl int,
+  _gia int, _km int, _st varchar(5), _img varchar(1000)
+)
+begin
+  insert
+  into sanpham(ma_sanpham, ten_sanpham, ma_loai2, ma_thuonghieu, ma_chatlieu, mota, giaban, 
+    khuyenmai, hinhanh, trangthai, ngaythem)
+  values(_id, _name, _l2, _thieu, _cl, _mt, _gia, _km, _img, _st, now());
+end $$
+delimiter ;
+
+drop procedure ADMIN_INSERT_TYPE_PRODUCT;
+delimiter $$
+create procedure ADMIN_INSERT_TYPE_PRODUCT(
+  _id varchar(50), _color varchar(30), _size varchar(20), _amount int
+)
+begin
+  insert
+  into phanloaisanpham(ma_sanpham, mausac, size, soluongton)
+  values(_id, _color, _size, _amount);
+end $$
+delimiter ;
+
+select * from sanpham
+where ten_sanpham = '1';
+select * from phanloaisanpham
+where ma_sanpham = 'a767fce0-f3f5-43f8-b050-5cea3cde1c0c';
+update sanpham
+set trangthai = '1'
+where ten_sanpham = '1';
+
+drop procedure ADMIN_SELECT_INFO_PRODUCT;
+delimiter $$
+create procedure ADMIN_SELECT_INFO_PRODUCT(_id varchar(50))
+begin
+  select sp.*, l1.ma_loai1, l1.ma_loai0
+  from sanpham sp join loai_sp2 l2 on sp.ma_loai2 = l2.ma_loai2
+                  join loai_sp1 l1 on l2.ma_loai1 = l1.ma_loai1
+  where ma_sanpham = _id;
+
+  select * from phanloaisanpham where ma_sanpham = _id;
+end $$
+delimiter ;
+
+drop procedure ADMIN_UPDATE_PRODUCT;
+delimiter $$
+create procedure ADMIN_UPDATE_PRODUCT(
+  _id varchar(50), _name varchar(250), _l2 int, _mt text,
+  _thieu int, _cl int, _gia int, _km int, _st varchar(5)
+)
+begin
+  update sanpham
+  set ten_sanpham = _name,
+    ma_loai2 = _l2,
+    ma_thuonghieu = _thieu,
+    mota = _mt,
+    giaban = _gia,
+    khuyenmai = _km,
+    trangthai = _st,
+    ngaythem = now()
+  where ma_sanpham = _id;
+end $$
+delimiter ;
+
+drop procedure ADMIN_UPDATE_TYPE_PRODUCT;
+delimiter $$
+create procedure ADMIN_UPDATE_TYPE_PRODUCT(
+  _id varchar(50), _color varchar(30), _size varchar(20), _amount int
+)
+begin
+  insert
+  into phanloaisanpham(ma_sanpham, mausac, size, soluongton)
+  values(_id, _color, _size, _amount);
+end $$
+delimiter ;
+
+drop procedure ADMIN_DELETE_TYPE_PRODUCT;
+delimiter $$
+create procedure ADMIN_DELETE_TYPE_PRODUCT(_id varchar(50))
+begin
+  delete from phanloaisanpham
+  where ma_sanpham = _id;
 end $$
 delimiter ;
