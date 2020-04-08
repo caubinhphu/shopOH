@@ -435,3 +435,50 @@ module.exports.putEditProduct = async (req, res, next) => {
     next(err);
   }
 };
+
+module.exports.getOrder = async (req, res, next) => {
+  try {
+    // get status order query
+    let status = +req.query.status || 0;
+
+    let data = await querySQL('call ADMIN_SELECT_ORDER(?)', [status]);
+    let orders = data[0].reduce((acc, cur) => {
+      if (!(cur.ma_dondathang in acc)) {
+        acc[cur.ma_dondathang] = {
+          id: cur.ma_dondathang,
+          dateOrder: cur.ngay_dathang,
+          status: cur.ten_trangthai,
+          products: [
+            {
+              img: cur.hinhanh.split(',')[0],
+              color: cur.mausac,
+              size: cur.size,
+              amount: cur.soluong,
+            },
+          ],
+          sumPrice:
+            cur.phi_vanchuyen +
+            Math.round(cur.giaban * (1 - cur.khuyenmai / 100)),
+        };
+      } else {
+        acc[cur.ma_dondathang].products.push({
+          img: cur.hinhanh.split(',')[0],
+          color: cur.mausac,
+          size: cur.size,
+          amount: cur.soluong,
+        });
+        acc[cur.ma_dondathang].sumPrice += Math.round(
+          cur.giaban * (1 - cur.khuyenmai / 100)
+        );
+      }
+      return acc;
+    }, {});
+    res.render('admin/order', {
+      titleSite: 'ShopOH',
+      active: 'order',
+      orders: Object.values(orders),
+    });
+  } catch (err) {
+    next(err);
+  }
+};

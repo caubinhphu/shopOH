@@ -2671,3 +2671,17 @@ begin
   where ma_sanpham = _id;
 end $$
 delimiter ;
+
+select * from dondathang;
+
+drop procedure ADMIN_SELECT_ORDER;
+delimiter $$
+create procedure ADMIN_SELECT_ORDER(_st varchar(5))
+begin
+  select dh.*, tt.ten_trangthai, ct.*, sp.hinhanh
+  from dondathang dh join ct_dondathang ct on dh.ma_dondathang = ct.ma_dondathang
+                     join sanpham sp on ct.ma_sanpham = sp.ma_sanpham
+                     join trangthai_donhang tt on dh.ma_trangthai = tt.ma_trangthai
+  where dh.ma_trangthai = _st or _st = 0;
+end $$
+delimiter ;

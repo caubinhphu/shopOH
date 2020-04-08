@@ -28,6 +28,8 @@ router.get('/', controller.getHome);
 
 router.get('/product', controller.getProduct);
 
+router.get('/order', controller.getOrder);
+
 router.get('/danhmuc', controller.getDanhMuc);
 
 router.get('/product/add', controller.getAddProduct);
