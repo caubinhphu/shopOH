@@ -7,24 +7,13 @@ block main
   .p-3
     .mt-5.mb-2 THỐNG KÊ
     .d-flex
-      a.tk-item(href="#")
-        .text-info 0
-        .text-dark Chờ xác nhận
-      a.tk-item(href="#")
-        .text-info 0
-        .text-dark Chờ lấy hàng
-      a.tk-item(href="#")
-        .text-info 0
-        .text-dark Đã xử lý
-      a.tk-item(href="#")
-        .text-info 0
-        .text-dark Đơn hủy
-      a.tk-item(href="#")
-        .text-info 0
+      each statistical in orderStatistical
+        a.tk-item(href=`/admin/order?status=${statistical.ma_trangthai}`)
+          .text-info= statistical.tk
+          .text-dark= statistical.ten_trangthai
+      a.tk-item(href="/admin/product?status=2")
+        .text-info= proHideStatistical.tk
         .text-dark Sản phẩm ẩn
-      a.tk-item(href="#")
-        .text-info 0
+      a.tk-item(href="/admin/product?type=het")
+        .text-info= proHetStatistical.tk
         .text-dark Sản phẩm hết hàng
-      a.tk-item(href="#")
-        .text-info 0
-        .text-dark Đang vận chuyển

@@ -2765,3 +2765,25 @@ begin
 end $$
 delimiter $$
 
+drop procedure ADMIN_STATISTICAL_INDEX;
+delimiter $$
+create procedure ADMIN_STATISTICAL_INDEX()
+begin
+  select tt.*, ifnull(counttt.tk, 0) as tk
+  from (select tt.ma_trangthai, tt.ten_trangthai, count(*) as tk
+        from dondathang dh join trangthai_donhang tt on dh.ma_trangthai = tt.ma_trangthai
+        where dh.ma_trangthai < 6
+        group by dh.ma_trangthai, tt.ten_trangthai
+        order by tt.ma_trangthai) counttt
+    right join trangthai_donhang tt on counttt.ma_trangthai = tt.ma_trangthai
+  where tt.ma_trangthai < 6;
+
+  select count(*) as tk
+  from sanpham
+  where trangthai = "2";
+
+  select count(*) as tk
+  from phanloaisanpham pl join sanpham sp on pl.ma_sanpham = sp.ma_sanpham
+  where sp.trangthai = '1' and soluongton = 0;
+end $$
+delimiter $$

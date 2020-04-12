@@ -4,11 +4,21 @@ const path = require("path");
 const querySQL = require("../configure/querySQL");
 
 // get home
-module.exports.getHome = (req, res, next) => {
+module.exports.getHome = async (req, res, next) => {
   try {
+    // get data statistical
+    let data = await querySQL("call ADMIN_STATISTICAL_INDEX()");
+
+    let orderStatistical = data[0];
+    let proHideStatistical = data[1][0];
+    let proHetStatistical = data[2][0];
+
     // render
     res.render("admin/index", {
       titleSite: "ShopOH",
+      orderStatistical,
+      proHideStatistical,
+      proHetStatistical,
     });
   } catch (err) {
     next(err);
