@@ -2787,3 +2787,12 @@ begin
   where sp.trangthai = '1' and soluongton = 0;
 end $$
 delimiter $$
+
+drop procedure ADMIN_SELECT_NOTIFICATION;
+delimiter $$
+create procedure ADMIN_SELECT_NOTIFICATION(_tieuden text(255))
+begin
+  select * from thongbao
+  where loai_thongbao = 1 and tieude like _tieuden;
+end $$
+delimiter $$

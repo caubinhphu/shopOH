@@ -34,6 +34,10 @@ router.get("/danhmuc", controller.getDanhMuc);
 
 router.get("/product/add", controller.getAddProduct);
 
+router.get("/notification", controller.getNotification);
+
+router.get("/notification/add", controller.getAddNotification);
+
 router.get("/product/edit/:idPro", controller.getEditProduct);
 
 router.post("/product/add", upload, controller.postAddProduct);

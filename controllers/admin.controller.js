@@ -648,3 +648,36 @@ module.exports.deleteOrder = async (req, res, next) => {
     res.sendStatus(400);
   }
 };
+
+module.exports.getNotification = async (req, res, next) => {
+  try {
+    // get string qery
+    let searchNoti = req.query.searchNoti || "";
+    let searchNotification = `'%${searchNoti}%'`;
+
+    let data = await querySQL("call ADMIN_SELECT_NOTIFICATION(?)", [
+      searchNotification,
+    ]);
+    notifications = data[0];
+
+    res.render("admin/notification", {
+      titleSite: "ShopOH",
+      active: "notification",
+      notifications: data[0],
+      searchNoti,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports.getAddNotification = (req, res, next) => {
+  try {
+    res.render("admin/addnotification", {
+      titleSite: "ShopOH",
+      active: "addnoti",
+    });
+  } catch (err) {
+    next(err);
+  }
+};

@@ -1,0 +1,50 @@
+extends ./common
+
+append style
+  link(rel="stylesheet", href="/styles/admin/notification.css")
+
+block main
+  #filter.w-100.d-flex
+    form.align-items-center.flex-fill(method="GET", name="formFilter")
+      .input-group
+        input.form-control(type="text", name="searchNoti", placeholder="Tìm thông báo", value=searchNoti?searchNoti:"")
+        .input-group-append
+          button#search-btn.btn.btn-success(type="submit")
+            i.fas.fa-search
+    if (successMgs)
+      each sMgs in successMgs
+        .alert.alert-success.alert-dismissible.fade.show.mx-auto.mt-1(role='alert')
+          span= sMgs
+          button.close(type='button', data-dismiss='alert', aria-label='Close')
+            span(aria-hidden='true') &times;
+  h4.mt-4= `${0} thông báo`
+  table.table.table-sm.text-center.text-white.mt-2
+    thead
+      tr
+        th Hình ảnh
+        th Tiêu đề
+        th Ngày đăng
+        th Thao tác
+      tbody
+        each noti in notifications
+          tr
+            td
+              a.id-order-link(href=`/admin/notification/${noti.ma_thongbao}`)= order.ma_thongbao
+                img(src=noti.hinhanh, alt="thong bao", width="40px", height="40px")
+            td= noti.tieude
+            td= noti.ngaydang.toLocaleDateString()
+            td 
+              button.del-pro-btn.btn.btn-link(type="button", data-noti=noti.ma_thongbao, data-toggle='modal', data-target='#delete-notification') Xóa
+              a.edit-pro-btn.btn.btn-link(href=`/admin/notification/edit/${noti.ma_thongbao}`, role="button") Sửa
+  
+  #delete-notification.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
+    .modal-dialog.modal-dialog-centered(role='document')
+      .modal-content.p-2
+        .modal-body
+          .py-5.text-dark Xóa thiệt ha m?
+          .d-flex
+            button#OK-del-btn.btn.btn-danger.flex-fill.mr-1(type='button') Ừ
+            button.btn.btn-light.flex-fill(type='button', data-dismiss='modal') HÔNG
+
+append script
+  script(src="/scripts/admin/order.js") 
