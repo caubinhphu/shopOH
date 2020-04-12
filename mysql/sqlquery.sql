@@ -1,3 +1,4 @@
+create database SHOPOH; 
 alter database SHOPOH character set utf16 collate utf16_general_ci;
 
 create table thuonghieu (
@@ -41,12 +42,13 @@ alter table loai_sp0 convert to character set utf16 collate utf16_general_ci;
 insert into loai_sp0 (ten_loai0)
 values ('Quần áo nam'),
 	     ('Quần áo nữ');
-       
+
+drop table loai_sp1; 
 create table loai_sp1 (
 	ma_loai1 int auto_increment not null,
   ten_loai1 varchar(50) not null,
   ma_loai0 int not null,
-  hinhanh varchar(50),
+  hinhanh varchar(100),
   primary key (ma_loai1),
   foreign key (ma_loai0) references loai_sp0(ma_loai0)
 );
@@ -61,9 +63,6 @@ values ('Áo thun', 1),
 update loai_sp1
 set hinhanh = 'https://robohash.org/quaeratdignissimosnesciunt.jpg?size=450x450&set=set1'
 where ma_loai1 = 4;
-
-alter table loai_sp1
-change column hinhanh hinhanh varchar(100) after ma_loai0;
 
 create table loai_sp2 (
 	ma_loai2 int auto_increment not null,
@@ -95,6 +94,8 @@ create table sanpham (
   khuyenmai tinyint default 0,
 	hinhanh varchar(1000) not null,
   daban int default 0,
+  ngaythem datetime default now(),
+  trangthai varchar(5) default '1',
   primary key (ma_sanpham),
   foreign key (ma_loai2) references loai_sp2 (ma_loai2),
   foreign key (ma_thuonghieu) references thuonghieu (ma_thuonghieu),
@@ -1588,8 +1589,6 @@ Nam ultrices, libero non mattis pulvinar, nulla pede ullamcorper augue, a suscip
 
 Curabitur at ipsum ac tellus semper interdum. Mauris ullamcorper purus sit amet nulla. Quisque arcu libero, rutrum ac, lobortis vel, dapibus at, diam.', 108613, 98, 'https://robohash.org/etisteillo.bmp?size=450x450&set=set1', 62, now());
 
-
-
 create table phanloaisanpham (
 	ma_sanpham varchar(50) not null,
   mausac varchar(30) not null,
@@ -1642,8 +1641,8 @@ values ('1', 'TRẮNG', 'M', 100),
       ('3', 'TRẮNG', '1 SIZE', 65);
 
 insert into phanloaisanpham(ma_sanpham, mausac, size, soluongton)
-select ma_sanpham, 'XANH', 'L', 44
-from sanpham
+select ma_sanpham, 'XANH', 'M', 40
+from sanpham;
 
 
 create table khachhang (
@@ -1653,14 +1652,16 @@ create table khachhang (
   ten_khachhang varchar(100) null,
   email varchar(100),
   dienthoai varchar(20) null,
-  avatar varchar(100) null,
+  avatar varchar(50) null,
+  gioitinh varchar(10),
+  ngaysinh date,
   primary key (ma_khachhang)
 );
 alter table khachhang convert to character set utf16 collate utf16_general_ci;
-alter table khachhang add column gioitinh varchar(10);
-alter table khachhang add column ngaysinh date;
-alter table khachhang
-change column avatar avatar varchar(50) after dienthoai;
+-- alter table khachhang add column gioitinh varchar(10);
+-- alter table khachhang add column ngaysinh date;
+-- alter table khachhang
+-- change column avatar avatar varchar(50) after dienthoai;
 
 
 insert into khachhang (ma_khachhang, taikhoan, matkhau, ten_khachhang, email, dienthoai, avatar)
@@ -1756,6 +1757,7 @@ create table giohang (
 -- insert into giohang(ma_khachhang, ma_sanpham, soluong, mausac, size, ngaythem)
 -- values ('1', '1', 2, 'ĐEN', 'M', null);
 
+--------------------------------------------
 drop table thongbao;
 create table thongbao (
 	ma_thongbao varchar(50) not null,
@@ -1793,6 +1795,7 @@ values ('2', '1');
 update thongbao_khachhang
 set daxem = true
 where ma_thongbao = '2';
+----------------------------------------------------------------
 
 -- -------------------procedure -------------------- --
 
@@ -1950,10 +1953,10 @@ end $$
 delimiter ;
 call sp_deletelike(2, 1);
 
-drop procedure sp_select_product_all;
+drop procedure SP_SELECT_PRODUCT_ALL;
 -- get all product
 delimiter $$
-create procedure sp_select_product_all(_offset int, _linmit int)
+create procedure SP_SELECT_PRODUCT_ALL(_offset int, _linmit int)
 begin
 	select ma_sanpham, ten_sanpham, giaban, khuyenmai, daban, ma_loai2, hinhanh, ma_chatlieu
   from sanpham
@@ -2523,7 +2526,7 @@ begin
     ' order by ngaythem desc;'
   );
   '
-  -- ''''''''''''''''''
+  -----------------------
   prepare stmt from @sql;
   execute stmt;
   deallocate prepare stmt;
@@ -2671,3 +2674,94 @@ begin
   where ma_sanpham = _id;
 end $$
 delimiter ;
+
+select * from dondathang;
+
+drop procedure ADMIN_SELECT_ORDER;
+delimiter $$
+create procedure ADMIN_SELECT_ORDER(_st varchar(5), _id varchar(50))
+begin
+  select dh.*, tt.ten_trangthai, ct.*, sp.hinhanh
+  from dondathang dh join ct_dondathang ct on dh.ma_dondathang = ct.ma_dondathang
+                     join sanpham sp on ct.ma_sanpham = sp.ma_sanpham
+                     join trangthai_donhang tt on dh.ma_trangthai = tt.ma_trangthai
+  where (dh.ma_trangthai = _st or _st = 0)
+    and (dh.ma_dondathang = _id or _id = '')
+  order by ngay_dathang desc;
+end $$
+delimiter $$
+
+drop procedure ADMIN_SELECT_INFO_ORDER;
+delimiter $$
+create procedure ADMIN_SELECT_INFO_ORDER(_id varchar(50))
+begin
+  select dh.*, tt.ten_trangthai
+  from dondathang dh join trangthai_donhang tt on dh.ma_trangthai = tt.ma_trangthai
+  where dh.ma_dondathang = _id;
+
+  select ct.*, sp.ten_sanpham, sp.hinhanh, sp.giaban, sp.khuyenmai
+  from ct_dondathang ct join sanpham sp on ct.ma_sanpham = sp.ma_sanpham
+  where ct.ma_dondathang = _id;
+end $$
+delimiter $$
+
+drop procedure ADMIN_SELECT_CAN_STATUS_ORDER;
+delimiter $$
+create procedure ADMIN_SELECT_CAN_STATUS_ORDER(_idstatus int)
+begin
+  select * from trangthai_donhang
+  where ma_trangthai = _idstatus + 1 or ma_trangthai = 5;
+end $$
+delimiter $$
+
+drop procedure ADMIN_UPDATE_STATUS_ORDER;
+delimiter $$
+create procedure ADMIN_UPDATE_STATUS_ORDER(_idorder varchar(50), _st int)
+begin
+  if (_st = 2) then
+    update dondathang
+    set ma_trangthai = _st,
+      ngay_xacnhan = now()
+    where ma_dondathang = _idorder;
+  elseif (_st = 3) then
+    update dondathang
+    set ma_trangthai = _st,
+      ngay_giaohang = now()
+    where ma_dondathang = _idorder;
+  elseif (_st = 4) then
+    update dondathang
+    set ma_trangthai = _st,
+      ngay_nhanhang = now()
+    where ma_dondathang = _idorder;
+  elseif (_st = 5) then
+    update dondathang
+    set ma_trangthai = _st,
+      ngay_huyhang = now()
+    where ma_dondathang = _idorder;
+  elseif (_st = 6) then
+    update dondathang
+    set ma_trangthai = _st,
+      ngay_huyhang = now()
+    where ma_dondathang = _idorder;
+  end if;
+end $$
+delimiter $$
+select * from trangthai_donhang;
+
+select * from dondathang where ma_dondathang = '5ca4edeb-4959-4448-b045-934db7b75863';
+
+select * from dondathang;
+
+drop procedure ADMIN_DELETE_ORDER;
+delimiter $$
+create procedure ADMIN_DELETE_ORDER(_id varchar(50))
+begin
+  if exists (select * from dondathang where ma_dondathang = _id and ma_trangthai = 5)
+  then
+    delete from dondathang
+    where ma_dondathang = _id;
+  else signal sqlstate '45000' set message_text = 'Không thể xóa đơn hàng';
+  end if;
+end $$
+delimiter $$
+

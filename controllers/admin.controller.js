@@ -1,14 +1,14 @@
-const { v4 } = require('uuid');
-const fs = require('fs');
-const path = require('path');
-const querySQL = require('../configure/querySQL');
+const { v4 } = require("uuid");
+const fs = require("fs");
+const path = require("path");
+const querySQL = require("../configure/querySQL");
 
 // get home
 module.exports.getHome = (req, res, next) => {
   try {
     // render
-    res.render('admin/index', {
-      titleSite: 'ShopOH',
+    res.render("admin/index", {
+      titleSite: "ShopOH",
     });
   } catch (err) {
     next(err);
@@ -19,8 +19,8 @@ module.exports.getHome = (req, res, next) => {
 module.exports.getProduct = async (req, res, next) => {
   try {
     // get req filter
-    let typeFilterName = req.query.typeFilterName || 'name';
-    let filterName = req.query.filterName || '-1';
+    let typeFilterName = req.query.typeFilterName || "name";
+    let filterName = req.query.filterName || "-1";
     let filterPriceMin = +req.query.filterPriceMin || 0;
     let filterPriceMax = +req.query.filterPriceMax || 0;
     let loai0 = +req.query.loai0 || -1;
@@ -28,11 +28,11 @@ module.exports.getProduct = async (req, res, next) => {
     let loai2 = +req.query.loai2 || -1;
     let filterSelledMin = +req.query.filterSelledMin || 0;
     let filterSelledMax = +req.query.filterSelledMax || 0;
-    let statusPro = req.query.status || '-1';
-    let type = req.query.type || 'all';
+    let statusPro = req.query.status || "-1";
+    let type = req.query.type || "all";
     // get data product from db
     let data = await querySQL(
-      'call ADMIN_SELECT_PRODUCT(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      "call ADMIN_SELECT_PRODUCT(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         typeFilterName, // filter type name (by id or by name)
         filterName, // filter name (id or name)
@@ -48,8 +48,8 @@ module.exports.getProduct = async (req, res, next) => {
     );
 
     //get req sort
-    let typeSort = req.query.sortType || 'time';
-    let valueSort = req.query.sortValue || 'decrease';
+    let typeSort = req.query.sortType || "time";
+    let valueSort = req.query.sortValue || "decrease";
 
     // create product list
     let products = [];
@@ -58,7 +58,7 @@ module.exports.getProduct = async (req, res, next) => {
       let product = {};
       product.id = pro.ma_sanpham;
       product.name = pro.ten_sanpham;
-      product.img = pro.hinhanh.split(',')[0];
+      product.img = pro.hinhanh.split(",")[0];
       product.selled = pro.daban;
       product.price = pro.giaban;
       product.promotion = pro.khuyenmai;
@@ -85,12 +85,12 @@ module.exports.getProduct = async (req, res, next) => {
     });
 
     // filter products by type (còn hàng, hết hàng)
-    if (type === 'con') {
+    if (type === "con") {
       products.forEach((pro) => {
         pro.type = pro.type.filter((type) => type.amount > 0);
       });
       products = products.filter((pro) => pro.type.length > 0);
-    } else if (type === 'het') {
+    } else if (type === "het") {
       products.forEach((pro) => {
         pro.type = pro.type.filter((type) => type.amount === 0);
       });
@@ -99,51 +99,51 @@ module.exports.getProduct = async (req, res, next) => {
 
     // sort products
     // sort default: time decrease
-    if (typeSort === 'time') {
+    if (typeSort === "time") {
       // sort by time
-      if (valueSort === 'increase') {
+      if (valueSort === "increase") {
         products.sort((a, b) => a.dateAdd - b.dateAdd);
       }
-    } else if (typeSort === 'price') {
+    } else if (typeSort === "price") {
       // sort by price
-      if (valueSort === 'increase') {
+      if (valueSort === "increase") {
         products.sort((a, b) => a.price - b.price);
-      } else if (valueSort === 'decrease') {
+      } else if (valueSort === "decrease") {
         products.sort((a, b) => b.price - a.price);
       }
-    } else if (typeSort === 'selled') {
+    } else if (typeSort === "selled") {
       // sort by selles
-      if (valueSort === 'increase') {
+      if (valueSort === "increase") {
         products.sort((a, b) => a.selled - b.selled);
-      } else if (valueSort === 'decrease') {
+      } else if (valueSort === "decrease") {
         products.sort((a, b) => b.selled - a.selled);
       }
-    } else if (typeSort === 'like') {
+    } else if (typeSort === "like") {
       // sort by like
-      if (valueSort === 'increase') {
+      if (valueSort === "increase") {
         products.sort((a, b) => a.like - b.like);
-      } else if (valueSort === 'decrease') {
+      } else if (valueSort === "decrease") {
         products.sort((a, b) => b.like - a.like);
       }
     }
 
     // active tab main
-    let productActive = '';
-    if (statusPro === '-1') {
-      productActive = 'all';
-    } else if (statusPro === '2') {
-      productActive = 'hide';
+    let productActive = "";
+    if (statusPro === "-1") {
+      productActive = "all";
+    } else if (statusPro === "2") {
+      productActive = "hide";
     }
-    if (type === 'con') {
-      productActive = 'con';
-    } else if (type === 'het') {
-      productActive = 'het';
+    if (type === "con") {
+      productActive = "con";
+    } else if (type === "het") {
+      productActive = "het";
     }
 
     // render
-    res.render('admin/product', {
-      titleSite: 'ShopOH',
-      active: 'prolist',
+    res.render("admin/product", {
+      titleSite: "ShopOH",
+      active: "prolist",
       products,
       typeSort,
       valueSort,
@@ -159,7 +159,7 @@ module.exports.getProduct = async (req, res, next) => {
       filterName,
       productActive,
       type,
-      successMgs: req.flash('success_mgs'),
+      successMgs: req.flash("success_mgs"),
     });
   } catch (err) {
     next(err);
@@ -173,14 +173,14 @@ module.exports.deleteProduct = async (req, res) => {
     let { idPro } = req.params;
 
     // delete product and return img string of this product
-    let data = await querySQL('call ADMIN_DELETE_PRODUCT(?)', [idPro]);
+    let data = await querySQL("call ADMIN_DELETE_PRODUCT(?)", [idPro]);
 
     // get img string
-    let imgs = data[0][0].hinhanh.split(',');
+    let imgs = data[0][0].hinhanh.split(",");
 
     // remove img
     imgs.forEach((img) => {
-      fs.unlink(path.join(__dirname, '..', 'public', img), (errUnlink) => {
+      fs.unlink(path.join(__dirname, "..", "public", img), (errUnlink) => {
         if (errUnlink) {
           throw errUnlink;
         }
@@ -197,7 +197,7 @@ module.exports.deleteProduct = async (req, res) => {
 module.exports.getDanhMuc = async (req, res) => {
   try {
     // get danh muc, include: loai0s, loai1s, loai2s
-    let data = await querySQL('call ADMIN_SELECT_DANHMUC()');
+    let data = await querySQL("call ADMIN_SELECT_DANHMUC()");
 
     // create danh muc list form data above
     let danhMuc = data[0].map((itemL0) => {
@@ -240,14 +240,14 @@ module.exports.getDanhMuc = async (req, res) => {
 module.exports.getAddProduct = async (req, res, next) => {
   try {
     // get brands and matreials form db
-    let data = await querySQL('call ADMIN_SELECT_BRAND_MATERIAL()');
+    let data = await querySQL("call ADMIN_SELECT_BRAND_MATERIAL()");
     let brands = data[0];
     let materials = data[1];
 
     // render
-    res.render('admin/addproduct', {
-      titleSite: 'ShopOH',
-      active: 'addpro',
+    res.render("admin/addproduct", {
+      titleSite: "ShopOH",
+      active: "addpro",
       brands,
       materials,
     });
@@ -278,13 +278,13 @@ module.exports.postAddProduct = async (req, res) => {
     // get path files upload and join into string path join
     let imagePathJoin = req.files
       .map((file) => `/images/products/${file.filename}`)
-      .join(',');
+      .join(",");
 
     // generate id
     let id = v4();
 
     // insert product
-    await querySQL('call ADMIN_INSERT_PRODUCT(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+    await querySQL("call ADMIN_INSERT_PRODUCT(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
       id, // id new product
       name, // name product
       loai2, // id loai2 product
@@ -301,7 +301,7 @@ module.exports.postAddProduct = async (req, res) => {
     if (Array.isArray(colors)) {
       // has many type
       for (let i in colors) {
-        await querySQL('call ADMIN_INSERT_TYPE_PRODUCT(?, ?, ?, ?)', [
+        await querySQL("call ADMIN_INSERT_TYPE_PRODUCT(?, ?, ?, ?)", [
           id, // id of new product
           colors[i], // color
           sizes[i], // size
@@ -310,7 +310,7 @@ module.exports.postAddProduct = async (req, res) => {
       }
     } else {
       // only 1 type
-      await querySQL('call ADMIN_INSERT_TYPE_PRODUCT(?, ?, ?, ?)', [
+      await querySQL("call ADMIN_INSERT_TYPE_PRODUCT(?, ?, ?, ?)", [
         id, // id of new product
         colors, // color
         sizes, // size
@@ -331,7 +331,7 @@ module.exports.getEditProduct = async (req, res, next) => {
     let { idPro } = req.params;
 
     // get info of product want to edit
-    let data = await querySQL('call ADMIN_SELECT_INFO_PRODUCT(?)', [idPro]);
+    let data = await querySQL("call ADMIN_SELECT_INFO_PRODUCT(?)", [idPro]);
 
     // create product obj
     let product = {
@@ -345,7 +345,7 @@ module.exports.getEditProduct = async (req, res, next) => {
       loai0: data[0][0].ma_loai0,
       loai1: data[0][0].ma_loai1,
       loai2: data[0][0].ma_loai2,
-      imgs: data[0][0].hinhanh.split(','),
+      imgs: data[0][0].hinhanh.split(","),
       types: [],
     };
     data[1].forEach((item) => {
@@ -358,13 +358,13 @@ module.exports.getEditProduct = async (req, res, next) => {
     });
 
     // get brands and matreials form db
-    let dataBM = await querySQL('call ADMIN_SELECT_BRAND_MATERIAL()');
+    let dataBM = await querySQL("call ADMIN_SELECT_BRAND_MATERIAL()");
     let brands = dataBM[0];
     let materials = dataBM[1];
 
-    res.render('admin/editproduct', {
-      titleSite: 'ShopOH',
-      active: 'addpro',
+    res.render("admin/editproduct", {
+      titleSite: "ShopOH",
+      active: "addpro",
       brands,
       materials,
       product,
@@ -392,7 +392,7 @@ module.exports.putEditProduct = async (req, res, next) => {
     let status = req.body.status;
 
     // update product
-    await querySQL('call ADMIN_UPDATE_PRODUCT(?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+    await querySQL("call ADMIN_UPDATE_PRODUCT(?, ?, ?, ?, ?, ?, ?, ?, ?)", [
       idPro, // id product
       name, // name product
       loai2, // id loai2 product
@@ -405,13 +405,13 @@ module.exports.putEditProduct = async (req, res, next) => {
     ]);
 
     // delete old types product
-    await querySQL('call ADMIN_DELETE_TYPE_PRODUCT(?)', [idPro]);
+    await querySQL("call ADMIN_DELETE_TYPE_PRODUCT(?)", [idPro]);
 
     // update type product
     if (Array.isArray(colors)) {
       // has many type
       for (let i in colors) {
-        await querySQL('call ADMIN_UPDATE_TYPE_PRODUCT(?, ?, ?, ?)', [
+        await querySQL("call ADMIN_UPDATE_TYPE_PRODUCT(?, ?, ?, ?)", [
           idPro, // id product
           colors[i], // color
           sizes[i], // size
@@ -420,7 +420,7 @@ module.exports.putEditProduct = async (req, res, next) => {
       }
     } else {
       // only 1 type
-      await querySQL('call ADMIN_UPDATE_TYPE_PRODUCT(?, ?, ?, ?)', [
+      await querySQL("call ADMIN_UPDATE_TYPE_PRODUCT(?, ?, ?, ?)", [
         idPro, // id product
         colors, // color
         sizes, // size
@@ -429,9 +429,212 @@ module.exports.putEditProduct = async (req, res, next) => {
     }
 
     // set flash mgs and redirect
-    req.flash('success_mgs', 'Cập nhật sản phẩm thành công');
-    res.redirect('/admin/product');
+    req.flash("success_mgs", "Cập nhật sản phẩm thành công");
+    res.redirect("/admin/product");
   } catch (err) {
     next(err);
+  }
+};
+
+module.exports.getOrders = async (req, res, next) => {
+  try {
+    console.log(req.flash("error_mgs"));
+    // get status order query
+    let status = +req.query.status || 0;
+    let idOrder = req.query.idorder || "";
+
+    let orderActive = "";
+    switch (status) {
+      case 0:
+        orderActive = "all";
+        break;
+      case 1:
+        orderActive = "chuaxacnhan";
+        break;
+      case 2:
+        orderActive = "daxacnhan";
+        break;
+      case 3:
+        orderActive = "danggiao";
+        break;
+      case 4:
+        orderActive = "dagiao";
+        break;
+      case 5:
+        orderActive = "dahuy";
+        break;
+      case 6:
+        orderActive = "trahang";
+        break;
+    }
+    let data = await querySQL("call ADMIN_SELECT_ORDER(?, ?)", [
+      status,
+      idOrder,
+    ]);
+    let orders = data[0].reduce((acc, cur) => {
+      if (!(cur.ma_dondathang in acc)) {
+        acc[cur.ma_dondathang] = {
+          id: cur.ma_dondathang,
+          dateOrder: cur.ngay_dathang,
+          status: cur.ten_trangthai,
+          products: [
+            {
+              img: cur.hinhanh.split(",")[0],
+              color: cur.mausac,
+              size: cur.size,
+              amount: cur.soluong,
+            },
+          ],
+          sumPrice:
+            cur.phi_vanchuyen +
+            Math.round(cur.soluong * cur.giaban * (1 - cur.khuyenmai / 100)),
+        };
+      } else {
+        acc[cur.ma_dondathang].products.push({
+          img: cur.hinhanh.split(",")[0],
+          color: cur.mausac,
+          size: cur.size,
+          amount: cur.soluong,
+        });
+        acc[cur.ma_dondathang].sumPrice += Math.round(
+          cur.soluong * cur.giaban * (1 - cur.khuyenmai / 100)
+        );
+      }
+      return acc;
+    }, {});
+    res.render("admin/order", {
+      titleSite: "ShopOH",
+      active: "order",
+      orders: Object.values(orders),
+      status,
+      orderActive,
+      idOrder,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// get info a order
+module.exports.getOrder = async (req, res, next) => {
+  try {
+    // get id order
+    let { idOrder } = req.params;
+
+    let dataOrder = await querySQL("call ADMIN_SELECT_INFO_ORDER(?)", [
+      idOrder,
+    ]);
+
+    let order = {};
+    if (dataOrder[0][0]) {
+      // re-structor order info
+      order.id = dataOrder[0][0].ma_dondathang;
+      order.user = dataOrder[0][0].ma_khachhang;
+      order.statusId = dataOrder[0][0].ma_trangthai;
+      order.status = dataOrder[0][0].ten_trangthai;
+      order.addr = {
+        name: dataOrder[0][0].ten_nguoinhan,
+        phone: dataOrder[0][0].dienthoai_nguoinhan,
+        tinh: dataOrder[0][0].tinh,
+        huyen: dataOrder[0][0].huyen,
+        xa: dataOrder[0][0].xa,
+        nha: dataOrder[0][0].nha,
+      };
+      order.shipFee = dataOrder[0][0].phi_vanchuyen;
+      order.date = [];
+      if (dataOrder[0][0].ngay_dathang) {
+        order.date.unshift({
+          time: dataOrder[0][0].ngay_dathang,
+          st: "Đặt đơn hàng",
+        });
+      }
+      if (dataOrder[0][0].ngay_xacnhan) {
+        order.date.unshift({
+          time: dataOrder[0][0].ngay_xacnhan,
+          st: "Đã xác nhận đơn hàng",
+        });
+      }
+      if (dataOrder[0][0].ngay_giaohang) {
+        order.date.unshift({
+          time: dataOrder[0][0].ngay_giaohang,
+          st: "Bắt đầu giao đơn hàng",
+        });
+      }
+      if (dataOrder[0][0].ngay_nhanhang) {
+        order.date.unshift({
+          time: dataOrder[0][0].ngay_nhanhang,
+          st: "Giao đơn hàng",
+        });
+      }
+      if (dataOrder[0][0].ngay_huyhang) {
+        order.date.unshift({
+          time: dataOrder[0][0].ngay_huyhang,
+          st: "Hủy đơn hàng",
+        });
+      }
+      order.products = [];
+      order.sumPrice = 0;
+    }
+    for (let pro of dataOrder[1]) {
+      let product = {
+        name: pro.ten_sanpham,
+        img: pro.hinhanh.split(",")[0],
+        color: pro.mausac,
+        size: pro.size,
+        amount: pro.soluong,
+        price: pro.giaban,
+        promotion: pro.khuyenmai,
+      };
+      order.sumPrice += Math.round(
+        product.amount * (product.price * (1 - product.promotion / 100))
+      );
+      order.products.push(product);
+    }
+
+    let dataStatus = await querySQL("call ADMIN_SELECT_CAN_STATUS_ORDER(?)", [
+      order.statusId,
+    ]);
+
+    // res.json(order);
+    res.render("admin/orderinfo", {
+      titleSite: "shopOH",
+      order,
+      statusCan: dataStatus[0],
+      successMgs: req.flash("success_mgs"),
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports.putStatusOrder = async (req, res, next) => {
+  try {
+    // get order id
+    let { idOrder } = req.params;
+
+    // get status update
+    let status = +req.body.status;
+
+    await querySQL("call ADMIN_UPDATE_STATUS_ORDER(?, ?)", [idOrder, status]);
+
+    req.flash("success_mgs", "Cập nhật trạng thái đơn hàng thành công");
+    res.redirect(`/admin/order/${idOrder}`);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// delete order
+module.exports.deleteOrder = async (req, res, next) => {
+  try {
+    // gte id order
+    let { idOrder } = req.params;
+
+    // delete order
+    await querySQL("call ADMIN_DELETE_ORDER(?)", [idOrder]);
+
+    res.sendStatus(200);
+  } catch (err) {
+    res.sendStatus(400);
   }
 };

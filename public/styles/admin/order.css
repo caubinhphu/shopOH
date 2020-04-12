@@ -1,0 +1,23 @@
+.nav-order-item {
+  margin: 0 15px;
+  color: white;
+}
+
+.nav-order-item:hover {
+  text-decoration: none;
+  color: coral;
+}
+
+.nav-order-active {
+  border-bottom: 2px solid coral;
+  color: coral;
+}
+
+.id-order-link {
+  color: white;
+}
+
+.id-order-link:hover {
+  color: white;
+  text-decoration: none;
+}

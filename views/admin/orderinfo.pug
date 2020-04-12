@@ -1,0 +1,88 @@
+extends ./common
+
+append style
+  link(rel="stylesheet", href="/styles/admin/orderinfo.css")
+
+block main
+  if (successMgs)
+    each sMgs in successMgs
+      .alert.alert-success.alert-dismissible.fade.show.mx-auto.mt-1(role='alert')
+        span= sMgs
+        button.close(type='button', data-dismiss='alert', aria-label='Close')
+          span(aria-hidden='true') &times;
+  .flex-fill
+    .bg-white.p-2.d-flex.justify-content-between
+      .text-secondary
+        div.mr-3
+          span ID ĐƠN HÀNG: 
+          span= order.id
+        div.mr-3
+          span ID USER: 
+          span= order.user
+      form.d-flex.align-items-center(name="updateFrom", method="POST")
+        input(type="hidden", name="_method", value="PUT")
+        select.form-control(name="status", required=true)
+          option(value="")= order.status.toUpperCase()
+          each status in statusCan
+            if (status.ma_trangthai !== order.statusId)
+              option(value=status.ma_trangthai)= status.ten_trangthai.toUpperCase()
+        button#update-btn.btn.btn-success.ml-2(type="button", data-target="#update-status", data-toggle="modal") UPDATE
+    #order-status.bg-white.p-3.px-5
+      each date in order.date
+        .order-status-item.mb-2.text-secondary
+          i.fas.fa-check
+          span &nbsp;
+          span.mr-2= date.time.toLocaleString()
+          span.text-info= date.st
+
+    #order-address.mt-2.bg-white.p-2
+      .border-pro
+      #order-address-content.py-3.pl-3.text-secondary
+        div(style="font-size: 20px") Địa Chỉ Nhận Hàng
+        div= order.addr.name
+        small= order.addr.phone
+        br
+        small= `${order.addr.nha}, ${order.addr.xa}, ${order.addr.huyen}, ${order.addr.tinh}`
+      .border-pro
+    #orders
+      .order
+        .order-list
+          each product in order.products
+            .order-item.py-2.d-flex.align-items-center.text-secondary
+              .order-item-img
+                img(src=product.img, width="80px")
+              .order-item-content.flex-fill.mx-2
+                .order-item-title= product.name
+                .order-item-type
+                  small= `Loại: màu ${product.color}, size: ${product.size}`
+                .order-item-amount= `x${product.amount}`
+              .order-item-price
+                if (product.promotion > 0)
+                  del= `₫${product.price}`
+                  br
+                span.text-danger= `₫${Math.round(product.price * (1 - product.promotion / 100)) * product.amount}`
+        .order-price.pt-4
+          .order-price-item.text-secondary.d-flex.justify-content-between
+            small Tổng tiền hàng 
+            span= `₫${order.sumPrice}`
+          .order-price-item.text-secondary.d-flex.justify-content-between
+            small Phí vận chuyển: 
+            span= `₫${order.shipFee}`
+          .order-price-item.text-secondary.d-flex.justify-content-between
+            small Tổng số tiền: 
+            span.text-danger(style="font-size: 30px")= `₫${order.sumPrice + order.shipFee}`
+          .order-price-item.text-secondary.d-flex.justify-content-between
+            small Phương thức Thanh toán
+            span Thanh toán khi nhận hàng
+
+  #update-status.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
+    .modal-dialog.modal-dialog-centered(role='document')
+      .modal-content.p-2
+        .modal-body
+          .py-5.text-dark Cập nhật thiệt ha m?
+          .d-flex
+            button#OK-update-btn.btn.btn-danger.flex-fill.mr-1(type='button') Ừ
+            button.btn.btn-light.flex-fill(type='button', data-dismiss='modal') HÔNG
+
+append script
+  script(src="/scripts/admin/orderinfo.js")

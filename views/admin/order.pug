@@ -1,0 +1,73 @@
+extends ./common
+
+append style
+  link(rel="stylesheet", href="/styles/admin/order.css")
+
+block main
+  #nav.my-2.p-2
+    a.nav-order-item(href="/admin/order", class=orderActive==='all'?'nav-order-active':'') Tất cả
+    a.nav-order-item(href="/admin/order?status=1", class=orderActive==='chuaxacnhan'?'nav-order-active':'') Chờ xác nhận
+    a.nav-order-item(href="/admin/order?status=2", class=orderActive==='daxacnhan'?'nav-order-active':'') Đã xác nhận
+    a.nav-order-item(href="/admin/order?status=3", class=orderActive==='danggiao'?'nav-order-active':'') Đang giao
+    a.nav-order-item(href="/admin/order?status=4", class=orderActive==='dagiao'?'nav-order-active':'') Đã giao
+    a.nav-order-item(href="/admin/order?status=5", class=orderActive==='dahuy'?'nav-order-active':'') Đã huỷ
+    a.nav-order-item(href="/admin/order?status=6", class=orderActive==='trahang'?'nav-order-active':'') Trả hàng/Hoàn tiền
+  #filter.w-100.d-flex
+    form.align-items-center.flex-fill(method="GET", name="formFilterOrder")
+      input(type="hidden", name="status", value=status)
+      .input-group
+        input.form-control(type="text", name="idorder", placeholder="Tìm đơn hàng", value=idOrder?idOrder:"")
+        .input-group-append
+          button#search-btn.btn.btn-success(type="submit")
+            i.fas.fa-search
+    .d-flex.align-items-center.ml-4
+      span.col Ngày đặt hàng
+      input.form-control.col(type="date", name="datemin")
+      span &nbsp;-&nbsp;
+      input.form-control.col(type="date", name="datemin")
+    button.btn.btn-light.ml-2.align-self-center(type="button") Xuất
+    if (successMgs)
+      each sMgs in successMgs
+        .alert.alert-success.alert-dismissible.fade.show.mx-auto.mt-1(role='alert')
+          span= sMgs
+          button.close(type='button', data-dismiss='alert', aria-label='Close')
+            span(aria-hidden='true') &times;
+  h4.mt-4= `${orders.length} đơn hàng`
+  table.table.table-sm.text-center.text-white.mt-2
+    thead
+      tr
+        th(style="width: 200px") Mã đơn hàng
+        th Sản phẩm
+        th Ngày đặt hàng
+        th Trạng thái
+        th Tổng tiền
+        th Thao tác
+      tbody
+        each order in orders
+          tr
+            td
+              a.id-order-link(href=`/admin/order/${order.id}`)= order.id
+            td
+              each product in order.products
+                div
+                  img.mr-1(src=product.img, alt="product" width="40px")
+                  small= `${product.color}, ${product.size}: ${product.amount}`
+            td= order.dateOrder.toLocaleDateString()
+            td= order.status
+            td= order.sumPrice
+            td 
+              button.del-order-btn.btn.btn-link(type="button", data-target="#delete-order", data-toggle="modal", data-order=order.id) Xóa
+              //- , data-idpro=product.id, data-toggle='modal', data-target='#delete-order') Xóa
+              //- a.edit-pro-btn.btn.btn-link(href="#") Cập nhật
+              //- (href=`/admin/product/edit/${product.id}`, role="button") Cập nhật trạng thái
+  #delete-order.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
+    .modal-dialog.modal-dialog-centered(role='document')
+      .modal-content.p-2
+        .modal-body
+          .py-5.text-dark Xóa thiệt ha m?
+          .d-flex
+            button#OK-del-btn.btn.btn-danger.flex-fill.mr-1(type='button') Ừ
+            button.btn.btn-light.flex-fill(type='button', data-dismiss='modal') HÔNG
+
+append script
+  script(src="/scripts/admin/order.js") 
