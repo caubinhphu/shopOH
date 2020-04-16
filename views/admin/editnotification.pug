@@ -19,8 +19,8 @@ block main
       .d-flex.mt-2
         label.col-2(for="status") Công khai:
         select#status.form-control(name="status")
-          option(value="1") Mọi người
-          option(value="2") Ẩn
+          option(value="1", selected=notification.public?true:false) Mọi người
+          option(value="2", selected=notification.public?false:true) Ẩn
       .text-right.my-4
         a.btn.btn-light.mr-3(href="/admin/notification", role="button") Hủy
         button#save-btn.btn.btn-success.mr-3(type="submit") Lưu

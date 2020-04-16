@@ -1769,6 +1769,8 @@ create table thongbao (
   link varchar(255),
   primary key (ma_thongbao)
 );
+alter table thongbao convert to character set utf16 collate utf16_general_ci;
+alter table thongbao add column public boolean default true;
 
 drop table thongbao_khachhang;
 create table thongbao_khachhang (
@@ -1781,16 +1783,16 @@ create table thongbao_khachhang (
 );
 
 insert into thongbao (ma_thongbao, tieude, noidung, ngaydang, loai_thongbao, hinhanh, link)
-values ('1', 'tieu de 1', 'bla bla bla bla bla bla bla bla bla blabla bla bla bla', now(), 2, '/images/shop/917385.jpg', '/');
+values ('8760b367-55ec-478b-bdd7-692c1a765676', 'tieu de 1', 'bla bla bla bla bla bla bla bla bla blabla bla bla bla', now(), 2, '/images/shop/917385.jpg', '/');
 
 insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
-values ('1', '1');
+values ('8760b367-55ec-478b-bdd7-692c1a765676', '8760b367-55ec-478b-bdd7-692c1a765676');
 
 insert into thongbao (ma_thongbao, tieude, noidung, ngaydang, loai_thongbao, hinhanh, link)
 values ('2', 'tieu de 2', 'bla bla bla bla bla bla bla bla bla blabla bla bla bla', now(), 1, '/images/shop/917385.jpg', '/');
 
 insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
-values ('2', '1');
+values ('2', '8760b367-55ec-478b-bdd7-692c1a765676');
 
 update thongbao_khachhang
 set daxem = true
@@ -2491,9 +2493,14 @@ drop procedure SELECT_NOTIFICATION;
 delimiter $$
 create procedure SELECT_NOTIFICATION(_iduser varchar(50))
 begin
-  select tb.*, tk.daxem
-  from thongbao tb join thongbao_khachhang tk on tb.ma_thongbao = tk.ma_thongbao
-  where tk.ma_khachhang = _iduser
+  -- select tb.*, tk.daxem
+  -- from thongbao tb join thongbao_khachhang tk on tb.ma_thongbao = tk.ma_thongbao
+  -- where tk.ma_khachhang = _iduser and tb.public = true
+  -- order by ngaydang desc;
+  (select * from thongbao where loai_thongbao = 2 and public = true)
+  union
+  (select tb.* from thongbao tb join thongbao_khachhang tk on tb.ma_thongbao = tk.ma_thongbao
+  where tb.loai_thongbao = 1 and tb.public = true and tk.ma_khachhang = _iduser)
   order by ngaydang desc;
 end $$
 delimiter ;
@@ -2799,22 +2806,22 @@ delimiter $$
 
 drop procedure ADMIN_INSERT_NOTIFICATION;
 delimiter $$
-create procedure ADMIN_INSERT_NOTIFICATION(_id varchar(50), _sub varchar(255), _body text, _img varchar(100))
+create procedure ADMIN_INSERT_NOTIFICATION(_id varchar(50), _sub varchar(255), _body text, _img varchar(100), _pub boolean)
 begin
-  insert into thongbao(ma_thongbao, tieude, noidung, ngaydang, loai_thongbao, hinhanh)
-  values (_id, _sub, _body, now(), 2, _img);
+  insert into thongbao(ma_thongbao, tieude, noidung, ngaydang, loai_thongbao, hinhanh, public)
+  values (_id, _sub, _body, now(), 2, _img, _pub);
 end $$
 delimiter $$
 
-drop procedure ADMIN_PUBLIC_NOTIFICATION;
-delimiter $$
-create procedure ADMIN_PUBLIC_NOTIFICATION(_id varchar(50))
-begin
-  insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
-  select _id, ma_khachhang
-  from khachhang;
-end $$
-delimiter $$
+-- drop procedure ADMIN_PUBLIC_NOTIFICATION;
+-- delimiter $$
+-- create procedure ADMIN_PUBLIC_NOTIFICATION(_id varchar(50))
+-- begin
+--   insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
+--   select _id, ma_khachhang
+--   from khachhang;
+-- end $$
+-- delimiter $$
 
 drop procedure ADMIN_DELETE_NOTIFICATION;
 delimiter $$
@@ -2843,26 +2850,16 @@ delimiter $$
 
 drop procedure ADMIN_UPDATE_NOTIFICATION;
 delimiter $$
-create procedure ADMIN_UPDATE_NOTIFICATION(_idnoti varchar(50), _sub varchar(255), _body text, _status int)
+create procedure ADMIN_UPDATE_NOTIFICATION(_idnoti varchar(50), _sub varchar(255), _body text, _pub int)
 begin
   if exists (select * from thongbao where ma_thongbao = _idnoti)
   then
     update thongbao
     set tieude = _sub,
       noidung = _body,
-      ngaydang = now()
+      ngaydang = now(),
+      public = _pub
     where ma_thongbao = _idnoti;
-
-    if (_status = 1)
-    then if not exists (select * from thongbao_khachhang where ma_thongbao = _idnoti)
-          then insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
-            select _idnoti, ma_khachhang
-            from khachhang;
-          end if;
-    else if exists (select * from thongbao_khachhang where ma_thongbao = _idnoti)
-          then delete from thongbao_khachhang where ma_thongbao = _idnoti;
-        end if;
-    end if;
   else signal sqlstate '45000' set message_text = 'Không tồn tại thông báo';
   end if;
 end $$

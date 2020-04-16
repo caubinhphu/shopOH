@@ -705,7 +705,7 @@ module.exports.postAddNotification = async (req, res) => {
     let subject = req.body.subjectNoti;
     let body = req.body.contentNoti;
     let status = +req.body.status;
-
+    let public = status === 1 ? true : false;
     // create path for imgage upload
     let imagePath = `/images/shop/${req.file.filename}`;
 
@@ -713,19 +713,13 @@ module.exports.postAddNotification = async (req, res) => {
     let id = v4();
 
     // insert product
-    await querySQL('call ADMIN_INSERT_NOTIFICATION(?, ?, ?, ?)', [
+    await querySQL('call ADMIN_INSERT_NOTIFICATION(?, ?, ?, ?, ?)', [
       id, // id new notification
       subject, // subject notification
       body, // body notification
       imagePath, // image path
+      public, // public or hide (true or false)
     ]);
-
-    if (status === 1) {
-      // public notification for everybody
-      await querySQL('call ADMIN_PUBLIC_NOTIFICATION(?)', [
-        id, // id new notification
-      ]);
-    }
 
     // send status OK
     res.sendStatus(200);
@@ -781,13 +775,13 @@ module.exports.putEditNotification = async (req, res, next) => {
     let status = +req.body.status;
     // get id notification want update
     let { idNoti } = req.params;
-
+    let public = status === 1 ? true : false;
     // insert product
     await querySQL('call ADMIN_UPDATE_NOTIFICATION(?, ?, ?, ?)', [
       idNoti, // id new notification
       subject, // subject notification
       body, // body notification
-      status, // public?
+      public, // public?
     ]);
 
     res.redirect('/admin/notification');

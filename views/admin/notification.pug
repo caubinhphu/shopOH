@@ -22,6 +22,7 @@ block main
         th Tiêu đề
         th Nội dung
         th Ngày đăng
+        th Trạng thái
         th Thao tác
       tbody
         each noti in notifications
@@ -29,8 +30,9 @@ block main
             td
               img(src=noti.hinhanh, alt="thong bao", width="40px", height="40px")
             td= noti.tieude
-            td= noti.noidung.slice(0, 100) + '...'
+            td= noti.noidung.slice(0, 70) + '...'
             td= noti.ngaydang.toLocaleDateString()
+            td= noti.public?"Public":"Ẩn"
             td 
               button.del-noti-btn.btn.btn-link(type="button", data-noti=noti.ma_thongbao, data-toggle='modal', data-target='#delete-notification') Xóa
               a.edit-noti-btn.btn.btn-link(href=`/admin/notification/edit/${noti.ma_thongbao}`, role="button") Sửa
