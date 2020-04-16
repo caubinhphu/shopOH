@@ -9,8 +9,8 @@ block main
     big Thêm thông báo mới
     form.mt-4(method="POST", enctype="multipart/form-data", name="addNotiForm")
       .d-flex.align-items-center
-        label.col-2(for="nameNoti") Tiêu đề thông báo:
-        input#nameNoti.form-control.col.ml-2(type="text", name="nameNoti", placeholder="Tiêu đề thông báo", required)
+        label.col-2(for="subjectNoti") Tiêu đề thông báo:
+        input#subjectNoti.form-control.col.ml-2(type="text", name="subjectNoti", placeholder="Tiêu đề thông báo", required)
       .d-flex.mt-2
         label.col-2(for="describePro") Nội dung thông báo:
         textarea#contentNoti.col.ml-2(name="contentNoti", rows="5", required)
@@ -20,11 +20,16 @@ block main
           .img-pro.text-center
             .review-img
             label.btn.btn-light(for="img", role="button") Chọn hình
-            input#img.form-control.d-none(type="file", name="img", required, accept=".png,.jpg,.jpeg")     
+            input#img.form-control.d-none(type="file", name="img", required, accept=".png,.jpg,.jpeg") 
+      .d-flex.mt-2
+        label.col-2(for="status") Công khai:
+        select#status.form-control(name="status")
+          option(value="1") Mọi người
+          option(value="2") Ẩn
       .text-right.my-4
         a.btn.btn-light.mr-3(href="/admin/notification", role="button") Hủy
         button#save-btn.btn.btn-success.mr-3(type="button") Lưu
-
+      
 block modal-full
   #modal-crop-img
     #modal-main.d-flex.align-items-center

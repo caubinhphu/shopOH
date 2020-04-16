@@ -2790,9 +2790,45 @@ delimiter $$
 
 drop procedure ADMIN_SELECT_NOTIFICATION;
 delimiter $$
-create procedure ADMIN_SELECT_NOTIFICATION(_tieuden text(255))
+create procedure ADMIN_SELECT_NOTIFICATION()
 begin
   select * from thongbao
-  where loai_thongbao = 1 and tieude like _tieuden;
+  where loai_thongbao = 1;
+end $$
+delimiter $$
+
+drop procedure ADMIN_INSERT_NOTIFICATION;
+delimiter $$
+create procedure ADMIN_INSERT_NOTIFICATION(_id varchar(50), _sub varchar(255), _body text, _img varchar(100))
+begin
+  insert into thongbao(ma_thongbao, tieude, noidung, ngaydang, loai_thongbao, hinhanh)
+  values (_id, _sub, _body, now(), 2, _img);
+end $$
+delimiter $$
+
+drop procedure ADMIN_PUBLIC_NOTIFICATION;
+delimiter $$
+create procedure ADMIN_PUBLIC_NOTIFICATION(_id varchar(50))
+begin
+  insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
+  select _id, ma_khachhang
+  from khachhang;
+end $$
+delimiter $$
+
+drop procedure ADMIN_DELETE_NOTIFICATION;
+delimiter $$
+create procedure ADMIN_DELETE_NOTIFICATION(_id varchar(50))
+begin
+  delete from thongbao
+  where ma_thongbao = _id;
+end $$
+delimiter $$
+
+drop procedure ADMIN_SELECT_NOTIFICATION_INFO;
+delimiter $$
+create procedure ADMIN_SELECT_NOTIFICATION_INFO(_id varchar(50))
+begin
+  select * from thongbao where ma_thongbao = _id;
 end $$
 delimiter $$

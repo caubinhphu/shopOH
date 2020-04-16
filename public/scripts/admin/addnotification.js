@@ -1,12 +1,12 @@
 let imgNoti = null;
 
 // crop images
-const modalCropImg = document.querySelector("#modal-crop-img"); // modal crop img
-const inputImg = document.getElementById("img");
-const imgCrop = document.querySelector("#crop-img"); // area crop
-const cropBtn = document.querySelector("#crop-btn");
+const modalCropImg = document.querySelector('#modal-crop-img'); // modal crop img
+const inputImg = document.getElementById('img');
+const imgCrop = document.querySelector('#crop-img'); // area crop
+const cropBtn = document.querySelector('#crop-btn');
 
-modalCropImg.style.display = "none";
+modalCropImg.style.display = 'none';
 // init croppie image
 const croppie = new Croppie(imgCrop, {
   enableExif: true,
@@ -20,9 +20,9 @@ const croppie = new Croppie(imgCrop, {
   },
 });
 
-inputImg.addEventListener("change", function () {
+inputImg.addEventListener('change', function () {
   // show modal crop image
-  modalCropImg.style.display = "block";
+  modalCropImg.style.display = 'block';
 
   let reader = new FileReader();
   reader.onload = async function (e) {
@@ -33,25 +33,25 @@ inputImg.addEventListener("change", function () {
   reader.readAsDataURL(this.files[0]);
 });
 
-cropBtn.addEventListener("click", async function (e) {
+cropBtn.addEventListener('click', async function (e) {
   let dataCrop = await croppie.result({
-    type: "base64",
-    size: "viewport",
+    type: 'base64',
+    size: 'viewport',
   });
   document.querySelector(
-    ".review-img"
+    '.review-img'
   ).style.backgroundImage = `url('${dataCrop}')`;
-  let blob = dataURLtoFile(dataCrop, "image.png");
+  let blob = dataURLtoFile(dataCrop, 'notification.png');
 
   imgNoti = blob;
 
   // hide modal crop image
-  modalCropImg.style.display = "none";
+  modalCropImg.style.display = 'none';
 });
 
 // create file from data base64
 function dataURLtoFile(dataurl, filename) {
-  let arr = dataurl.split(","),
+  let arr = dataurl.split(','),
     mime = arr[0].match(/:(.*?);/)[1],
     bstr = atob(arr[1]),
     n = bstr.length,
@@ -63,22 +63,22 @@ function dataURLtoFile(dataurl, filename) {
   return new File([u8arr], filename, { type: mime });
 }
 
-document.querySelector("#save-btn").addEventListener("click", function () {
+document.querySelector('#save-btn').addEventListener('click', function () {
   if (!document.addNotiForm.checkValidity()) {
-    alert("Validate form false kìa cu");
+    alert('Validate form false kìa cu');
   } else {
     let form = new FormData(document.addNotiForm);
-    form.delete("img");
-    form.append("image", imgNoti);
+    form.delete('img');
+    form.append('image', imgNoti);
 
     let xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/admin/notification/add", true);
+    xhr.open('POST', 'http://localhost:3000/admin/notification/add', true);
     xhr.onload = function () {
       if (xhr.status === 200) {
-        alert("Thêm thông báo mới thành công");
-        location.href = "http://localhost:3000/admin/notification";
+        alert('Thêm thông báo mới thành công');
+        location.href = 'http://localhost:3000/admin/notification';
       } else {
-        alert("Thêm thông báo mới thất bại");
+        alert('Thêm thông báo mới thất bại');
         location.reload();
       }
     };
