@@ -2827,8 +2827,8 @@ drop procedure ADMIN_DELETE_NOTIFICATION;
 delimiter $$
 create procedure ADMIN_DELETE_NOTIFICATION(_id varchar(50))
 begin
-  delete from thongbao
-  where ma_thongbao = _id;
+  select hinhanh from thongbao where ma_thongbao = _id;
+  delete from thongbao where ma_thongbao = _id;
 end $$
 delimiter $$
 

@@ -734,9 +734,17 @@ module.exports.deleteNotification = async (req, res) => {
     // get id notification want delete
     let { idNoti } = req.params;
 
-    // delete
-    await querySQL('call ADMIN_DELETE_NOTIFICATION(?)', [idNoti]);
+    // delete and get img of notification
+    let dataImg = await querySQL('call ADMIN_DELETE_NOTIFICATION(?)', [idNoti]);
 
+    // delete img notification
+    // remove img
+    let img = dataImg[0][0].hinhanh;
+    fs.unlink(path.join(__dirname, '..', 'public', img), (errUnlink) => {
+      if (errUnlink) {
+        throw errUnlink;
+      }
+    });
     res.sendStatus(200);
   } catch (err) {
     res.sendStatus(400);
