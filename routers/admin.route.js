@@ -59,7 +59,7 @@ router.post(
 
 router.get('/notification/edit/:idNoti', controller.getEditNotification);
 
-// router.put('/notification/edit/:idNoti', controller.putEditNotification);
+router.put('/notification/edit/:idNoti', controller.putEditNotification);
 
 router.delete('/notification/:idNoti', controller.deleteNotification);
 

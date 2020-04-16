@@ -2793,7 +2793,7 @@ delimiter $$
 create procedure ADMIN_SELECT_NOTIFICATION()
 begin
   select * from thongbao
-  where loai_thongbao = 1;
+  where loai_thongbao = 2;
 end $$
 delimiter $$
 
@@ -2830,5 +2830,40 @@ delimiter $$
 create procedure ADMIN_SELECT_NOTIFICATION_INFO(_id varchar(50))
 begin
   select * from thongbao where ma_thongbao = _id;
+end $$
+delimiter $$
+
+drop procedure ADMIN_SELECT_NOTIFICATION_INFO;
+delimiter $$
+create procedure ADMIN_SELECT_NOTIFICATION_INFO(_id varchar(50))
+begin
+  select * from thongbao where ma_thongbao = _id;
+end $$
+delimiter $$
+
+drop procedure ADMIN_UPDATE_NOTIFICATION;
+delimiter $$
+create procedure ADMIN_UPDATE_NOTIFICATION(_idnoti varchar(50), _sub varchar(255), _body text, _status int)
+begin
+  if exists (select * from thongbao where ma_thongbao = _idnoti)
+  then
+    update thongbao
+    set tieude = _sub,
+      noidung = _body,
+      ngaydang = now()
+    where ma_thongbao = _idnoti;
+
+    if (_status = 1)
+    then if not exists (select * from thongbao_khachhang where ma_thongbao = _idnoti)
+          then insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
+            select _idnoti, ma_khachhang
+            from khachhang;
+          end if;
+    else if exists (select * from thongbao_khachhang where ma_thongbao = _idnoti)
+          then delete from thongbao_khachhang where ma_thongbao = _idnoti;
+        end if;
+    end if;
+  else signal sqlstate '45000' set message_text = 'Không tồn tại thông báo';
+  end if;
 end $$
 delimiter $$

@@ -335,6 +335,7 @@ module.exports.postAddProduct = async (req, res) => {
   }
 };
 
+// get edit product
 module.exports.getEditProduct = async (req, res, next) => {
   try {
     // get id product
@@ -372,6 +373,7 @@ module.exports.getEditProduct = async (req, res, next) => {
     let brands = dataBM[0];
     let materials = dataBM[1];
 
+    // render
     res.render('admin/editproduct', {
       titleSite: 'ShopOH',
       active: 'addpro',
@@ -446,13 +448,14 @@ module.exports.putEditProduct = async (req, res, next) => {
   }
 };
 
+// get order list
 module.exports.getOrders = async (req, res, next) => {
   try {
-    console.log(req.flash('error_mgs'));
     // get status order query
     let status = +req.query.status || 0;
     let idOrder = req.query.idorder || '';
 
+    // set order active tab
     let orderActive = '';
     switch (status) {
       case 0:
@@ -477,10 +480,16 @@ module.exports.getOrders = async (req, res, next) => {
         orderActive = 'trahang';
         break;
     }
+
+    // get order list or by id
     let data = await querySQL('call ADMIN_SELECT_ORDER(?, ?)', [
       status,
       idOrder,
     ]);
+    // create orders from data query
+    // pattern
+    // orders: [{idOrder: order}, ...]
+    // order: {idOrder, ...., [{product},...], sumPrice}
     let orders = data[0].reduce((acc, cur) => {
       if (!(cur.ma_dondathang in acc)) {
         acc[cur.ma_dondathang] = {
@@ -515,10 +524,10 @@ module.exports.getOrders = async (req, res, next) => {
     res.render('admin/order', {
       titleSite: 'ShopOH',
       active: 'order',
-      orders: Object.values(orders),
-      status,
-      orderActive,
-      idOrder,
+      orders: Object.values(orders), // only get value orders
+      status, // stauts of order
+      orderActive, // order active tab
+      idOrder, // id order if search
     });
   } catch (err) {
     next(err);
@@ -531,10 +540,13 @@ module.exports.getOrder = async (req, res, next) => {
     // get id order
     let { idOrder } = req.params;
 
+    // get data order
     let dataOrder = await querySQL('call ADMIN_SELECT_INFO_ORDER(?)', [
       idOrder,
     ]);
 
+    // craete order from data query
+    // pattern: order: {id, ...., addr:{....}, data: [dates of order], products: [{product}], sumpPrice}
     let order = {};
     if (dataOrder[0][0]) {
       // re-structor order info
@@ -601,15 +613,16 @@ module.exports.getOrder = async (req, res, next) => {
       order.products.push(product);
     }
 
+    // get status of order can has
     let dataStatus = await querySQL('call ADMIN_SELECT_CAN_STATUS_ORDER(?)', [
       order.statusId,
     ]);
 
-    // res.json(order);
+    // render
     res.render('admin/orderinfo', {
       titleSite: 'shopOH',
-      order,
-      statusCan: dataStatus[0],
+      order, // order
+      statusCan: dataStatus[0], // status can has
       successMgs: req.flash('success_mgs'),
     });
   } catch (err) {
@@ -617,6 +630,7 @@ module.exports.getOrder = async (req, res, next) => {
   }
 };
 
+// put status order
 module.exports.putStatusOrder = async (req, res, next) => {
   try {
     // get order id
@@ -625,6 +639,7 @@ module.exports.putStatusOrder = async (req, res, next) => {
     // get status update
     let status = +req.body.status;
 
+    // update status order
     await querySQL('call ADMIN_UPDATE_STATUS_ORDER(?, ?)', [idOrder, status]);
 
     req.flash('success_mgs', 'Cập nhật trạng thái đơn hàng thành công');
@@ -649,12 +664,14 @@ module.exports.deleteOrder = async (req, res, next) => {
   }
 };
 
+// gte notificaton list
 module.exports.getNotification = async (req, res, next) => {
   try {
     // get string qery
     let searchNoti = req.query.searchNoti || '';
     // let searchNotification = `'%${searchNoti}%'`;
 
+    // get data notificatin
     let data = await querySQL('call ADMIN_SELECT_NOTIFICATION()');
     notifications = data[0];
 
@@ -669,6 +686,7 @@ module.exports.getNotification = async (req, res, next) => {
   }
 };
 
+// get add notification
 module.exports.getAddNotification = (req, res, next) => {
   try {
     res.render('admin/addnotification', {
@@ -680,6 +698,7 @@ module.exports.getAddNotification = (req, res, next) => {
   }
 };
 
+// post a new notification
 module.exports.postAddNotification = async (req, res) => {
   try {
     // get data form req.body
@@ -715,11 +734,13 @@ module.exports.postAddNotification = async (req, res) => {
   }
 };
 
+// delete notification
 module.exports.deleteNotification = async (req, res) => {
   try {
     // get id notification want delete
     let { idNoti } = req.params;
 
+    // delete
     await querySQL('call ADMIN_DELETE_NOTIFICATION(?)', [idNoti]);
 
     res.sendStatus(200);
@@ -728,6 +749,7 @@ module.exports.deleteNotification = async (req, res) => {
   }
 };
 
+// get edit notification
 module.exports.getEditNotification = async (req, res, next) => {
   try {
     // get id notification want update
@@ -745,6 +767,30 @@ module.exports.getEditNotification = async (req, res, next) => {
       active: 'addnoti',
       notification,
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// put notification
+module.exports.putEditNotification = async (req, res, next) => {
+  try {
+    // get data form req.body
+    let subject = req.body.subjectNoti;
+    let body = req.body.contentNoti;
+    let status = +req.body.status;
+    // get id notification want update
+    let { idNoti } = req.params;
+
+    // insert product
+    await querySQL('call ADMIN_UPDATE_NOTIFICATION(?, ?, ?, ?)', [
+      idNoti, // id new notification
+      subject, // subject notification
+      body, // body notification
+      status, // public?
+    ]);
+
+    res.redirect('/admin/notification');
   } catch (err) {
     next(err);
   }
