@@ -12,14 +12,15 @@ block main-personal
         - var notiTypes = notifications.filter(noti => noti.loai_thongbao === type);
         if (notiTypes.length > 0)
           each notification in notiTypes
-            .notification.d-flex.p-3(class=notification.daxem?'':'noti-not-see')
-              .personal-noti-img(style=`background-image: url("${notification.hinhanh}")`)
-              .personal-noti-main
+            .notification.d-flex.p-3.align-items-center(class=notification.daxem?'':'noti-not-see')
+              .personal-noti-img
+                img(src=notification.hinhanh, alt="")
+              .personal-noti-main.flex-fill
                 .personal-noti-title= notification.tieude
                 .personal-noti-content= notification.noidung
                 .personal-noti-date= notification.ngaydang.toLocaleString()
               .personal-noti-see
-                a(href=notification.link, role="button").btn.btn-outline-danger Xem cho tiết
+                a(href=notification.link, role="button").btn.btn-outline-danger Xem chi tiết
         else
           .no-notification
             img.d-block(src="/images/shop/notification.png")

@@ -22,7 +22,7 @@ block header
           ul.d-flex.justify-content-end
             li
               .popover__wrapper
-                a.d-flex(href='#')
+                a.d-flex(href='/account/notification?type=1')
                   .position-root
                     i.far.fa-bell
                   span &nbsp;Thông báo
@@ -40,10 +40,11 @@ block header
                       while i < notifications.length && i < 5
                         a(href=notifications[i].link)
                           .popover__content__main_noti.p-2.d-flex(style=notifications[i].daxem?"background-color: white":"")
-                            .popover__content__img__noti(style=`background-image: url("${notifications[i].hinhanh}")`)
+                            .popover__content__img__noti
+                              img(src=notifications[i].hinhanh, alt="thongbao", width="80px", height="80px")
                             .popover__content__thongbao.d-flex.flex-column.justify-content-center
                               .popover__content__thongbao__title.text-left= notifications[i].tieude
-                              .popover__content__thongbao__content.text-left= notifications[i].noidung
+                              .popover__content__thongbao__content.text-left= notifications[i].noidung.slice(0, 150) + '...'
                         - i++;
                       a.btn.btn-light.w-100(role="button", href="/account/notification?type=1") Xem tất cả
                 else
