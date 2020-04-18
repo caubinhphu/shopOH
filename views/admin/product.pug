@@ -62,7 +62,7 @@ block main
     table.table.table-sm.text-center.text-white.mt-2
       thead
         tr
-          th Tên sản phẩm
+          th.text-left Tên sản phẩm
           th Màu
           th Size
           th Số lượng
@@ -75,7 +75,7 @@ block main
         tbody
           each product in products
             tr
-              td.name-pro
+              td.name-pro.text-left
                 img.mr-2(src=product.img, alt="hinh", width="40px", height="40px")
                 span= product.name
               td

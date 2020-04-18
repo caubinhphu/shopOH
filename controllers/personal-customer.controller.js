@@ -1,26 +1,27 @@
-const fs = require("fs");
-const multer = require("multer");
-const path = require("path");
-const bcrypt = require("bcrypt");
-const { v4 } = require("uuid");
-const querySQL = require("../configure/querySQL");
-const { myEncode, myDecode } = require("../configure/myEncode");
+const fs = require('fs');
+const multer = require('multer');
+const path = require('path');
+const bcrypt = require('bcrypt');
+const { v4 } = require('uuid');
+const moment = require('moment');
+const querySQL = require('../configure/querySQL');
+const { myEncode, myDecode } = require('../configure/myEncode');
 
 const {
   profileValidate,
   changePassValidate,
-  addressValidate
-} = require("../validates/account.validate");
+  addressValidate,
+} = require('../validates/account.validate');
 
 const storage = multer.diskStorage({
-  destination: "./public/images/users/",
+  destination: './public/images/users/',
   filename: (req, file, cb) => {
-    let uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    let uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     cb(
       null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+      file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname)
     );
-  }
+  },
 });
 
 // upload file
@@ -42,46 +43,30 @@ const upload = multer({
     if (extname && mime) {
       cb(null, true);
     } else {
-      cb("File ảnh không đúng định dạng");
+      cb('File ảnh không đúng định dạng');
     }
-  }
-}).single("avatar");
+  },
+}).single('avatar');
 
 // get profile
 module.exports.getProfile = async (req, res, next) => {
   try {
     // get account user current
-    let data = await querySQL("call CHECK_ACCOUNT_ID(?)", [req.userId]);
+    let data = await querySQL('call CHECK_ACCOUNT_ID(?)', [req.userId]);
     let account = data[0][0];
 
-    // convert account birthdate => string type yyyy-mm-dd
-    // function format date type yyyy-mm-dd
-    const formatDate = date => {
-      let d = new Date(date),
-        year = d.getFullYear(),
-        month = d.getMonth() + 1,
-        day = d.getDate();
-
-      if (day < 10) {
-        day = "0" + day;
-      }
-      if (month < 10) {
-        month = "0" + month;
-      }
-      return [year, month, day].join("-");
-    };
     if (account.ngaysinh) {
-      account.ngaysinh = formatDate(account.ngaysinh);
+      account.ngaysinh = moment(account.ngaysinh).format('YYYY-MM-DD');
     }
 
     // render
-    res.render("customer/personal-profile", {
-      titleSite: "ShopOH - Tài khoản của tôi",
-      active: "profile", // tab active
+    res.render('customer/personal-profile', {
+      titleSite: 'ShopOH - Tài khoản của tôi',
+      active: 'profile', // tab active
       account, // account user
       csrfToken: req.csrfToken(), // csrf token
-      errorMgs: req.flash("error_mgs"), // error mgs flash
-      successMgs: req.flash("success_mgs") // success mgs flash
+      errorMgs: req.flash('error_mgs'), // error mgs flash
+      successMgs: req.flash('success_mgs'), // success mgs flash
     });
   } catch (error) {
     next(error);
@@ -100,61 +85,61 @@ module.exports.putProfile = async (req, res, next) => {
 
     // error validate
     if (error) {
-      if (error.details[0].path[0] === "username") {
+      if (error.details[0].path[0] === 'username') {
         errorTexts.push(
-          "Tên không hợp lệ (dài tối đa 100 kí tự, không chứa các kí tự đặt biệt)"
+          'Tên không hợp lệ (dài tối đa 100 kí tự, không chứa các kí tự đặt biệt)'
         );
-      } else if (error.details[0].path[0] === "gender") {
-        errorTexts.push("Giới tính không hợp lệ");
-      } else if (error.details[0].path[0] === "birthday") {
-        errorTexts.push("Ngày sinh không hợp lệ");
-      } else if (error.details[0].path[0] === "phone") {
-        errorTexts.push("Số điện thoại không hợp lệ");
+      } else if (error.details[0].path[0] === 'gender') {
+        errorTexts.push('Giới tính không hợp lệ');
+      } else if (error.details[0].path[0] === 'birthday') {
+        errorTexts.push('Ngày sinh không hợp lệ');
+      } else if (error.details[0].path[0] === 'phone') {
+        errorTexts.push('Số điện thoại không hợp lệ');
       }
     }
 
     // has error validate
     if (errorTexts.length > 0) {
-      req.flash("error_mgs", errorTexts);
-      return res.redirect("/account/profile");
+      req.flash('error_mgs', errorTexts);
+      return res.redirect('/account/profile');
     }
 
     // pass validate
     // update db
-    await querySQL("call UPDATE_PROFILE(?, ?, ?, ?, ?)", [
+    await querySQL('call UPDATE_PROFILE(?, ?, ?, ?, ?)', [
       req.userId,
       username,
       gender,
       birthday,
-      phone
+      phone,
     ]);
 
-    req.flash("success_mgs", "Cập nhật thông tin thành công");
-    res.redirect("/account/profile");
+    req.flash('success_mgs', 'Cập nhật thông tin thành công');
+    res.redirect('/account/profile');
   } catch (err) {
     next(err);
   }
 };
 
 module.exports.putAvatar = async (req, res) => {
-  upload(req, res, async err => {
+  upload(req, res, async (err) => {
     if (err) {
       return res.status(400).json({ mgs: err.message });
     } else {
       let urlAvatar = `/images/users/${req.file.filename}`;
       try {
-        let data = await querySQL("call UPDATE_AVATAR(?, ?)", [
+        let data = await querySQL('call UPDATE_AVATAR(?, ?)', [
           req.userId,
-          urlAvatar
+          urlAvatar,
         ]);
         // path old avatar
         let oldAvatar = data[0][0].avatar;
 
         // remove old avatar
-        if (oldAvatar !== "/images/users/default-avatar.jpg") {
+        if (oldAvatar !== '/images/users/default-avatar.jpg') {
           fs.unlink(
-            path.join(__dirname, "..", "public", oldAvatar),
-            errUnlink => {
+            path.join(__dirname, '..', 'public', oldAvatar),
+            (errUnlink) => {
               if (errUnlink) {
                 throw errUnlink;
               }
@@ -166,7 +151,7 @@ module.exports.putAvatar = async (req, res) => {
       }
       return res
         .status(200)
-        .json({ mgs: "Cập nhật avatar thành công", src: urlAvatar });
+        .json({ mgs: 'Cập nhật avatar thành công', src: urlAvatar });
     }
   });
 };
@@ -177,14 +162,14 @@ module.exports.getPurchase = async (req, res, next) => {
   let type = +req.query.type || 0;
 
   // get purchase
-  let data = await querySQL("call SELECT_PURCHASE(?, ?)", [req.userId, type]);
+  let data = await querySQL('call SELECT_PURCHASE(?, ?)', [req.userId, type]);
   let purchases = data[0];
   let orders = [];
   // get item in each purchase / order
   for (let purchase of purchases) {
     let order = { purchase };
-    let itemData = await querySQL("call SELECT_CT_PURCHASE(?)", [
-      purchase.ma_dondathang
+    let itemData = await querySQL('call SELECT_CT_PURCHASE(?)', [
+      purchase.ma_dondathang,
     ]);
     let items = itemData[0];
     let sumPrice = 0;
@@ -198,11 +183,11 @@ module.exports.getPurchase = async (req, res, next) => {
     orders.push(order);
   }
 
-  res.render("customer/personal-purchase", {
-    titleSite: "ShopOH - Tài khoản của tôi",
-    active: "purchase",
+  res.render('customer/personal-purchase', {
+    titleSite: 'ShopOH - Tài khoản của tôi',
+    active: 'purchase',
     orders,
-    type
+    type,
   });
 };
 
@@ -213,9 +198,9 @@ module.exports.getOrder = async (req, res, next) => {
     let { idOrder } = req.params;
 
     // get info of order
-    let data = await querySQL("call SELECT_INFO_ORDER(?, ?)", [
+    let data = await querySQL('call SELECT_INFO_ORDER(?, ?)', [
       req.userId,
-      idOrder
+      idOrder,
     ]);
     let order = data[0][0],
       items = data[1];
@@ -231,35 +216,44 @@ module.exports.getOrder = async (req, res, next) => {
     // get time list status order
     let statuses = [];
     if (order.ngay_dathang) {
-      statuses.unshift({ time: order.ngay_dathang, st: "Đặt đơn hàng" });
+      statuses.unshift({
+        time: moment(order.ngay_dathang).format('DD/MM/YYYY hh:mm:ss A'),
+        st: 'Đặt đơn hàng',
+      });
     }
     if (order.ngay_xacnhan) {
       statuses.unshift({
-        time: order.ngay_xacnhan,
-        st: "Đã xác nhận đơn hàng"
+        time: moment(order.ngay_xacnhan).format('DD/MM/YYYY hh:mm:ss A'),
+        st: 'Đã xác nhận đơn hàng',
       });
     }
     if (order.ngay_giaohang) {
       statuses.unshift({
-        time: order.ngay_giaohang,
-        st: "Bắt đầu giao đơn hàng"
+        time: moment(order.ngay_giaohang).format('DD/MM/YYYY hh:mm:ss A'),
+        st: 'Bắt đầu giao đơn hàng',
       });
     }
     if (order.ngay_nhanhang) {
-      statuses.unshift({ time: order.ngay_nhanhang, st: "Giao đơn hàng" });
+      statuses.unshift({
+        time: moment(order.ngay_nhanhang).format('DD/MM/YYYY hh:mm:ss A'),
+        st: 'Giao đơn hàng',
+      });
     }
     if (order.ngay_huyhang) {
-      statuses.unshift({ time: order.ngay_huyhang, st: "Hủy đơn hàng" });
+      statuses.unshift({
+        time: moment(order.ngay_huyhang).format('DD/MM/YYYY hh:mm:ss A'),
+        st: 'Hủy đơn hàng',
+      });
     }
 
     // render
-    res.render("customer/personal-order", {
-      titleSite: "ShopOH - Order",
-      active: "purchase",
+    res.render('customer/personal-order', {
+      titleSite: 'ShopOH - Order',
+      active: 'purchase',
       order,
       items,
       sumPrice,
-      statuses
+      statuses,
     });
   } catch (err) {
     next(err);
@@ -268,12 +262,12 @@ module.exports.getOrder = async (req, res, next) => {
 
 // get profile password
 module.exports.getProfilePassword = (req, res, next) => {
-  res.render("customer/personal-password", {
-    titleSite: "ShopOH - Tài khoản của tôi",
-    active: "password",
+  res.render('customer/personal-password', {
+    titleSite: 'ShopOH - Tài khoản của tôi',
+    active: 'password',
     csrfToken: req.csrfToken(), // csrf token
-    errorMgs: req.flash("error_mgs"), // error mgs flash
-    successMgs: req.flash("success_mgs") // success mgs flash
+    errorMgs: req.flash('error_mgs'), // error mgs flash
+    successMgs: req.flash('success_mgs'), // success mgs flash
   });
 };
 
@@ -284,7 +278,7 @@ module.exports.putProfilePassword = async (req, res, next) => {
     let {
       oldpassword: oldPassword,
       newpassword: newPassword,
-      newpassword2: newPassword2
+      newpassword2: newPassword2,
     } = req.body;
 
     // validate data
@@ -292,26 +286,26 @@ module.exports.putProfilePassword = async (req, res, next) => {
     let { error } = changePassValidate({
       oldPassword,
       newPassword,
-      newPassword2
+      newPassword2,
     });
 
     // validate error
-    let textError = "";
+    let textError = '';
     if (error) {
-      if (error.details[0].path[0] === "oldPassword") {
-        textError = "Mật khẩu cũ không đúng";
-      } else if (error.details[0].path[0] === "newPassword") {
-        textError = "Mật khẩu mới không hợp lệ (ngắn nhất 6 kí tự)";
-      } else if (error.details[0].path[0] === "newPassword2") {
-        textError = "Xác nhận mật khẩu mới không đúng";
+      if (error.details[0].path[0] === 'oldPassword') {
+        textError = 'Mật khẩu cũ không đúng';
+      } else if (error.details[0].path[0] === 'newPassword') {
+        textError = 'Mật khẩu mới không hợp lệ (ngắn nhất 6 kí tự)';
+      } else if (error.details[0].path[0] === 'newPassword2') {
+        textError = 'Xác nhận mật khẩu mới không đúng';
       }
-      req.flash("error_mgs", textError);
-      return res.redirect("/account/password");
+      req.flash('error_mgs', textError);
+      return res.redirect('/account/password');
     }
 
     // pass validate
     // check old password
-    let data = await querySQL("call CHECK_ACCOUNT_ID(?)", [req.userId]);
+    let data = await querySQL('call CHECK_ACCOUNT_ID(?)', [req.userId]);
 
     if (data[0][0]) {
       // get old password
@@ -320,8 +314,8 @@ module.exports.putProfilePassword = async (req, res, next) => {
       // check old password
       let checkPass = await bcrypt.compare(oldPassword, oldPasswordHash);
       if (!checkPass) {
-        req.flash("error_mgs", "Mật khẩu cũ không đúng");
-        return res.redirect("/account/password");
+        req.flash('error_mgs', 'Mật khẩu cũ không đúng');
+        return res.redirect('/account/password');
       }
 
       // correct old password
@@ -330,12 +324,12 @@ module.exports.putProfilePassword = async (req, res, next) => {
       let salt = await bcrypt.genSalt(10);
       let hash = await bcrypt.hash(newPassword, salt);
       // update db
-      await querySQL("call UPDATE_PASSWORD(?, ?)", [req.userId, hash]);
+      await querySQL('call UPDATE_PASSWORD(?, ?)', [req.userId, hash]);
 
-      req.flash("success_mgs", "Thay đổi mật khẩu thành công");
-      return res.redirect("/account/password");
+      req.flash('success_mgs', 'Thay đổi mật khẩu thành công');
+      return res.redirect('/account/password');
     } else {
-      res.redirect("/login");
+      res.redirect('/login');
     }
   } catch (err) {
     next(err);
@@ -347,16 +341,16 @@ module.exports.getNotification = (req, res, next) => {
   // get type nitification
   let type = +req.query.type || 1;
 
-  let active = "";
+  let active = '';
   if (type === 1) {
-    active = "noti_t1";
+    active = 'noti_t1';
   } else {
-    active = "noti_t2";
+    active = 'noti_t2';
   }
-  res.render("customer/personal-notification", {
-    titleSite: "ShopOH - Tài khoản của tôi",
+  res.render('customer/personal-notification', {
+    titleSite: 'ShopOH - Tài khoản của tôi',
     active,
-    type
+    type,
   });
 };
 
@@ -364,7 +358,7 @@ module.exports.getNotification = (req, res, next) => {
 module.exports.getAddress = async (req, res, next) => {
   try {
     // get data address
-    let data = await querySQL("call SELECT_ADDRESS(?)", [req.userId]);
+    let data = await querySQL('call SELECT_ADDRESS(?)', [req.userId]);
     let addresses = data[0];
 
     // add encode field (encode id address) to addresses
@@ -373,12 +367,12 @@ module.exports.getAddress = async (req, res, next) => {
     }
 
     // render
-    res.render("customer/personal-address", {
-      titleSite: "ShopOH - Tài khoản của tôi",
-      active: "address",
+    res.render('customer/personal-address', {
+      titleSite: 'ShopOH - Tài khoản của tôi',
+      active: 'address',
       csrfToken: req.csrfToken(), // csrf token
-      successMgs: req.flash("success_mgs"), // success message
-      addresses: data[0] // addresses
+      successMgs: req.flash('success_mgs'), // success message
+      addresses: data[0], // addresses
     });
   } catch (err) {
     next(err);
@@ -394,40 +388,40 @@ module.exports.postAddress = async (req, res, next) => {
     // validate
     let { error } = addressValidate({ name, phone, tinh, huyen, xa, homenum });
     // validate error
-    let errorText = "";
+    let errorText = '';
     if (error) {
-      if (error.details[0].path[0] === "name") {
+      if (error.details[0].path[0] === 'name') {
         errorText =
-          "Tên không hợp lệ (dài tối đa 100 kí tự, không chứa các kí tự đặt biệt)";
-      } else if (error.details[0].path[0] === "phone") {
-        errorText = "Số điện thoại không hợp lệ";
-      } else if (error.details[0].path[0] === "tinh") {
-        errorText = "Tỉnh/Thành phố không hợp lệ";
-      } else if (error.details[0].path[0] === "huyen") {
-        errorText = "Quận/Huyện không hợp lệ";
-      } else if (error.details[0].path[0] === "xa") {
-        errorText = "Xã/Phường không hợp lệ";
-      } else if (error.details[0].path[0] === "homenum") {
-        errorText = "Tòa nhà, tên đường không hợp lệ";
+          'Tên không hợp lệ (dài tối đa 100 kí tự, không chứa các kí tự đặt biệt)';
+      } else if (error.details[0].path[0] === 'phone') {
+        errorText = 'Số điện thoại không hợp lệ';
+      } else if (error.details[0].path[0] === 'tinh') {
+        errorText = 'Tỉnh/Thành phố không hợp lệ';
+      } else if (error.details[0].path[0] === 'huyen') {
+        errorText = 'Quận/Huyện không hợp lệ';
+      } else if (error.details[0].path[0] === 'xa') {
+        errorText = 'Xã/Phường không hợp lệ';
+      } else if (error.details[0].path[0] === 'homenum') {
+        errorText = 'Tòa nhà, tên đường không hợp lệ';
       }
       // get data address
-      let data = await querySQL("call SELECT_ADDRESS(?)", [req.userId]);
+      let data = await querySQL('call SELECT_ADDRESS(?)', [req.userId]);
       let addresses = data[0];
 
-      return res.render("customer/personal-address", {
-        titleSite: "ShopOH - Tài khoản của tôi",
-        active: "address",
+      return res.render('customer/personal-address', {
+        titleSite: 'ShopOH - Tài khoản của tôi',
+        active: 'address',
         csrfToken: req.csrfToken(), // csrf token
         errorMgs: errorText, // error message
         body: { name, phone, tinh, huyen, xa, homenum }, // data
         showModalAddress: true, // show modal add addr if error
-        addresses
+        addresses,
       });
     }
 
     // pass validate
     // insert db
-    await querySQL("call ADD_ADDRESS(?, ?, ?, ?, ?, ?, ?, ?)", [
+    await querySQL('call ADD_ADDRESS(?, ?, ?, ?, ?, ?, ?, ?)', [
       req.userId, // user id
       v4(), // add uuid for new address
       name, // addr name
@@ -435,16 +429,16 @@ module.exports.postAddress = async (req, res, next) => {
       tinh, // addr tinh
       huyen, // addr huyen
       xa, // addr xa
-      homenum // addr nha
+      homenum, // addr nha
     ]);
 
     // add addr succes
-    req.flash("success_mgs", "Thêm địa chỉ thành công");
-    res.redirect("/account/address");
+    req.flash('success_mgs', 'Thêm địa chỉ thành công');
+    res.redirect('/account/address');
   } catch (err) {
     // add addr error
-    req.flash("error_mgs", "Thêm địa chỉ thất bại");
-    res.redirect("/account/address");
+    req.flash('error_mgs', 'Thêm địa chỉ thất bại');
+    res.redirect('/account/address');
   }
 };
 
@@ -458,7 +452,7 @@ module.exports.putAddressDefault = async (req, res) => {
     addrId = myDecode(addrId);
 
     // put db and get new addresses
-    await querySQL("call CHANGE_DEFAULT_ADDRESS(?, ?)", [req.userId, addrId]);
+    await querySQL('call CHANGE_DEFAULT_ADDRESS(?, ?)', [req.userId, addrId]);
 
     // change success
     res.sendStatus(200);
@@ -478,7 +472,7 @@ module.exports.deleteAddress = async (req, res) => {
     addrId = myDecode(addrId);
 
     // put db and get new addresses
-    await querySQL("call DELETE_ADDRESS(?, ?)", [req.userId, addrId]);
+    await querySQL('call DELETE_ADDRESS(?, ?)', [req.userId, addrId]);
 
     // delete success
     res.sendStatus(200);
@@ -497,9 +491,9 @@ module.exports.decodeAddress = async (req, res) => {
     let addrId = myDecode(encode);
 
     // get address from db
-    let data = await querySQL("call SELECT_INFO_ADDRESS(?, ?)", [
+    let data = await querySQL('call SELECT_INFO_ADDRESS(?, ?)', [
       req.userId,
-      addrId
+      addrId,
     ]);
     let infoAddr = data[0][0];
     // encode address id
@@ -524,36 +518,36 @@ module.exports.putAddress = async (req, res, next) => {
     // validate
     let { error } = addressValidate({ name, phone, tinh, huyen, xa, homenum });
     // validate error
-    let errorText = "";
+    let errorText = '';
     if (error) {
-      if (error.details[0].path[0] === "name") {
+      if (error.details[0].path[0] === 'name') {
         errorText =
-          "Tên không hợp lệ (dài tối đa 100 kí tự, không chứa các kí tự đặt biệt)";
-      } else if (error.details[0].path[0] === "phone") {
-        errorText = "Số điện thoại không hợp lệ";
-      } else if (error.details[0].path[0] === "tinh") {
-        errorText = "Tỉnh/Thành phố không hợp lệ";
-      } else if (error.details[0].path[0] === "huyen") {
-        errorText = "Quận/Huyện không hợp lệ";
-      } else if (error.details[0].path[0] === "xa") {
-        errorText = "Xã/Phường không hợp lệ";
-      } else if (error.details[0].path[0] === "homenum") {
-        errorText = "Tòa nhà, tên đường không hợp lệ";
+          'Tên không hợp lệ (dài tối đa 100 kí tự, không chứa các kí tự đặt biệt)';
+      } else if (error.details[0].path[0] === 'phone') {
+        errorText = 'Số điện thoại không hợp lệ';
+      } else if (error.details[0].path[0] === 'tinh') {
+        errorText = 'Tỉnh/Thành phố không hợp lệ';
+      } else if (error.details[0].path[0] === 'huyen') {
+        errorText = 'Quận/Huyện không hợp lệ';
+      } else if (error.details[0].path[0] === 'xa') {
+        errorText = 'Xã/Phường không hợp lệ';
+      } else if (error.details[0].path[0] === 'homenum') {
+        errorText = 'Tòa nhà, tên đường không hợp lệ';
       }
-      return res.render("customer/personal-address", {
-        titleSite: "ShopOH - Tài khoản của tôi",
-        active: "address",
+      return res.render('customer/personal-address', {
+        titleSite: 'ShopOH - Tài khoản của tôi',
+        active: 'address',
         csrfToken: req.csrfToken(),
         errorMgs: errorText,
         body: { name, phone, tinh, huyen, xa, homenum, addrId },
         showModalAddress: true,
-        putMethod: true
+        putMethod: true,
       });
     }
 
     // pass validate
     // insert db
-    await querySQL("call EDIT_ADDRESS(?, ?, ?, ?, ?, ?, ?, ?)", [
+    await querySQL('call EDIT_ADDRESS(?, ?, ?, ?, ?, ?, ?, ?)', [
       req.userId, // user id
       addrId, // addr id
       name, // addr name
@@ -561,19 +555,19 @@ module.exports.putAddress = async (req, res, next) => {
       tinh, // addr tinh
       huyen, // addr huyen
       xa, // addr xa
-      homenum // addr nha
+      homenum, // addr nha
     ]);
 
     // edit success
-    req.flash("success_mgs", "Sửa địa chỉ thành công");
-    res.redirect("/account/address");
+    req.flash('success_mgs', 'Sửa địa chỉ thành công');
+    res.redirect('/account/address');
   } catch (err) {
     // edit error
-    req.flash("error_mgs", "Sửa địa chỉ thất bại");
-    res.redirect("/account/address");
+    req.flash('error_mgs', 'Sửa địa chỉ thất bại');
+    res.redirect('/account/address');
   }
 };
 
 module.exports.getHCVN = (req, res) => {
-  res.status(200).sendFile(path.join(__dirname, "..", "hcvnmini.json"));
+  res.status(200).sendFile(path.join(__dirname, '..', 'hcvnmini.json'));
 };

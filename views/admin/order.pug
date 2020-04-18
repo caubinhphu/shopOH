@@ -22,9 +22,9 @@ block main
             i.fas.fa-search
     .d-flex.align-items-center.ml-4
       span.col Ngày đặt hàng
-      input.form-control.col(type="date", name="datemin")
+      input.form-control.col(type="date", name="datemin", value=dateMin)
       span &nbsp;-&nbsp;
-      input.form-control.col(type="date", name="datemin")
+      input.form-control.col(type="date", name="datemin", value=dateMax, max=dateMax)
     button.btn.btn-light.ml-2.align-self-center(type="button") Xuất
     if (successMgs)
       each sMgs in successMgs
@@ -52,7 +52,7 @@ block main
                 div
                   img.mr-1(src=product.img, alt="product" width="40px")
                   small= `${product.color}, ${product.size}: ${product.amount}`
-            td= order.dateOrder.toLocaleDateString()
+            td= order.dateOrder
             td= order.status
             td= order.sumPrice
             td 

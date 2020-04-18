@@ -1,6 +1,7 @@
 const { v4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
+const moment = require('moment');
 const querySQL = require('../configure/querySQL');
 
 // get home
@@ -494,7 +495,7 @@ module.exports.getOrders = async (req, res, next) => {
       if (!(cur.ma_dondathang in acc)) {
         acc[cur.ma_dondathang] = {
           id: cur.ma_dondathang,
-          dateOrder: cur.ngay_dathang,
+          dateOrder: moment(cur.ngay_dathang).format('DD/MM/YYYY'),
           status: cur.ten_trangthai,
           products: [
             {
@@ -521,6 +522,7 @@ module.exports.getOrders = async (req, res, next) => {
       }
       return acc;
     }, {});
+
     res.render('admin/order', {
       titleSite: 'ShopOH',
       active: 'order',
@@ -528,6 +530,8 @@ module.exports.getOrders = async (req, res, next) => {
       status, // stauts of order
       orderActive, // order active tab
       idOrder, // id order if search
+      dateMin: moment().subtract(1, 'months').format('YYYY-MM-DD'), // date min export order
+      dateMax: moment().format('YYYY-MM-DD'), // date max export order
     });
   } catch (err) {
     next(err);
@@ -566,31 +570,41 @@ module.exports.getOrder = async (req, res, next) => {
       order.date = [];
       if (dataOrder[0][0].ngay_dathang) {
         order.date.unshift({
-          time: dataOrder[0][0].ngay_dathang,
+          time: moment(dataOrder[0][0].ngay_dathang).format(
+            'DD/MM/YYYY hh:mm:ss A'
+          ),
           st: 'Đặt đơn hàng',
         });
       }
       if (dataOrder[0][0].ngay_xacnhan) {
         order.date.unshift({
-          time: dataOrder[0][0].ngay_xacnhan,
+          time: moment(dataOrder[0][0].ngay_xacnhan).format(
+            'DD/MM/YYYY hh:mm:ss A'
+          ),
           st: 'Đã xác nhận đơn hàng',
         });
       }
       if (dataOrder[0][0].ngay_giaohang) {
         order.date.unshift({
-          time: dataOrder[0][0].ngay_giaohang,
+          time: moment(dataOrder[0][0].ngay_giaohang).format(
+            'DD/MM/YYYY hh:mm:ss A'
+          ),
           st: 'Bắt đầu giao đơn hàng',
         });
       }
       if (dataOrder[0][0].ngay_nhanhang) {
         order.date.unshift({
-          time: dataOrder[0][0].ngay_nhanhang,
+          time: moment(dataOrder[0][0].ngay_nhanhang).format(
+            'DD/MM/YYYY hh:mm:ss A'
+          ),
           st: 'Giao đơn hàng',
         });
       }
       if (dataOrder[0][0].ngay_huyhang) {
         order.date.unshift({
-          time: dataOrder[0][0].ngay_huyhang,
+          time: moment(dataOrder[0][0].ngay_huyhang).format(
+            'DD/MM/YYYY hh:mm:ss A'
+          ),
           st: 'Hủy đơn hàng',
         });
       }
