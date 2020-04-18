@@ -14,7 +14,7 @@ block main-personal
           each notification in notiTypes
             .notification.d-flex.p-3.align-items-center(class=notification.daxem?'':'noti-not-see')
               .personal-noti-img
-                img(src=notification.hinhanh, alt="")
+                img(src=notification.hinhanh, alt="notification", width="100px", height="100px")
               .personal-noti-main.flex-fill
                 .personal-noti-title= notification.tieude
                 .personal-noti-content= notification.noidung

@@ -642,6 +642,26 @@ module.exports.putStatusOrder = async (req, res, next) => {
     // update status order
     await querySQL('call ADMIN_UPDATE_STATUS_ORDER(?, ?)', [idOrder, status]);
 
+    // add notification update status order for customer
+    let statusOrderText = [
+      'Đã xác nhận',
+      'Đang giao',
+      'Đã giao',
+      'Đã huỷ',
+      'Trả hàng/Hoàn tiền',
+    ];
+    let id = v4();
+    let subject = 'Cập nhật đơn hàng';
+    let body = `Đơn hàng ${idOrder} của bạn đã được cập nhật trạng thái: ${
+      statusOrderText[status - 2]
+    }`;
+    let img = '/images/shop/noorder.png';
+
+    await querySQL(
+      'call ADMIN_INSERT_NOTIFICATION_UPDATE_ORDER(?, ?, ?, ?, ?)',
+      [id, subject, body, img, idOrder]
+    );
+
     req.flash('success_mgs', 'Cập nhật trạng thái đơn hàng thành công');
     res.redirect(`/admin/order/${idOrder}`);
   } catch (err) {

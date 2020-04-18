@@ -2864,3 +2864,18 @@ begin
   end if;
 end $$
 delimiter $$
+
+drop procedure ADMIN_INSERT_NOTIFICATION_UPDATE_ORDER;
+delimiter $$
+create procedure ADMIN_INSERT_NOTIFICATION_UPDATE_ORDER
+(_idnoti varchar(50), _sub varchar(255), _body text, _img varchar(100), _idorder varchar(50))
+begin
+  insert into thongbao (ma_thongbao, tieude, noidung, hinhanh, ngaydang, loai_thongbao)
+  values (_idnoti, _sub, _body, _img, now(), 1);
+
+  insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
+  select _idnoti, ma_khachhang
+  from dondathang
+  where ma_dondathang = _idorder;
+end $$
+delimiter $$
