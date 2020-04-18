@@ -2,6 +2,7 @@ const { v4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
+const xlsx = require('xlsx');
 const querySQL = require('../configure/querySQL');
 
 // get home
@@ -827,6 +828,159 @@ module.exports.putEditNotification = async (req, res, next) => {
     ]);
 
     res.redirect('/admin/notification');
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports.exportsOrders = async (req, res, next) => {
+  try {
+    // get date range and status want to exports
+    let { dateMin, dateMax } = req.query;
+    let status = +req.query.status || 0;
+
+    // get orders belong date range and status
+    let dataOrder = await querySQL('call ADMIN_EXPORTS_ORDERS(?, ?, ?)', [
+      dateMin,
+      dateMax,
+      status,
+    ]);
+
+    // create orders
+    let orders = dataOrder[0].reduce((acc, cur) => {
+      if (!(cur.ma_dondathang in acc)) {
+        acc[cur.ma_dondathang] = {
+          'Mã đơn hàng': cur.ma_dondathang,
+          'Ngày đặt hàng': cur.ngay_dathang,
+          'Trạng thái đơn hàng': cur.ten_trangthai,
+          'Phương thức giao hàng': 'Giao hàng nhanh',
+          'Ngày giao hàng': cur.ngay_giaohang,
+          'Thời gian giao hàng':
+            moment(cur.ngay_nhanhang).diff(cur.ngay_giaohang, 'days') || null,
+          'Tên sản phẩm': `[${cur.ten_sanpham}]`,
+          'Phân loại hàng': `[${cur.mausac}-${cur.size}]`,
+          'Giá gốc': `[${cur.giaban}]`,
+          'Khuyến mãi': `[${cur.khuyenmai}]`,
+          'Số lượng': `[${cur.soluong}]`,
+          'Tiền đơn hàng': Math.round(
+            cur.giaban * cur.soluong * (1 - cur.khuyenmai / 100)
+          ),
+          'Phí vận chuyển': cur.phi_vanchuyen,
+          'Tổng số tiền':
+            Math.round(cur.giaban * cur.soluong * (1 - cur.khuyenmai / 100)) +
+            cur.phi_vanchuyen,
+          'Phương thức thanh toán': 'Thanh toán khi nhận hàng',
+          'Thời gian hoàn thành đơn hàng':
+            moment(cur.ngay_nhanhang).diff(cur.ngay_dathang, 'days') || null,
+          'Username (Buyer)': cur.taikhoan,
+          'Tên người nhận': cur.ten_nguoinhan,
+          'Số điện thoại': cur.dienthoai_nguoinhan,
+          'Tỉnh/Thành phố': cur.tinh,
+          'Quận/Thị trấn/Huyện': cur.huyen,
+          'Phường/Xã': cur.xa,
+          'Địa chỉ nhận hàng': `${cur.ten_nguoinhan} (${cur.dienthoai_nguoinhan}), ${cur.nha}, ${cur.xa}, ${cur.huyen}, ${cur.tinh}`,
+        };
+      } else {
+        acc[cur.ma_dondathang]['Tên sản phẩm'] += ` + [${cur.ten_sanpham}]`;
+        acc[cur.ma_dondathang][
+          'Phân loại hàng'
+        ] += ` + [${cur.mausac}-${cur.size}]`;
+        acc[cur.ma_dondathang]['Giá gốc'] += ` + [${cur.giaban}]`;
+        acc[cur.ma_dondathang]['Khuyến mãi'] += ` + [${cur.khuyenmai}]`;
+        acc[cur.ma_dondathang]['Số lượng'] += ` + [${cur.soluong}]`;
+        acc[cur.ma_dondathang]['Tiền đơn hàng'] += Math.round(
+          cur.giaban * cur.soluong * (1 - cur.khuyenmai / 100)
+        );
+        acc[cur.ma_dondathang]['Tổng số tiền'] += Math.round(
+          cur.giaban * cur.soluong * (1 - cur.khuyenmai / 100)
+        );
+      }
+      return acc;
+    }, {});
+
+    let newWb = xlsx.utils.book_new();
+    let newWs = xlsx.utils.json_to_sheet(Object.values(orders), {
+      cellDates: true,
+      header: [
+        'Mã đơn hàng',
+        'Ngày đặt hàng',
+        'Trạng thái đơn hàng',
+        'Phương thức giao hàng',
+        'Ngày giao hàng',
+        'Thời gian giao hàng',
+        'Tên sản phẩm',
+        'Phân loại hàng',
+        'Giá gốc',
+        'Khuyến mãi',
+        'Số lượng',
+        'Tiền đơn hàng',
+        'Phí vận chuyển',
+        'Tổng số tiền',
+        'Phương thức thanh toán',
+        'Thời gian hoàn thành đơn hàng',
+        'Username (Buyer)',
+        'Tên người nhận',
+        'Số điện thoại',
+        'Tỉnh/Thành phố',
+        'Quận/Thị trấn/Huyện',
+        'Phường/Xã',
+        'Địa chỉ nhận hàng',
+      ],
+    });
+    let colsWs = [
+      { wch: 50 }, // id
+      { wch: 15 }, // ngay dat hang
+      { wch: 25 }, // trang thai don hang
+      { wch: 25 }, // phuong thuc giao hang
+      { wch: 15 }, // Ngày giao hàng
+      { wch: 20 }, // Thời gian giao hàng
+      { wch: 100 }, // Tên sản phẩm
+      { wch: 80 }, // Phân loại hàng
+      { wch: 40 }, // Giá gốc
+      { wch: 30 }, // Khuyến mãi
+      { wch: 30 }, // Số lượng
+      { wch: 15 }, // Tiền đơn hàng
+      { wch: 15 }, // Phí vận chuyển
+      { wch: 15 }, // Tổng số tiền
+      { wch: 25 }, // Phương thức thanh toán
+      { wch: 30 }, // Thời gian hoàn thành đơn hàng
+      { wch: 20 }, // Username (Buyer)
+      { wch: 30 }, // Tên người nhận
+      { wch: 15 }, // Số điện thoại
+      { wch: 15 }, // Tỉnh/Thành phố
+      { wch: 15 }, // TP/Quận/Huyện
+      { wch: 15 }, // Phường/Xã
+      { wch: 100 }, // Địa chỉ nhận hàng
+    ];
+    newWs['!cols'] = colsWs;
+    xlsx.utils.book_append_sheet(newWb, newWs, 'Order');
+    let textName = [
+      'all',
+      'unpaid',
+      'confirmed',
+      'shipping',
+      'completed',
+      'cancelled',
+      'return',
+    ];
+
+    let filename = `order.${textName[status]}.${dateMin.replace(
+      /-/g,
+      ''
+    )}_${dateMax.replace(/-/g, '')}.xlsx`;
+    let pathFile = path.join(__dirname, '..', filename);
+    xlsx.writeFile(newWb, pathFile);
+
+    res.download(pathFile, filename, (err) => {
+      if (err) {
+        throw err;
+      }
+      fs.unlink(pathFile, (err) => {
+        if (err) {
+          throw err;
+        }
+      });
+    });
   } catch (err) {
     next(err);
   }

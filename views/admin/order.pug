@@ -20,12 +20,13 @@ block main
         .input-group-append
           button#search-btn.btn.btn-success(type="submit")
             i.fas.fa-search
-    .d-flex.align-items-center.ml-4
+    form(method="GET", action="/admin/exports/order").d-flex.align-items-center.ml-4
+      input(type="hidden", name="status", value=status)
       span.col Ngày đặt hàng
-      input.form-control.col(type="date", name="datemin", value=dateMin)
+      input.form-control.col(type="date", name="dateMin", value=dateMin, max=dateMax)
       span &nbsp;-&nbsp;
-      input.form-control.col(type="date", name="datemin", value=dateMax, max=dateMax)
-    button.btn.btn-light.ml-2.align-self-center(type="button") Xuất
+      input.form-control.col(type="date", name="dateMax", value=dateMax, max=dateMax)
+      button.btn.btn-light.ml-2.align-self-center(type="submit") Xuất
     if (successMgs)
       each sMgs in successMgs
         .alert.alert-success.alert-dismissible.fade.show.mx-auto.mt-1(role='alert')

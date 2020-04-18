@@ -43,6 +43,8 @@ router.get('/product', controller.getProduct);
 
 router.get('/order', controller.getOrders);
 
+router.get('/exports/order', controller.exportsOrders);
+
 router.get('/danhmuc', controller.getDanhMuc);
 
 router.get('/product/add', controller.getAddProduct);

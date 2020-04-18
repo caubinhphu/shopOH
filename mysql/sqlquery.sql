@@ -2879,3 +2879,18 @@ begin
   where ma_dondathang = _idorder;
 end $$
 delimiter $$
+
+drop procedure ADMIN_EXPORTS_ORDERS;
+delimiter $$
+create procedure ADMIN_EXPORTS_ORDERS(_datemin varchar(20), _datemax varchar(20), _status int)
+begin
+  select dh.*, ct.ma_sanpham, ct.mausac, ct.size, ct.soluong, ct.giaban, ct.khuyenmai, sp.ten_sanpham,
+    kh.taikhoan, tt.ten_trangthai
+  from dondathang dh join ct_dondathang ct on dh.ma_dondathang = ct.ma_dondathang
+                      join sanpham sp on ct.ma_sanpham = sp.ma_sanpham
+                      join khachhang kh on dh.ma_khachhang = kh.ma_khachhang
+                      join trangthai_donhang tt on dh.ma_trangthai = tt.ma_trangthai
+  where ngay_dathang >= _datemin and ngay_dathang <= _datemax
+    and (dh.ma_trangthai = _status or _status = 0);
+end $$
+delimiter $$
