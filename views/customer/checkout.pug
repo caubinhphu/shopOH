@@ -22,22 +22,43 @@ block content
           ul.d-flex.justify-content-end
             li
               .popover__wrapper
-                a.d-flex(href='#')
+                a.d-flex(href='/account/notification?type=1')
                   .position-root
                     i.far.fa-bell
                   span &nbsp;Thông báo
                   .position-child
-                    span.badge.badge-pill.badge-light 0
+                    span.badge.badge-pill.badge-light= notifications?notifications.length:0
                 if (user)
                   .popover__content
-                    p.popover__message Thông báo mới nhận
-                    .popover__content__main.p-2.d-flex
-                      .popover__content__img(style='background-image: url("/images/shop/917385.jpg")')
-                      .popover__content__thongbao
-                        .popover__content__thongbao__title Tên thông báo
-                        .popover__content__thongbao__content Nội dung thông báo
+                    if (notifications.length === 0)
+                      .no-notification
+                        img.d-block(src="/images/shop/notification.png")
+                        span.text-secondary Không có thông báo nào
+                    else
+                      p.popover__message Thông báo mới nhận
+                      - var i = 0;
+                      while i < notifications.length && i < 5
+                        a(href=notifications[i].link)
+                          .popover__content__main_noti.p-2.d-flex(style=notifications[i].daxem?"background-color: white":"")
+                            .popover__content__img__noti
+                              img(src=notifications[i].hinhanh, alt="thongbao", width="80px", height="80px")
+                            .popover__content__thongbao.d-flex.flex-column.justify-content-center
+                              .popover__content__thongbao__title.text-left= notifications[i].tieude
+                              .popover__content__thongbao__content.text-left= notifications[i].noidung.slice(0, 150) + '...'
+                        - i++;
+                      a.btn.btn-light.w-100(role="button", href="/account/notification?type=1") Xem tất cả
+                else
+                  .popover__content.d-md-flex.flex-column.d-none
+                    .text-center.flex-fill.d-flex.flex-column.justify-content-center.py-5
+                      .popover__content__img.mx-auto(style='background-image: url("/images/shop/notification.png"); height: 100px')
+                      .text-danger Đăng nhập để xem thông báo
+                    .d-flex
+                      //- button.btn.btn-light.flex-fill(type="button", data-toggle='modal', data-target='#header-dangky') Đăng ký
+                      //- button.btn.btn-light.flex-fill(type="button", data-toggle='modal', data-target='#header-dangnhap') Đăng nhập
+                      a.btn.btn-light.flex-fill(role="button", href="/login/register") Đăng ký
+                      a.btn.btn-light.flex-fill(role="button", href="/login") Đăng nhập
             li
-              a.d-flex(href='#')
+              a.d-flex(href='/')
                 i.far.fa-question-circle
                 span Trợ giúp
             if (user)
@@ -53,6 +74,9 @@ block content
                       a.color-default(href="/account/purchase") Đơn mua
                     .popover__content__main__user.p-2.d-flex
                       a.color-default(href="/login/logout") Đăng xuất
+
+
+
   #checkout-header.bg-white.p-4
     a(href="/")
       img(src="/images/shop/logo_3.png", alt="ShopOH", title="ShopOH", width="50px")
@@ -77,8 +101,8 @@ block content
             a.btn.btn-light(role="button", href="/account/address") Thiết Lập Địa Chỉ
           each addr in addrs
             .custom-control.custom-radio
-              input.custom-control-input(id=`addr-${addr.ma_diachi}`, type="radio", name="address", value=addr.encode, checked=addr.macdinh?true:false)
-              label.custom-control-label(for=`addr-${addr.ma_diachi}`)
+              input.custom-control-input(id=`addr-${addr.encode}`, type="radio", name="address", value=addr.encode, checked=addr.macdinh?true:false)
+              label.custom-control-label(for=`addr-${addr.encode}`)
                 b= `${addr.ten} (${addr.dienthoai})`
                 br
                 span= `${addr.nha}, ${addr.xa}, ${addr.huyen}, ${addr.tinh}`

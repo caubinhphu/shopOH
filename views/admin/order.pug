@@ -37,7 +37,7 @@ block main
   table.table.table-sm.text-center.text-white.mt-2
     thead
       tr
-        th(style="width: 200px") Mã đơn hàng
+        th(style="width: 350px") Mã đơn hàng
         th Sản phẩm
         th Ngày đặt hàng
         th Trạng thái
@@ -48,7 +48,7 @@ block main
           tr
             td
               a.id-order-link(href=`/admin/order/${order.id}`)= order.id
-            td
+            td.text-left
               each product in order.products
                 div
                   img.mr-1(src=product.img, alt="product" width="40px")

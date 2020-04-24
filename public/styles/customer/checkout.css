@@ -149,6 +149,12 @@ body {
   background-repeat: no-repeat;
 }
 
+.popover__content__main_noti {
+  background-color: #fdf2ee;
+}
+.popover__content__main_noti:hover {
+  background-color: #f8f8f8 !important;
+}
 .popover__content__thongbao {
   margin-left: 10px;
 }

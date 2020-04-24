@@ -671,10 +671,11 @@ module.exports.putStatusOrder = async (req, res, next) => {
       statusOrderText[status - 2]
     }`;
     let img = '/images/shop/noorder.png';
+    let link = `/account/purchase/order/${idOrder}`;
 
     await querySQL(
-      'call ADMIN_INSERT_NOTIFICATION_UPDATE_ORDER(?, ?, ?, ?, ?)',
-      [id, subject, body, img, idOrder]
+      'call ADMIN_INSERT_NOTIFICATION_UPDATE_ORDER(?, ?, ?, ?, ?, ?)',
+      [id, subject, body, img, idOrder, link]
     );
 
     req.flash('success_mgs', 'Cập nhật trạng thái đơn hàng thành công');

@@ -1727,7 +1727,8 @@ create table dondathang (
   foreign key (ma_khachhang) references khachhang (ma_khachhang),
   foreign key (ma_trangthai) references trangthai_donhang (ma_trangthai)
 );
-
+select * from thongbao_khachhang;
+delete from thongbao;
 drop table ct_dondathang;
 create table ct_dondathang (
 	ma_dondathang varchar(50) not null,
@@ -1737,7 +1738,7 @@ create table ct_dondathang (
   soluong int default 1,
   giaban int default 0,
   khuyenmai int default 0,
-  primary key (ma_dondathang, ma_sanpham),
+  primary key (ma_dondathang, ma_sanpham, mausac, size),
   foreign key (ma_dondathang) references dondathang (ma_dondathang) on delete cascade,
   foreign key (ma_sanpham) references sanpham (ma_sanpham)
 );
@@ -2730,6 +2731,20 @@ begin
     set ma_trangthai = _st,
       ngay_xacnhan = now()
     where ma_dondathang = _idorder;
+    -- update soluongton trong kho cua san pham
+    update phanloaisanpham
+      inner join ct_dondathang on phanloaisanpham.ma_sanpham = ct_dondathang.ma_sanpham
+                                  and phanloaisanpham.mausac = ct_dondathang.mausac
+                                  and phanloaisanpham.size = ct_dondathang.size
+    set soluongton = soluongton - ct_dondathang.soluong
+    where ct_dondathang.ma_dondathang = _idorder;
+    -- update daban trong san pham
+    update sanpham
+    set daban = daban + (select sum(soluong) from ct_dondathang
+                        where ma_dondathang = _idorder
+                        and sanpham.ma_sanpham = ma_sanpham
+                        group by ma_sanpham)
+    where ma_sanpham in (select ma_sanpham from ct_dondathang where ma_dondathang = _idorder);
   elseif (_st = 3) then
     update dondathang
     set ma_trangthai = _st,
@@ -2745,6 +2760,25 @@ begin
     set ma_trangthai = _st,
       ngay_huyhang = now()
     where ma_dondathang = _idorder;
+    
+    -- if da xac nhan don hang
+    if exists (select * from dondathang where ma_dondathang = _idorder and ngay_xacnhan is not null)
+    then
+      -- reset soluong ton
+      update phanloaisanpham
+        inner join ct_dondathang on phanloaisanpham.ma_sanpham = ct_dondathang.ma_sanpham
+                                    and phanloaisanpham.mausac = ct_dondathang.mausac
+                                    and phanloaisanpham.size = ct_dondathang.size
+      set soluongton = soluongton + ct_dondathang.soluong
+      where ct_dondathang.ma_dondathang = _idorder;
+      -- reset da ban
+      update sanpham
+      set daban = daban - (select sum(soluong) from ct_dondathang
+                          where ma_dondathang = _idorder
+                          and sanpham.ma_sanpham = ma_sanpham
+                          group by ma_sanpham)
+      where ma_sanpham in (select ma_sanpham from ct_dondathang where ma_dondathang = _idorder);
+    end if;
   elseif (_st = 6) then
     update dondathang
     set ma_trangthai = _st,
@@ -2868,10 +2902,10 @@ delimiter $$
 drop procedure ADMIN_INSERT_NOTIFICATION_UPDATE_ORDER;
 delimiter $$
 create procedure ADMIN_INSERT_NOTIFICATION_UPDATE_ORDER
-(_idnoti varchar(50), _sub varchar(255), _body text, _img varchar(100), _idorder varchar(50))
+(_idnoti varchar(50), _sub varchar(255), _body text, _img varchar(100), _idorder varchar(50), _link varchar(100))
 begin
-  insert into thongbao (ma_thongbao, tieude, noidung, hinhanh, ngaydang, loai_thongbao)
-  values (_idnoti, _sub, _body, _img, now(), 1);
+  insert into thongbao (ma_thongbao, tieude, noidung, hinhanh, ngaydang, loai_thongbao, link)
+  values (_idnoti, _sub, _body, _img, now(), 1, _link);
 
   insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
   select _idnoti, ma_khachhang

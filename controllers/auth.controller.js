@@ -7,7 +7,7 @@ const querySQL = require('../configure/querySQL');
 // validate
 const {
   loginValidation,
-  registerValidation
+  registerValidation,
 } = require('../validates/auth.validate');
 
 // get login
@@ -22,7 +22,7 @@ module.exports.getLogin = (req, res) => {
     titleSite: 'ShopOH - Login',
     referer, // referer url
     csrfToken: req.csrfToken(), // csrfToken (match csrfToken => allow form)
-    successMgs: req.flash('success_mgs')
+    successMgs: req.flash('success_mgs'),
   });
 };
 
@@ -30,7 +30,7 @@ module.exports.getLogin = (req, res) => {
 module.exports.getRegister = (req, res) => {
   res.render('account/register', {
     titleSite: 'ShopOH - Register',
-    csrfToken: req.csrfToken() // csrfToken (match csrfToken => allow form)
+    csrfToken: req.csrfToken(), // csrfToken (match csrfToken => allow form)
   });
 };
 
@@ -90,7 +90,7 @@ module.exports.postLogin = async (req, res, next) => {
       referer,
       csrfToken: req.csrfToken(),
       errorText,
-      account // account => display view
+      account, // account => display view
     });
   } else {
     // no error
@@ -148,7 +148,7 @@ module.exports.postRegister = async (req, res, next) => {
       titleSite: 'ShopOH - Register',
       csrfToken: req.csrfToken(),
       errorTexts,
-      account // account => display view
+      account, // account => display view
     });
   } else {
     // pass => insert db

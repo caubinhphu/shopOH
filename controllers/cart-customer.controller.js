@@ -4,14 +4,14 @@ const { myEncode, myDecode } = require('../configure/myEncode');
 // remove product in cart
 module.exports.deleteCart = async (req, res, next) => {
   try {
-    // get info prodct want remove
+    // get info product want remove
     let cartInfo = myDecode(req.body.info).split('$');
     cartInfo.unshift(req.userId); // unshift current user
 
     // remove product from cart
     await querySQL('call SP_DELETE_CART(?, ?, ?, ?)', cartInfo);
 
-    // get new cart after remove prodcut from cart
+    // get new cart after remove product from cart
     let dataCart = await querySQL('call SP_SELECT_CART(?)', [req.userId]);
     let cartNum = dataCart[0][0],
       cartProduct = dataCart[1];
@@ -30,7 +30,7 @@ module.exports.deleteCart = async (req, res, next) => {
   }
 };
 
-// add prduct to the cart
+// add product to the cart
 module.exports.postAddCart = async (req, res, next) => {
   try {
     // get info post from client
@@ -42,7 +42,7 @@ module.exports.postAddCart = async (req, res, next) => {
       req.userId, // current user
       data.color, // color product
       data.size, // size product
-      data.quantity // quantity
+      data.quantity, // quantity
     ]);
 
     // get new cart after add product
@@ -77,7 +77,7 @@ module.exports.getCart = async (req, res, next) => {
     res.render('customer/cart', {
       titleSite: 'ShopOH - Giỏ hàng',
       sumPrice: sumPirce[0][0], // sum price in cart
-      productSuggestionList: dataSuggestion[0] // products suggestion
+      productSuggestionList: dataSuggestion[0], // products suggestion
     });
   } catch (error) {
     next(error);

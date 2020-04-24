@@ -47,7 +47,7 @@ module.exports.getCheckout = async (req, res, next) => {
     // verify token and if pass then get items
     let { items } = jwt.verify(token, process.env.CHECKOUT_SECRET);
 
-    // caculator sum price of items
+    // calculator sum price of items
     let sumPrice = 0;
     for (let item of items) {
       sumPrice +=
@@ -62,7 +62,7 @@ module.exports.getCheckout = async (req, res, next) => {
     }
 
     // get address default
-    let addrDefault = addrs.find(addr => addr.macdinh);
+    let addrDefault = addrs.find((addr) => addr.macdinh);
 
     // render
     res.render('customer/checkout', {
@@ -70,7 +70,7 @@ module.exports.getCheckout = async (req, res, next) => {
       items,
       sumPrice,
       addrs,
-      addrDefault
+      addrDefault,
     });
   } catch (err) {
     res.redirect('/cart');
@@ -84,7 +84,7 @@ module.exports.postCheckout = async (req, res) => {
     let { token, address } = req.body;
     // decode address
     address = myDecode(address);
-    // vertify token and get items
+    // versify token and get items
     let { items } = jwt.verify(token, process.env.CHECKOUT_SECRET);
     // generate id order
     let idOrder = v4();
@@ -92,7 +92,7 @@ module.exports.postCheckout = async (req, res) => {
     // get address
     let data = await querySQL('call SELECT_INFO_ADDRESS(?, ?)', [
       req.userId,
-      address
+      address,
     ]);
     let addr = data[0][0];
     // create order in db
@@ -105,7 +105,7 @@ module.exports.postCheckout = async (req, res) => {
       addr.tinh,
       addr.huyen,
       addr.xa,
-      addr.nha
+      addr.nha,
     ]);
     // insert items to order
     for (let item of items) {
@@ -116,7 +116,7 @@ module.exports.postCheckout = async (req, res) => {
         item.size,
         item.sl,
         item.giaban,
-        item.khuyenmai
+        item.khuyenmai,
       ]);
     }
     // OK
