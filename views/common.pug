@@ -8,6 +8,7 @@ html(lang="en")
     block style
       link(rel="stylesheet", href="/styles/bootstrap.min.css")
       link(rel="stylesheet", href="/styles/fontawesome-free/css/all.min.css")
+      link(rel="stylesheet", href="/styles/loading.css")
     
     link(rel="shortcut icon", href="/images/shop/logo_3.png", type="image/x-icon")
     
@@ -15,11 +16,17 @@ html(lang="en")
     script(src="/scripts/popper.min.js")
     script(src="/scripts/bootstrap.min.js")
   body
+    <div id="loadding-page" class="loadding-page">
+      <div class="loader d-flex justify-content-center align-items-center">
+        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+      </div>
+    </div>
     block header
     block content
     block footer
     block modal-full
     block modal-progress
     block script
+      script(src="/scripts/loading.js")
       script(src="/scripts/axios.min.js")
-    
+      script(src="/scripts/lazy-img.js")

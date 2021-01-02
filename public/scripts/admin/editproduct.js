@@ -102,7 +102,7 @@ function afterLoadDanhMuc() {
     <input class="form-control col ml-2" type="text" name="size" placeholder="Size" required="required" />
     <input class="form-control col ml-2" type="number" name="amount" placeholder="Số lượng nhập" required="required" />`;
       let btnDel = document.createElement('button');
-      btnDel.className = 'btn btn-danger ml-2';
+      btnDel.className = 'btn btn-primary-v2 ml-2';
       btnDel.innerHTML = 'X';
       btnDel.addEventListener('click', function () {
         this.parentElement.remove();

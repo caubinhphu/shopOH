@@ -35,7 +35,7 @@ block main
           span &nbsp;-&nbsp;
           input.form-control.col(type="number", name="filterSelledMax" placeholder="max", value=filterSelledMax!==0?filterSelledMax:"")
       .mt-2
-        button.btn.btn-danger(type="submit") Tìm
+        button.btn.btn-primary-v2(type="submit") Tìm
         button#re-enter-btn.btn.btn-light.ml-2(type="button") Nhập lại
       #sort.col-12.mt-3
         //- form(action="/admin/product", method="GET")
@@ -52,7 +52,7 @@ block main
     #product-area.mt-3
       .d-flex.justify-content-between
         h3= `${products.length} Sản Phẩm`
-        a.btn.btn-danger(href="/admin/product/add", role="button") Thêm 1 sản phẩm mới
+        a.btn.btn-primary-v2(href="/admin/product/add", role="button") Thêm 1 sản phẩm mới
     if (successMgs)
       each sMgs in successMgs
         .alert.alert-success.alert-dismissible.fade.show.mx-auto.mt-1(role='alert')
@@ -102,7 +102,7 @@ block main
         .modal-body
           .py-5.text-dark Xóa thiệt ha m?
           .d-flex
-            button#OK-del-btn.btn.btn-danger.flex-fill.mr-1(type='button') Ừ
+            button#OK-del-btn.btn.btn-primary-v2.flex-fill.mr-1(type='button') Ừ
             button.btn.btn-light.flex-fill(type='button', data-dismiss='modal') HÔNG
   
 append script

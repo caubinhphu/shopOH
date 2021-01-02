@@ -1,66 +1,68 @@
 extends ./common
 
 append style
+  link(rel="stylesheet", href="/styles/slick.css")
+  link(rel="stylesheet", href="/styles/slick-theme.css")
   link(rel="stylesheet", href="/styles/customer/index.css")
 
 block main
-  #main.p-md-2.p-lg-4
-    #main-top.row.bg-white.p-2
-      #main-carousel.carousel.slide.col-md-8(data-ride='carousel', data-pause='false', data-interval="4000")
-        ol.carousel-indicators
-          li.active(data-target='#main-carousel', data-slide-to='0')
-          li(data-target='#main-carousel', data-slide-to='1')
-          li(data-target='#main-carousel', data-slide-to='2')
-        .carousel-inner
-          .carousel-item.active
-            a(href="#")
-              img.d-block(src='/images/shop/banner2.jpg', alt='...')
-          .carousel-item
-            a(href="#")
-              img.d-block(src='/images/shop/banner2.jpg', alt='...')
-          .carousel-item
-            a(href="#")
-              img.d-block(src='/images/shop/banner2.jpg', alt='...')
-        a.carousel-control-prev(href='#main-carousel', role='button', data-slide='prev')
-          span.carousel-control-prev-icon(aria-hidden='true')
-          span.sr-only Previous
-        a.carousel-control-next(href='#main-carousel', role='button', data-slide='next')
-          span.carousel-control-next-icon(aria-hidden='true')
-          span.sr-only Next
-      #main-category.col-md-4.mt-4.mt-md-0
-        #main-category-title.my-2.text-center
-          b DANH MỤC
-        #main-category-list.d-flex.justify-content-center
-          a(href="/product/style/thoitrangnam").category.p-2
-            .category-img
-              img(src="/images/shop/category_male.png")
-            .category-text Thời trang nam
-          a(href="/product/style/thoitrangnu").category.p-2
-            .category-img
-              img(src="/images/shop/category_female.png")
-            .category-text Thời trang nữ
+  #main
+    .container.py-4
+      #main-top.row.bg-white.p-2.align-items-center
+        .col-lg-8
+          .slider.slider-lazy.has-slider
+            .slider-item.ps-rv
+              a(href="#").ps-as
+                span.sr-only Title
+              .lazy.h-100.bg(data-src="/images/shop/banner2.jpg")
+            .slider-item.ps-rv
+              a(href="#").ps-as
+                span.sr-only Title
+              .lazy.h-100.bg(data-src="/images/shop/banner2.jpg")
+
+        #main-category.col-lg-4.mt-4.mt-md-0
+          #main-category-title.my-2.text-center
+            b DANH MỤC
+          #main-category-list.d-flex.justify-content-center
+            .category.ps-rv.p-2
+              a(href="/product/style/thoitrangnam").ps-as
+                span.sr-only Thời trang nam
+              .category-img
+                img(src="/images/shop/category_male.png")
+              .category-text Thời trang nam
+            .category.p-2.ps-rv
+              a(href="/product/style/thoitrangnu").ps-as
+                span.sr-only Thời trang nữ
+              .category-img
+                img(src="/images/shop/category_female.png")
+              .category-text Thời trang nữ
     
-    #main-product-list.p-2
-      #main-product-list-title.mt-2.bg-white.p-3.d-flex.justify-content-between
-        b GỢI Ý HÔM NAY
-        a(href="/product") Xem tất cả &rsaquo;
-      #main-product-list-list.d-flex.flex-wrap.justify-content-center
-        each product in productList
-          .product
-            a(href=`/product/${product.ma_sanpham}`)
+      #main-product-list.p-2
+        #list-product-title.mt-2.bg-white.p-3.d-flex.justify-content-between
+          b GỢI Ý HÔM NAY
+          a(href="/product") Xem tất cả &rsaquo;
+        #list-product.d-flex.flex-wrap.justify-content-center
+          each product in productList
+            .product
+              a.ps-as(href=`/product/${product.ma_sanpham}`)
+                span.sr-only= product.ten_sanpham
               .bg-white
-                .product-img
-                  img(src=product.hinhanh.split(',')[0])
+                .wrap-product-card
+                  .product-img.bg.lazy(data-src=product.hinhanh.split(',')[0])
                 .product-title.p-2
                   span= product.ten_sanpham
                 .product-price.p-2.d-flex.justify-content-between
                   div
-                    span.text-danger ₫
-                    span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100))
+                    span.text-primary-v2 ₫
+                    span.text-primary-v2= Math.round(product.giaban * (1 - product.khuyenmai / 100))
                   div
                     span.text-dark= `${product.daban}`
                     small.text-dark &nbsp;Đã bán
-            .product-same.text-center.py-1
-              a.text-white(href=`/product?id=${product.ma_sanpham}&category=${product.ma_loai2}&material=${product.ma_chatlieu}`) Tìm sản phẩm tương tự
-      .text-center.mt-3
-        a.btn.btn-danger.px-5(href="/product", role="button") Xem thêm
+              .product-same-link.text-center.py-1
+                a.text-white(href=`/product?id=${product.ma_sanpham}&category=${product.ma_loai2}&material=${product.ma_chatlieu}`) Tìm sản phẩm tương tự
+        .text-center.mt-3
+          a.btn.btn-primary-v2.px-5(href="/product", role="button") Xem thêm
+
+append script
+  script(src="/scripts/slick.min.js")
+  script(src="/scripts/customer/index.js")

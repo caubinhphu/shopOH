@@ -60,7 +60,7 @@ block main
                 if (product.promotion > 0)
                   del= `₫${product.price}`
                   br
-                span.text-danger= `₫${Math.round(product.price * (1 - product.promotion / 100)) * product.amount}`
+                span.text-primary-v2= `₫${Math.round(product.price * (1 - product.promotion / 100)) * product.amount}`
         .order-price.pt-4
           .order-price-item.text-secondary.d-flex.justify-content-between
             small Tổng tiền hàng 
@@ -70,7 +70,7 @@ block main
             span= `₫${order.shipFee}`
           .order-price-item.text-secondary.d-flex.justify-content-between
             small Tổng số tiền: 
-            span.text-danger(style="font-size: 30px")= `₫${order.sumPrice + order.shipFee}`
+            span.text-primary-v2(style="font-size: 30px")= `₫${order.sumPrice + order.shipFee}`
           .order-price-item.text-secondary.d-flex.justify-content-between
             small Phương thức Thanh toán
             span Thanh toán khi nhận hàng
@@ -81,7 +81,7 @@ block main
         .modal-body
           .py-5.text-dark Cập nhật thiệt ha m?
           .d-flex
-            button#OK-update-btn.btn.btn-danger.flex-fill.mr-1(type='button') Ừ
+            button#OK-update-btn.btn.btn-primary-v2.flex-fill.mr-1(type='button') Ừ
             button.btn.btn-light.flex-fill(type='button', data-dismiss='modal') HÔNG
 
 append script

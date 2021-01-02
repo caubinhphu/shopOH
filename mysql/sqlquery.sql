@@ -1,4 +1,5 @@
 create database SHOPOH; 
+use SHOPOH;
 alter database SHOPOH character set utf16 collate utf16_general_ci;
 
 create table thuonghieu (
@@ -43,7 +44,7 @@ insert into loai_sp0 (ten_loai0)
 values ('Quần áo nam'),
 	     ('Quần áo nữ');
 
-drop table loai_sp1; 
+-- drop table loai_sp1; 
 create table loai_sp1 (
 	ma_loai1 int auto_increment not null,
   ten_loai1 varchar(50) not null,
@@ -102,8 +103,6 @@ create table sanpham (
   foreign key (ma_chatlieu) references chatlieu (ma_chatlieu)
 );
 alter table sanpham convert to character set utf16 collate utf16_general_ci;
-alter table sanpham add column ngaythem datetime;
-alter table sanpham add column trangthai varchar(5) default '1';
 
 -- trang thai san pham:
   -- 0: khong con ban
@@ -1667,7 +1666,7 @@ alter table khachhang convert to character set utf16 collate utf16_general_ci;
 insert into khachhang (ma_khachhang, taikhoan, matkhau, ten_khachhang, email, dienthoai, avatar)
 values ('1', 'caubinhphu', '1234', null, 'abc@gmail.com', null, null);
 
-drop table diachikhachhang;
+-- drop table diachikhachhang;
 create table diachikhachhang (
   ma_diachi varchar(50),
 	ma_khachhang varchar(50),
@@ -1706,7 +1705,7 @@ values ('Chờ xác nhận'),
       ('Đã huỷ'),
       ('Trả hàng/Hoàn tiền');
 
-drop table dondathang;
+-- drop table dondathang;
 create table dondathang (
 	ma_dondathang varchar(50) not null,
   ma_khachhang varchar(50) not null,
@@ -1727,9 +1726,9 @@ create table dondathang (
   foreign key (ma_khachhang) references khachhang (ma_khachhang),
   foreign key (ma_trangthai) references trangthai_donhang (ma_trangthai)
 );
-select * from thongbao_khachhang;
-delete from thongbao;
-drop table ct_dondathang;
+-- select * from thongbao_khachhang;
+-- delete from thongbao;
+-- drop table ct_dondathang;
 create table ct_dondathang (
 	ma_dondathang varchar(50) not null,
   ma_sanpham varchar(50) not null,
@@ -1758,8 +1757,7 @@ create table giohang (
 -- insert into giohang(ma_khachhang, ma_sanpham, soluong, mausac, size, ngaythem)
 -- values ('1', '1', 2, 'ĐEN', 'M', null);
 
---------------------------------------------
-drop table thongbao;
+-- drop table thongbao;
 create table thongbao (
 	ma_thongbao varchar(50) not null,
   tieude varchar(255),
@@ -1773,7 +1771,7 @@ create table thongbao (
 alter table thongbao convert to character set utf16 collate utf16_general_ci;
 alter table thongbao add column public boolean default true;
 
-drop table thongbao_khachhang;
+-- drop table thongbao_khachhang;
 create table thongbao_khachhang (
   ma_thongbao varchar(50) not null,
 	ma_khachhang varchar(50) not null,
@@ -1783,26 +1781,26 @@ create table thongbao_khachhang (
   foreign key (ma_thongbao) references thongbao (ma_thongbao) on delete cascade
 );
 
-insert into thongbao (ma_thongbao, tieude, noidung, ngaydang, loai_thongbao, hinhanh, link)
-values ('8760b367-55ec-478b-bdd7-692c1a765676', 'tieu de 1', 'bla bla bla bla bla bla bla bla bla blabla bla bla bla', now(), 2, '/images/shop/917385.jpg', '/');
+-- insert into thongbao (ma_thongbao, tieude, noidung, ngaydang, loai_thongbao, hinhanh, link)
+-- values ('8760b367-55ec-478b-bdd7-692c1a765676', 'tieu de 1', 'bla bla bla bla bla bla bla bla bla blabla bla bla bla', now(), 2, '/images/shop/917385.jpg', '/');
 
-insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
-values ('8760b367-55ec-478b-bdd7-692c1a765676', '8760b367-55ec-478b-bdd7-692c1a765676');
+-- insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
+-- values ('8760b367-55ec-478b-bdd7-692c1a765676', '8760b367-55ec-478b-bdd7-692c1a765676');
 
-insert into thongbao (ma_thongbao, tieude, noidung, ngaydang, loai_thongbao, hinhanh, link)
-values ('2', 'tieu de 2', 'bla bla bla bla bla bla bla bla bla blabla bla bla bla', now(), 1, '/images/shop/917385.jpg', '/');
+-- insert into thongbao (ma_thongbao, tieude, noidung, ngaydang, loai_thongbao, hinhanh, link)
+-- values ('2', 'tieu de 2', 'bla bla bla bla bla bla bla bla bla blabla bla bla bla', now(), 1, '/images/shop/917385.jpg', '/');
 
-insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
-values ('2', '8760b367-55ec-478b-bdd7-692c1a765676');
+-- insert into thongbao_khachhang (ma_thongbao, ma_khachhang)
+-- values ('2', '8760b367-55ec-478b-bdd7-692c1a765676');
 
-update thongbao_khachhang
-set daxem = true
-where ma_thongbao = '2';
-----------------------------------------------------------------
+-- update thongbao_khachhang
+-- set daxem = true
+-- where ma_thongbao = '2';
+
 
 -- -------------------procedure -------------------- --
 
-drop procedure SP_SELECT_PRODUCT_SUGGESTION;
+-- -- drop procedure SP_SELECT_PRODUCT_SUGGESTION;
 -- lấy sản phẩm gợi ý index
 delimiter $$
 create procedure SP_SELECT_PRODUCT_SUGGESTION()
@@ -1814,9 +1812,9 @@ begin
   limit 24;
 end $$
 delimiter ;
-call SP_SELECT_PRODUCT_SUGGESTION();
+-- call SP_SELECT_PRODUCT_SUGGESTION();
 
-drop procedure SP_SELECT_CART;
+-- -- drop procedure SP_SELECT_CART;
 -- lấy thông tin sản phẩm trong giỏ của khách hàng
 delimiter $$
 create procedure SP_SELECT_CART(_iduser varchar(50))
@@ -1833,10 +1831,10 @@ begin
   order by gh.ngaythem desc;
 end $$
 delimiter ;
-call sp_select_cart(1);
+-- call sp_select_cart(1);
 
 -- lấy sản phẩm chính kèm các sản phẩm cùng loại
-drop procedure SP_SELECT_SAMEPRODUCT;
+-- -- drop procedure SP_SELECT_SAMEPRODUCT;
 delimiter $$
 create procedure SP_SELECT_SAMEPRODUCT(_idpro varchar(50), _idcategory2 int, _idmaterial int)
 begin
@@ -1854,9 +1852,9 @@ begin
 end $$
 delimiter ;
 
-call SP_SELECT_SAMEPRODUCT(1, 3, 6);
+-- call SP_SELECT_SAMEPRODUCT(1, 3, 6);
 
-drop procedure SP_SELECT_PRODUCT;
+-- -- drop procedure SP_SELECT_PRODUCT;
 -- lấy thông tin sản phẩm
 delimiter $$
 create procedure SP_SELECT_PRODUCT(_idpro varchar(50), _iduser varchar(50))
@@ -1908,7 +1906,7 @@ begin
 end $$
 delimiter ;
 
-call sp_select_product('2', 1);
+-- call sp_select_product('2', 1);
 
 -- Lấy số lượng sản phẩm tồn kho theo màu và size
 delimiter $$
@@ -1919,7 +1917,7 @@ begin
 end $$
 delimiter ;
 
-call sp_select_mount_product (3, 'trắng', '1 size');
+-- call sp_select_mount_product (3, 'trắng', '1 size');
 
 -- Add like và return tổng like của sản phẩm
 delimiter $$
@@ -1938,7 +1936,7 @@ begin
 end $$
 delimiter ;
 
-call sp_addlike (2, 1);
+-- call sp_addlike (2, 1);
 
 -- remove like và trả về  tổng like của sản phẩm
 delimiter $$
@@ -1954,9 +1952,9 @@ begin
   where ma_sanpham = _idpro;
 end $$
 delimiter ;
-call sp_deletelike(2, 1);
+-- call sp_deletelike(2, 1);
 
-drop procedure SP_SELECT_PRODUCT_ALL;
+-- -- drop procedure SP_SELECT_PRODUCT_ALL;
 -- get all product
 delimiter $$
 create procedure SP_SELECT_PRODUCT_ALL(_offset int, _linmit int)
@@ -1973,9 +1971,9 @@ begin
   where trangthai = '1';
 end $$
 delimiter ;
-call sp_select_product_all();
+-- call sp_select_product_all();
 
-drop procedure SP_SELECT_PRODUCT_STYLE;
+-- -- drop procedure SP_SELECT_PRODUCT_STYLE;
 -- get product on category level 0
 delimiter $$
 create procedure SP_SELECT_PRODUCT_STYLE(_style int, _offset int, _limit int)
@@ -1996,11 +1994,11 @@ begin
   where l1.ma_loai0 = _style and sp.trangthai = '1';
 end $$
 delimiter ;
-call sp_select_product_style(2);
+-- call sp_select_product_style(2);
 
 -- get filter list
 delimiter $$
-drop procedure SP_SELECT_FILTER_LIST
+-- drop procedure SP_SELECT_FILTER_LIST
 create procedure SP_SELECT_FILTER_LIST(_style int, _style1 int)
 begin
     -- Lấy category1 list từ categody0
@@ -2019,9 +2017,9 @@ begin
 end $$
 delimiter ;
 
-select * from sanpham;
+-- select * from sanpham;
 
-drop procedure SP_INSERT_CART;
+-- drop procedure SP_INSERT_CART;
 delimiter $$
 create procedure SP_INSERT_CART(_idpro varchar(50), _iduser varchar(50), _color varchar(30), _size varchar(20), _sl int)
 spinsertcartlabel:begin
@@ -2045,16 +2043,16 @@ spinsertcartlabel:begin
 end $$
 delimiter ;
 
-call sp_insert_cart('1', '1', 'ĐEN', 'M', 2);
-call sp_insert_cart('1', '1', 'ĐEN', 'L', 1);
-call sp_insert_cart('1', '1', 'ĐEN', 'XL', 2);
-call sp_insert_cart('1', '1', 'TRẮNG', 'M', 2);
-call sp_insert_cart('2', '1', 'ĐEN', 'M', 2);
-call sp_insert_cart('2', '1', 'ĐEN', 'L', 1);
-call sp_insert_cart('2', '1', 'ĐEN', 'XL', 1);
-call sp_insert_cart('2', '1', 'ĐEN', 'XXL', 2);
-call sp_insert_cart('3', '1', 'TRẮNG', '1 SIZE', 1);
-call sp_insert_cart('3', '1', 'ĐEN', '1 SIZE', 1);
+-- call sp_insert_cart('1', '1', 'ĐEN', 'M', 2);
+-- call sp_insert_cart('1', '1', 'ĐEN', 'L', 1);
+-- call sp_insert_cart('1', '1', 'ĐEN', 'XL', 2);
+-- call sp_insert_cart('1', '1', 'TRẮNG', 'M', 2);
+-- call sp_insert_cart('2', '1', 'ĐEN', 'M', 2);
+-- call sp_insert_cart('2', '1', 'ĐEN', 'L', 1);
+-- call sp_insert_cart('2', '1', 'ĐEN', 'XL', 1);
+-- call sp_insert_cart('2', '1', 'ĐEN', 'XXL', 2);
+-- call sp_insert_cart('3', '1', 'TRẮNG', '1 SIZE', 1);
+-- call sp_insert_cart('3', '1', 'ĐEN', '1 SIZE', 1);
 
 delimiter $$
 create procedure SP_DELETE_CART(_iduser varchar(50), _idpro varchar(50), _color varchar(30), _size varchar(20))
@@ -2067,7 +2065,7 @@ begin
   end if;
 end $$
 delimiter ;
-call sp_delete_cart('3', '1', 'ĐEN', '1 SIZE');
+-- call sp_delete_cart('3', '1', 'ĐEN', '1 SIZE');
 
 delimiter $$
 create procedure SP_UPDATE_CART(_iduser varchar(50), _idpro varchar(50), _color varchar(30), _size varchar(20), _sl int)
@@ -2093,7 +2091,7 @@ end $$
 delimiter ;
 
 delimiter $$
-drop procedure SP_SEARCH_STYLE;
+-- drop procedure SP_SEARCH_STYLE;
 create procedure SP_SEARCH_STYLE(
   _loai0 int, _loai1 varchar(255), _loai2 varchar(255), _material varchar(255),
   _minRange int, _maxRange int, _sortby varchar(50)
@@ -2118,12 +2116,12 @@ begin
 end $$
 delimiter ;
 
-call SP_SEARCH_STYLE(1, '-1', '-1', '-1', 0, 0, '(sp.giaban * (1 - sp.khuyenmai / 100)) desc');
+-- call SP_SEARCH_STYLE(1, '-1', '-1', '-1', 0, 0, '(sp.giaban * (1 - sp.khuyenmai / 100)) desc');
 
 
-select ma_loai2 from sanpham;
+-- select ma_loai2 from sanpham;
 
-drop procedure SP_SELECT_PRODCUT_FOR_SEARCH;
+-- drop procedure SP_SELECT_PRODCUT_FOR_SEARCH;
 delimiter $$
 create procedure SP_SELECT_PRODCUT_FOR_SEARCH()
 begin
@@ -2139,9 +2137,9 @@ begin
 end $$
 delimiter ;
 
-call SP_SELECT_PRODCUT_FOR_SEARCH();
+-- call SP_SELECT_PRODCUT_FOR_SEARCH();
 
-drop procedure CHECK_ACCOUNT;
+-- drop procedure CHECK_ACCOUNT;
 -- check account exists
 delimiter $$
 create procedure CHECK_ACCOUNT(_account varchar(50))
@@ -2150,8 +2148,8 @@ begin
 end $$
 delimiter ;
 
-call CHECK_ACCOUNT('\' or 1 = 1;--');
-select * from khachhang where taikhoan = '1' or 1 = 1;--;
+-- call CHECK_ACCOUNT('\' or 1 = 1;--');
+-- select * from khachhang where taikhoan = '1' or 1 = 1;--;
 
 
 delimiter $$
@@ -2165,9 +2163,9 @@ update khachhang
 set matkhau = '$2b$10$oz7iLbheWh2OURXtEz0EOOxwfZJDf/80OGy1I/ym8gqLFsb3/AoXe'
 where taikhoan = 'caubinhphu'
 
-select * from khachhang;
+-- select * from khachhang;
 
-drop procedure MODIFY_LIKE;
+-- drop procedure MODIFY_LIKE;
 delimiter $$
 create procedure MODIFY_LIKE(_idpro varchar(50), _iduser varchar(50))
 begin
@@ -2185,7 +2183,7 @@ begin
 end $$
 delimiter ;
 
-drop procedure ADD_USER;
+-- drop procedure ADD_USER;
 delimiter $$
 create procedure ADD_USER(_iduser varchar(50), _account varchar(50), _password varchar(100))
 begin
@@ -2194,10 +2192,10 @@ begin
 end $$
 delimiter ;
 
-update khachhang
-set avatar = '/images/users/default-avatar.jpg';
+-- update khachhang
+-- set avatar = '/images/users/default-avatar.jpg';
 
-drop procedure UPDATE_PROFILE;
+-- drop procedure UPDATE_PROFILE;
 delimiter $$
 create procedure UPDATE_PROFILE(_iduser varchar(50), _username varchar(100), _gender varchar(10), _birthday varchar(50), _phone varchar(20))
 begin
@@ -2223,14 +2221,14 @@ begin
 end $$
 delimiter ;
 
-update khachhang
-set ngaysinh = ''
-where ma_khachhang = '1';
+-- update khachhang
+-- set ngaysinh = ''
+-- where ma_khachhang = '1';
 
-select * from khachhang;
+-- select * from khachhang;
 
 
-drop procedure UPDATE_AVATAR;
+-- drop procedure UPDATE_AVATAR;
 delimiter $$
 create procedure UPDATE_AVATAR(_iduser varchar(50), _avatar varchar(50))
 begin
@@ -2242,7 +2240,7 @@ begin
 end $$
 delimiter ;
 
-drop procedure UPDATE_PASSWORD;
+-- drop procedure UPDATE_PASSWORD;
 delimiter $$
 create procedure UPDATE_PASSWORD(_iduser varchar(50), _password varchar(100))
 begin
@@ -2252,9 +2250,9 @@ begin
 end $$
 delimiter ;
 
-select * from diachikhachhang;
+-- select * from diachikhachhang;
 
-drop procedure ADD_ADDRESS;
+-- drop procedure ADD_ADDRESS;
 delimiter $$
 create procedure ADD_ADDRESS(
   _iduser varchar(50), _idaddress varchar(50), _ten varchar(100), _sdt varchar(20),
@@ -2271,11 +2269,11 @@ begin
 end $$
 delimiter ;
 
-call ADD_ADDRESS('1', 'asf', 'asdf', 'asdf', 'asdf', 'asdf', 'afasdfas');
+-- call ADD_ADDRESS('1', 'asf', 'asdf', 'asdf', 'asdf', 'asdf', 'afasdfas');
 
-delete from diachikhachhang;
+-- delete from diachikhachhang;
 
-drop procedure SELECT_ADDRESS;
+-- drop procedure SELECT_ADDRESS;
 delimiter $$
 create procedure SELECT_ADDRESS(_iduser varchar(50))
 begin
@@ -2286,7 +2284,7 @@ begin
 end $$
 delimiter 
 
-drop procedure CHANGE_DEFAULT_ADDRESS;
+-- drop procedure CHANGE_DEFAULT_ADDRESS;
 -- delimiter $$
 -- create procedure CHANGE_DEFAULT_ADDRESS(
 --   _iduser varchar(50), _ten varchar(100), _sdt varchar(20),
@@ -2328,7 +2326,7 @@ begin
 end $$
 delimiter ;
 
-drop procedure DELETE_ADDRESS;
+-- drop procedure DELETE_ADDRESS;
 -- delimiter $$
 -- create procedure DELETE_ADDRESS(
 --   _iduser varchar(50), _ten varchar(100), _sdt varchar(20),
@@ -2360,7 +2358,7 @@ begin
 end $$
 delimiter ;
 
-drop procedure EDIT_ADDRESS;
+-- drop procedure EDIT_ADDRESS;
 delimiter $$
 create procedure EDIT_ADDRESS(
   _iduser varchar(50), _idaddress varchar(50),_ten varchar(100), _sdt varchar(20),
@@ -2377,7 +2375,7 @@ begin
 end $$
 delimiter ;
 
-drop procedure SELECT_INFO_ADDRESS;
+-- drop procedure SELECT_INFO_ADDRESS;
 delimiter $$
 create procedure SELECT_INFO_ADDRESS(_iduser varchar(50), _idaddress varchar(50))
 begin
@@ -2391,7 +2389,7 @@ begin
 end $$
 delimiter ;
 
-drop procedure CHECK_PRODUCT_CHECKOUT;
+-- drop procedure CHECK_PRODUCT_CHECKOUT;
 delimiter $$
 create procedure CHECK_PRODUCT_CHECKOUT(_idpro varchar(50), _color varchar(30), _size varchar(20), _sl int)
 begin
@@ -2402,7 +2400,7 @@ begin
 end $$
 delimiter ;
 
-drop procedure CREATE_ORDER;
+-- drop procedure CREATE_ORDER;
 delimiter $$
 create procedure CREATE_ORDER(_iduser varchar(50), _idorder varchar(50))
 begin
@@ -2411,7 +2409,7 @@ begin
 end $$
 delimiter ;
 
-drop procedure INSERT_ADDRESS_ORDER;
+-- drop procedure INSERT_ADDRESS_ORDER;
 delimiter $$
 create procedure INSERT_ADDRESS_ORDER(_idorder varchar(50), _ten varchar(100), _sdt varchar(20),
   _tinh varchar(100), _huyen varchar(100), _xa varchar(100), _nha varchar(100))
@@ -2427,7 +2425,7 @@ begin
 end $$
 delimiter ;
 
-drop procedure INSERT_ORDER;
+-- drop procedure INSERT_ORDER;
 delimiter $$
 create procedure INSERT_ORDER(
   _idorder varchar(50), _idpro varchar(50), _mau varchar(30), _size varchar(20),
@@ -2443,9 +2441,9 @@ select * from dondathang;
 select * from ct_dondathang;
 delete from dondathang;
 
-select * from trangthai_donhang;
+-- select * from trangthai_donhang;
 
-drop procedure SELECT_PURCHASE;
+-- drop procedure SELECT_PURCHASE;
 delimiter $$
 create procedure SELECT_PURCHASE(_iduser varchar(50), _type int)
 begin
@@ -2457,7 +2455,7 @@ begin
 end $$
 delimiter ;
 
-drop procedure SELECT_CT_PURCHASE;
+-- drop procedure SELECT_CT_PURCHASE;
 delimiter $$
 create procedure SELECT_CT_PURCHASE(_idorder varchar(50))
 begin
@@ -2468,7 +2466,7 @@ end $$
 delimiter ;
 
 
-drop procedure SELECT_INFO_ORDER;
+-- drop procedure SELECT_INFO_ORDER;
 delimiter $$
 create procedure SELECT_INFO_ORDER(_iduser varchar(50), _idorder varchar(50))
 begin
@@ -2486,11 +2484,11 @@ begin
 end $$
 delimiter ;
 
-update dondathang
-set ma_trangthai = '2'
-where ma_dondathang = 'e6f3ef98-7090-493b-88e4-30634ef84ab5';
+-- update dondathang
+-- set ma_trangthai = '2'
+-- where ma_dondathang = 'e6f3ef98-7090-493b-88e4-30634ef84ab5';
 
-drop procedure SELECT_NOTIFICATION;
+-- drop procedure SELECT_NOTIFICATION;
 delimiter $$
 create procedure SELECT_NOTIFICATION(_iduser varchar(50))
 begin
@@ -2506,7 +2504,7 @@ begin
 end $$
 delimiter ;
 
-drop procedure ADMIN_SELECT_PRODUCT;
+-- drop procedure ADMIN_SELECT_PRODUCT;
 delimiter $$
 create procedure ADMIN_SELECT_PRODUCT(
   _type varchar(10), _name varchar(50), _prmi int, _prma int, _l0 varchar(30), _l1 varchar(30),
@@ -2533,8 +2531,6 @@ begin
       ' and (sp.daban <= ', _sema, ' or ', _sema, ' = 0)',
     ' order by ngaythem desc;'
   );
-  '
-  -----------------------
   prepare stmt from @sql;
   execute stmt;
   deallocate prepare stmt;
@@ -2550,9 +2546,9 @@ begin
 end $$
 delimiter ;
 
-call ADMIN_SELECT_PRODUCT('name', 'áo', 0, 0, -1, -1, -1, 0, 0, '-1');
+-- call ADMIN_SELECT_PRODUCT('name', 'áo', 0, 0, -1, -1, -1, 0, 0, '-1');
 
-drop procedure ADMIN_DELETE_PRODUCT;
+-- drop procedure ADMIN_DELETE_PRODUCT;
 delimiter $$
 create procedure ADMIN_DELETE_PRODUCT(_idpro varchar(50))
 begin
@@ -2565,9 +2561,9 @@ begin
 end $$
 delimiter ;
 
-select * from sanpham where ma_sanpham = '3';
+-- select * from sanpham where ma_sanpham = '3';
 
-drop procedure ADMIN_SELECT_DANHMUC;
+-- drop procedure ADMIN_SELECT_DANHMUC;
 delimiter $$
 create procedure ADMIN_SELECT_DANHMUC()
 begin
@@ -2577,7 +2573,7 @@ begin
 end $$
 delimiter ;
 
-drop procedure ADMIN_SELECT_BRAND_MATERIAL;
+-- drop procedure ADMIN_SELECT_BRAND_MATERIAL;
 delimiter $$
 create procedure ADMIN_SELECT_BRAND_MATERIAL()
 begin
@@ -2595,7 +2591,7 @@ update sanpham
 set trangthai = '2'
 where ma_sanpham = 'f6fde233-a3de-44bd-a559-4c9d26abb68c';
 
-drop procedure ADMIN_INSERT_PRODUCT;
+-- drop procedure ADMIN_INSERT_PRODUCT;
 delimiter $$
 create procedure ADMIN_INSERT_PRODUCT(
   _id varchar(50), _name varchar(250), _l2 int, _mt text, _thieu int, _cl int,
@@ -2609,7 +2605,7 @@ begin
 end $$
 delimiter ;
 
-drop procedure ADMIN_INSERT_TYPE_PRODUCT;
+-- drop procedure ADMIN_INSERT_TYPE_PRODUCT;
 delimiter $$
 create procedure ADMIN_INSERT_TYPE_PRODUCT(
   _id varchar(50), _color varchar(30), _size varchar(20), _amount int
@@ -2629,7 +2625,7 @@ update sanpham
 set trangthai = '1'
 where ten_sanpham = '1';
 
-drop procedure ADMIN_SELECT_INFO_PRODUCT;
+-- drop procedure ADMIN_SELECT_INFO_PRODUCT;
 delimiter $$
 create procedure ADMIN_SELECT_INFO_PRODUCT(_id varchar(50))
 begin
@@ -2642,7 +2638,7 @@ begin
 end $$
 delimiter ;
 
-drop procedure ADMIN_UPDATE_PRODUCT;
+-- drop procedure ADMIN_UPDATE_PRODUCT;
 delimiter $$
 create procedure ADMIN_UPDATE_PRODUCT(
   _id varchar(50), _name varchar(250), _l2 int, _mt text,
@@ -2662,7 +2658,7 @@ begin
 end $$
 delimiter ;
 
-drop procedure ADMIN_UPDATE_TYPE_PRODUCT;
+-- drop procedure ADMIN_UPDATE_TYPE_PRODUCT;
 delimiter $$
 create procedure ADMIN_UPDATE_TYPE_PRODUCT(
   _id varchar(50), _color varchar(30), _size varchar(20), _amount int
@@ -2674,7 +2670,7 @@ begin
 end $$
 delimiter ;
 
-drop procedure ADMIN_DELETE_TYPE_PRODUCT;
+-- drop procedure ADMIN_DELETE_TYPE_PRODUCT;
 delimiter $$
 create procedure ADMIN_DELETE_TYPE_PRODUCT(_id varchar(50))
 begin
@@ -2683,9 +2679,9 @@ begin
 end $$
 delimiter ;
 
-select * from dondathang;
+-- select * from dondathang;
 
-drop procedure ADMIN_SELECT_ORDER;
+-- drop procedure ADMIN_SELECT_ORDER;
 delimiter $$
 create procedure ADMIN_SELECT_ORDER(_st varchar(5), _id varchar(50))
 begin
@@ -2699,7 +2695,7 @@ begin
 end $$
 delimiter $$
 
-drop procedure ADMIN_SELECT_INFO_ORDER;
+-- drop procedure ADMIN_SELECT_INFO_ORDER;
 delimiter $$
 create procedure ADMIN_SELECT_INFO_ORDER(_id varchar(50))
 begin
@@ -2713,7 +2709,7 @@ begin
 end $$
 delimiter $$
 
-drop procedure ADMIN_SELECT_CAN_STATUS_ORDER;
+-- drop procedure ADMIN_SELECT_CAN_STATUS_ORDER;
 delimiter $$
 create procedure ADMIN_SELECT_CAN_STATUS_ORDER(_idstatus int)
 begin
@@ -2722,7 +2718,7 @@ begin
 end $$
 delimiter $$
 
-drop procedure ADMIN_UPDATE_STATUS_ORDER;
+-- drop procedure ADMIN_UPDATE_STATUS_ORDER;
 delimiter $$
 create procedure ADMIN_UPDATE_STATUS_ORDER(_idorder varchar(50), _st int)
 begin
@@ -2787,13 +2783,13 @@ begin
   end if;
 end $$
 delimiter $$
-select * from trangthai_donhang;
+-- select * from trangthai_donhang;
 
-select * from dondathang where ma_dondathang = '5ca4edeb-4959-4448-b045-934db7b75863';
+-- select * from dondathang where ma_dondathang = '5ca4edeb-4959-4448-b045-934db7b75863';
 
-select * from dondathang;
+-- select * from dondathang;
 
-drop procedure ADMIN_DELETE_ORDER;
+-- drop procedure ADMIN_DELETE_ORDER;
 delimiter $$
 create procedure ADMIN_DELETE_ORDER(_id varchar(50))
 begin
@@ -2806,7 +2802,7 @@ begin
 end $$
 delimiter $$
 
-drop procedure ADMIN_STATISTICAL_INDEX;
+-- drop procedure ADMIN_STATISTICAL_INDEX;
 delimiter $$
 create procedure ADMIN_STATISTICAL_INDEX()
 begin
@@ -2829,7 +2825,7 @@ begin
 end $$
 delimiter $$
 
-drop procedure ADMIN_SELECT_NOTIFICATION;
+-- drop procedure ADMIN_SELECT_NOTIFICATION;
 delimiter $$
 create procedure ADMIN_SELECT_NOTIFICATION()
 begin
@@ -2838,7 +2834,7 @@ begin
 end $$
 delimiter $$
 
-drop procedure ADMIN_INSERT_NOTIFICATION;
+-- drop procedure ADMIN_INSERT_NOTIFICATION;
 delimiter $$
 create procedure ADMIN_INSERT_NOTIFICATION(_id varchar(50), _sub varchar(255), _body text, _img varchar(100), _pub boolean)
 begin
@@ -2847,7 +2843,7 @@ begin
 end $$
 delimiter $$
 
--- drop procedure ADMIN_PUBLIC_NOTIFICATION;
+-- -- drop procedure ADMIN_PUBLIC_NOTIFICATION;
 -- delimiter $$
 -- create procedure ADMIN_PUBLIC_NOTIFICATION(_id varchar(50))
 -- begin
@@ -2857,7 +2853,7 @@ delimiter $$
 -- end $$
 -- delimiter $$
 
-drop procedure ADMIN_DELETE_NOTIFICATION;
+-- drop procedure ADMIN_DELETE_NOTIFICATION;
 delimiter $$
 create procedure ADMIN_DELETE_NOTIFICATION(_id varchar(50))
 begin
@@ -2866,7 +2862,7 @@ begin
 end $$
 delimiter $$
 
-drop procedure ADMIN_SELECT_NOTIFICATION_INFO;
+-- drop procedure ADMIN_SELECT_NOTIFICATION_INFO;
 delimiter $$
 create procedure ADMIN_SELECT_NOTIFICATION_INFO(_id varchar(50))
 begin
@@ -2874,7 +2870,7 @@ begin
 end $$
 delimiter $$
 
-drop procedure ADMIN_SELECT_NOTIFICATION_INFO;
+-- drop procedure ADMIN_SELECT_NOTIFICATION_INFO;
 delimiter $$
 create procedure ADMIN_SELECT_NOTIFICATION_INFO(_id varchar(50))
 begin
@@ -2882,7 +2878,7 @@ begin
 end $$
 delimiter $$
 
-drop procedure ADMIN_UPDATE_NOTIFICATION;
+-- drop procedure ADMIN_UPDATE_NOTIFICATION;
 delimiter $$
 create procedure ADMIN_UPDATE_NOTIFICATION(_idnoti varchar(50), _sub varchar(255), _body text, _pub int)
 begin
@@ -2899,7 +2895,7 @@ begin
 end $$
 delimiter $$
 
-drop procedure ADMIN_INSERT_NOTIFICATION_UPDATE_ORDER;
+-- drop procedure ADMIN_INSERT_NOTIFICATION_UPDATE_ORDER;
 delimiter $$
 create procedure ADMIN_INSERT_NOTIFICATION_UPDATE_ORDER
 (_idnoti varchar(50), _sub varchar(255), _body text, _img varchar(100), _idorder varchar(50), _link varchar(100))
@@ -2914,7 +2910,7 @@ begin
 end $$
 delimiter $$
 
-drop procedure ADMIN_EXPORTS_ORDERS;
+-- drop procedure ADMIN_EXPORTS_ORDERS;
 delimiter $$
 create procedure ADMIN_EXPORTS_ORDERS(_datemin varchar(20), _datemax varchar(20), _status int)
 begin

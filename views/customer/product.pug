@@ -4,10 +4,10 @@ append style
   link(rel="stylesheet", href="/styles/customer/product.css")
 
 block main
-  .product.p-5
+  .product-main.p-5
     .product-info.bg-white.mt-4.d-flex.px-2.py-4.flex-column.flex-md-row
       .product-info-left
-        .product-image
+        .product-main-image
           .product-info-img-main
             .img-product(style=`background-image: url(${urlImgs[0]})`)
           .product-info-img-sub
@@ -17,22 +17,22 @@ block main
                   .img__sub(style=`background-image: url(${url})`)
 
       .product-info-right.flex-fill.px-3
-        .product-name= product.ten_sanpham
+        .product-main-name= product.ten_sanpham
         input(type="hidden", name="idPro", value=product.ma_sanpham)
         .product-info-like.d-flex.my-2
           .product-like#product-like
-            i#product-like-icon.text-danger.fa-heart(class=isLike.islike?'fas':'far')
+            i#product-like-icon.text-primary-v2.fa-heart(class=isLike.islike?'fas':'far')
             span#product-like-text= ` Đã thích (${like.like})`
-          .product-sold
+          .product-main-sold
             span= `Đã bán (${product.daban})`
-        .product-price.p-3.d-flex.align-items-center
+        .product-main-price.p-3.d-flex.align-items-center
           if (product.khuyenmai > 0)
-            .product-price-cost
+            .product-main-price-cost
               del= `đ${(product.giaban)}`
-          .product-price-current.text-danger
+          .product-main-price-current.text-primary-v2
             span= `đ${Math.round(product.giaban * (1 - product.khuyenmai / 100))}`
           if (product.khuyenmai > 0)
-            .product-promotion
+            .product-main-promotion
               span.badge.badge-danger= `${product.khuyenmai}% GIẢM`
         .product-select-option
           .procudt-transport-fee.d-flex.align-items-center
@@ -60,18 +60,25 @@ block main
                       label.custom-control-label(for=`size-${size.size}`)= size.size
             .procudt-quantity.d-flex.align-items-center
               .product-select.label Số lượng
+
               .product-select-content
-                .product-quantity-input
-                    input#input-amount.form-control(type='number', value="1", name="soluong", min="1", max=amount.sl)
+                .d-flex.justify-content-center.justify-content-md-start
+                  .input-group.amount-order.mt-4
+                    .input-group-prepend
+                      button#amount-minus.btn.btn-sm.btn-primary-v2.change-amount(type='button') -
+                    input#input-amount.text-center.form-control.form-control-sm.border.border-primary-v2(type='text', name='amount', min='1', max=amount.sl, value='1')
+                    .input-group-append
+                      button#amount-plus.btn.btn-sm.btn-primary-v2.change-amount(type='button') +
                 .product-quantity-rest.ml-2.d-inline-block
                   span#text-sanphamton= `${amount.sl} sản phẩm có sẵn`
-            .err.text-danger
+
+            .err.text-primary-v2
               em#error-cart
         .procudt-add-cart.mt-5
           button#add-to-cart-btn.btn.btn-outline-danger.mx-4(type="button")
             i.fas.fa-cart-plus
             span &nbsp;Thêm vào giở hàng
-          button#sell-now-btn.btn.btn-danger(type="button") Mua ngay
+          button#sell-now-btn.btn.btn-primary-v2(type="button") Mua ngay
               
     .product-detail.bg-white.p-4.mt-4
       .product-detail-title CHI TIẾT SẢN PHẨM
@@ -79,13 +86,13 @@ block main
         .product-detail-item.d-flex
           .product-detail-label Danh mục
           .product-detail-content
-            a(href=`/`) ShopOH
+            a.text-primary-v2(href=`/`) ShopOH
             span= ` > `
-            a(href=`/product/style/${category0}`)= product.ten_loai0
+            a.text-primary-v2(href=`/product/style/${category0}`)= product.ten_loai0
             span= ` > `
-            a(href=`/product/style/${category0}/search?${category1}`)= product.ten_loai1
+            a.text-primary-v2(href=`/product/style/${category0}/search?${category1}`)= product.ten_loai1
             span= ` > `
-            a(href=`/product/style/${category0}/search?${category2}`)= product.ten_loai2
+            a.text-primary-v2(href=`/product/style/${category0}/search?${category2}`)= product.ten_loai2
         .product-detail-item.d-flex
           .product-detail-label Thương hiệu
           .product-detail-content= product.ten_thuonghieu
@@ -99,21 +106,21 @@ block main
           div= line
 
     #main-product-same-list.p-2.mt-4
-      #main-product-same-list-title
-        | SẢN PHẨM TƯƠNG TỰ
-      #main-product-same-list-list.d-flex.flex-wrap.justify-content-center
+      #list-product-title
+        strong SẢN PHẨM TƯƠNG TỰ
+      #list-product.d-flex.flex-wrap.justify-content-center
         each product in productSameList
-          .product-same
+          .product
             a(href=`/product/${product.ma_sanpham}`)
               .bg-white
-                .product-same-img
-                  img(src=`${product.hinhanh.split(',')[0]}`)
-                .product-same-title.p-2
+                .wrap-product-card
+                  .product-img.bg.lazy(data-src=`${product.hinhanh.split(',')[0]}`)
+                .product-title.p-2
                   span= product.ten_sanpham
-                .product-same-price.p-2.d-flex.justify-content-between
+                .product-price.p-2.d-flex.justify-content-between
                   div
-                    small.text-danger ₫
-                    span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100))
+                    small.text-primary-v2 ₫
+                    span.text-primary-v2= Math.round(product.giaban * (1 - product.khuyenmai / 100))
                   div
                     span.text-dark= product.daban
                     small.text-dark &nbsp;Đã bán

@@ -11,7 +11,7 @@ block main-personal
       div
         span ID ĐƠN HÀNG: 
         span.mr-3= order.ma_dondathang
-        span.text-danger.ml-3.outline-left= order.ten_trangthai.toUpperCase()
+        span.text-primary-v2.ml-3.outline-left= order.ten_trangthai.toUpperCase()
     #order-status.bg-white.p-3.px-5
       each status in statuses
         .order-status-item.mb-2.text-secondary
@@ -20,7 +20,7 @@ block main-personal
           span.mr-2= status.time
           span.text-info= status.st
     //- #order-sell-again.p-3.text-right
-    //-   button.btn.btn-danger(type="button") Mua lần nữa
+    //-   button.btn.btn-primary-v2(type="button") Mua lần nữa
     #order-address.mt-2.bg-white.p-2
       .border-pro
       #order-address-content.py-3.pl-3
@@ -47,7 +47,7 @@ block main-personal
                   if (item.khuyenmai > 0)
                     del= `₫${item.giaban}`
                     br
-                  span.text-danger= `₫${Math.round(item.giaban * (1 - item.khuyenmai / 100)) * item.soluong}`
+                  span.text-primary-v2= `₫${Math.round(item.giaban * (1 - item.khuyenmai / 100)) * item.soluong}`
         .order-price.pt-4
           .order-price-item.text-secondary.d-flex.justify-content-between
             small Tổng tiền hàng 
@@ -57,7 +57,7 @@ block main-personal
             span= `₫${order.phi_vanchuyen}`
           .order-price-item.text-secondary.d-flex.justify-content-between
             small Tổng số tiền: 
-            span.text-danger(style="font-size: 30px")= `₫${sumPrice + order.phi_vanchuyen}`
+            span.text-primary-v2(style="font-size: 30px")= `₫${sumPrice + order.phi_vanchuyen}`
           .order-price-item.text-secondary.d-flex.justify-content-between
             small Phương thức Thanh toán
             span Thanh toán khi nhận hàng

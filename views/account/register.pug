@@ -14,7 +14,7 @@ block content
     #form.mx-auto
       #title-form.d-flex.align-items-center.justify-content-between
         h4#exampleModalLabel-dangky.modal-title Đăng ký
-        a(href="/login").text-danger Đăng nhập
+        a(href="/login").text-primary-v2 Đăng nhập
       form(action="/login/register", method="post")
         input(type="hidden", name="_csrf", value=csrfToken)
         .form-group
@@ -27,7 +27,7 @@ block content
           label(for="password2-dangky") Nhập lại mật khẩu
           input#password2-dangky.form-control(type="password", placeholder="Nhập lại mật khẩu", name="password2", required)
         .text-right
-          button.btn.btn-danger(type='submit') ĐĂNG KÝ
+          button.btn.btn-primary-v2(type='submit') ĐĂNG KÝ
 
 append script
   script

@@ -154,3 +154,40 @@ document.getElementById('sell-now-btn').addEventListener('click', function() {
       });
   }
 });
+
+changeAmount($('#amount-minus', false))
+changeAmount($('#amount-plus'))
+addEventInput()
+
+function changeAmount($el, plus = true) {
+  $el.on('click', () => {
+    let val = +$('#input-amount').val()
+    if (plus) {
+      if (val < +$('#input-amount').attr('max')) {
+        $('#input-amount').val(val + 1)
+      }
+    } else {
+      if (val > 1) {
+        $('#input-amount').val(val - 1)
+      }
+    }
+  })
+}
+
+function addEventInput() {
+  $('#input-amount').on('focusin', function() {
+    $(this).data('val', $(this).val())
+  }).on('input', function() {
+    if (+$(this).val()) {
+      $(this).val(+$(this).val())
+      if (+$(this).val() < 1) {
+        $(this).val(1)
+      } else if (+$(this).val() > +$(this).attr('max')) {
+        $(this).val($(this).attr('max'))
+      }
+      $(this).data('val', $(this).val())
+    } else {
+      $(this).val($(this).data('val'))
+    }
+  })
+}

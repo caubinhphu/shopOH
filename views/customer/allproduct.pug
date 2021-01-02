@@ -5,43 +5,42 @@ append style
   link(rel="stylesheet", href="/styles/customer/allproduct.css")
 
 block main
-  #main.p-md-2.p-lg-4
-    #main-product-list.p-2
-      #main-product-list-all-title
-        h1 Tất cả
-        hr
-      #main-product-list-list.d-flex.flex-wrap.justify-content-center
-        each product in products
-          .product
-            a(href=`/product/${product.ma_sanpham}`)
-              .bg-white
-                .product-img
-                  img(src=product.hinhanh.split(',')[0])
-                .product-title.p-2
-                  span= product.ten_sanpham
-                .product-price.p-2.d-flex.justify-content-between
-                  div
-                    small.text-danger ₫
-                    span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100))
-                  div
-                    span.text-dark= `${product.daban}`
-                    small.text-dark &nbsp;Đã bán
-            .product-same.text-center.py-1
-              a.text-white(href=`/product?id=${product.ma_sanpham}&category=${product.ma_loai2}&material=${product.ma_chatlieu}`) Tìm sản phẩm tương tự
+  #main
+    .container.py-4
+      #main-product-list.p-2
+        #main-product-list-all-title
+          h1 Tất cả
+          hr
+        #list-product.d-flex.flex-wrap.justify-content-center
+          each product in products
+            .product
+              a(href=`/product/${product.ma_sanpham}`)
+                .bg-white
+                  .wrap-product-card
+                    .product-img.bg.lazy(data-src=product.hinhanh.split(',')[0])
+                  .product-title.p-2
+                    span= product.ten_sanpham
+                  .product-price.p-2.d-flex.justify-content-between
+                    div
+                      small.text-primary-v2 ₫
+                      span.text-primary-v2= Math.round(product.giaban * (1 - product.khuyenmai / 100))
+                    div
+                      span.text-dark= `${product.daban}`
+                      small.text-dark &nbsp;Đã bán
+                .product-same-link.text-center.py-1
+                  a.text-white(href=`/product?id=${product.ma_sanpham}&category=${product.ma_loai2}&material=${product.ma_chatlieu}`) Tìm sản phẩm tương tự
 
-    if (products.length === 0)
-      #product-list-main.text-center.my-3
-        img(src="/images/shop/62d2399b89039bd1dc90ca2d50d3e802.png", alt="noprodcut", width="120px")
-        big.d-block Không tìm thấy sản phẩm nào
-    else if (sumProduct > productPerPage)
-      nav.mt-4
-        ul.pagination.justify-content-center
-          li.page-item(class=page===1?'disabled':'')
-            a.page-link(href=`/product?page=${page - 1}`)
-              span(aria-hidden='true') &laquo;
-          each p in pageArr
-            li.page-item(class=p===page?'active':'')
-              a.page-link(href=`/product?page=${p}`)= p          
-          li.page-item(class=page===pageMax?'disabled':'')
-            a.page-link(href=`/product?page=${page - 1}`)
-              span(aria-hidden='true') &raquo;
+      if (products.length === 0)
+        include ./empty-product
+      else if (sumProduct > productPerPage)
+        nav.mt-4
+          ul.pagination.justify-content-center
+            li.page-item(class=page===1?'disabled':'')
+              a.page-link(href=`/product?page=${page - 1}`)
+                span(aria-hidden='true') &laquo;
+            each p in pageArr
+              li.page-item(class=p===page?'active':'')
+                a.page-link(href=`/product?page=${p}`)= p          
+            li.page-item(class=page===pageMax?'disabled':'')
+              a.page-link(href=`/product?page=${page - 1}`)
+                span(aria-hidden='true') &raquo;

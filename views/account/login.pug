@@ -19,7 +19,7 @@ block content
     #form.mx-auto
       #title-form.d-flex.align-items-center.justify-content-between
         h4#exampleModalLabel-dangnhap.modal-title Đăng nhập
-        a(href="/login/register").text-danger Đăng ký
+        a(href="/login/register").text-primary-v2 Đăng ký
       form(action="/login", method="POST", name="formLogin")
         input(type="hidden", name="referer", value=referer)
         input(type="hidden", name="_csrf", value=csrfToken)
@@ -30,4 +30,4 @@ block content
           label(for="password-dangnhap") Mật khẩu
           input#password-dangnhap.form-control(type="password", placeholder="Password", name="password", required)
         .text-right
-          button.btn.btn-danger(type='submit') ĐĂNG NHẬP
+          button.btn.btn-primary-v2(type='submit') ĐĂNG NHẬP

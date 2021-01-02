@@ -37,7 +37,7 @@ function getCartProductHTML(dataCart) {
                   </div>
                   <div class="popover__content__main__cart__content__right">
                     <div class="popover__content__cart__price text-right">
-                      <span class="text-danger">
+                      <span class="text-primary-v2">
                         ₫${Math.round(
                           product.giaban * (1 - product.khuyenmai / 100)
                         )}
@@ -65,7 +65,7 @@ function getCartProductHTML(dataCart) {
   textHtml += `</div>
               <div class="text-right p-2 d-flex justify-content-between align-items-center">
                 <small>${dataCart.cartNum.sl} loại sản phẩm trong giỏ</small>
-                <a class="btn btn-danger" href="/cart">Xem giỏ hàng</a>
+                <a class="btn btn-primary-v2" href="/cart">Xem giỏ hàng</a>
               </div>
             </div>`;
   return textHtml;

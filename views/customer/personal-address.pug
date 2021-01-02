@@ -7,7 +7,7 @@ block main-personal
   #personal-right.col-md-8.col-lg-9
     #personnal-right-top.d-flex.justify-content-between
       div Địa chỉ của tôi
-      button#add-new-addr.btn.btn-danger(type="button")
+      button#add-new-addr.btn.btn-primary-v2(type="button")
         i.fas.fa-plus
         span &nbsp;Thêm địa chỉ mới
     if (successMgs)
@@ -99,7 +99,7 @@ block main-personal
                 input#address-homenum.form-control(type="text" placeholder="Tòa nhà, tên đường" name="homenum" required, , value=body?body.homenum:"")
             .modal-footer
               button.btn.btn-light(type='button', data-dismiss='modal') TRỞ LẠI
-              button#add-addr-btn.btn.btn-danger(type='submit') HOÀN THÀNH
+              button#add-addr-btn.btn.btn-primary-v2(type='submit') HOÀN THÀNH
   
   #delete-address.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')
@@ -107,7 +107,7 @@ block main-personal
         .modal-body
           .py-5 Bạn có chắc muốn xoá địa chỉ này?
           .d-flex
-            button#OK-del-addr-btn.btn.btn-danger.flex-fill.mr-1(type='button') XÓA
+            button#OK-del-addr-btn.btn.btn-primary-v2.flex-fill.mr-1(type='button') XÓA
             button.btn.btn-light.flex-fill(type='button', data-dismiss='modal') TRỞ LẠI
 
   #warning-address.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
@@ -116,7 +116,7 @@ block main-personal
         .modal-body
           .py-5 Bạn không thể xóa địa chỉ mặc định!
           .d-flex
-            button.btn.btn-danger.flex-fill(type='button', data-dismiss='modal') ĐÃ HIỂU
+            button.btn.btn-primary-v2.flex-fill(type='button', data-dismiss='modal') ĐÃ HIỂU
 
 append script
   script(src="/scripts/customer/personal-address.js")

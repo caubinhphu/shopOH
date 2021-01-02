@@ -51,7 +51,7 @@ block content
                   .popover__content.d-md-flex.flex-column.d-none
                     .text-center.flex-fill.d-flex.flex-column.justify-content-center.py-5
                       .popover__content__img.mx-auto(style='background-image: url("/images/shop/notification.png"); height: 100px')
-                      .text-danger Đăng nhập để xem thông báo
+                      .text-primary-v2 Đăng nhập để xem thông báo
                     .d-flex
                       //- button.btn.btn-light.flex-fill(type="button", data-toggle='modal', data-target='#header-dangky') Đăng ký
                       //- button.btn.btn-light.flex-fill(type="button", data-toggle='modal', data-target='#header-dangnhap') Đăng nhập
@@ -80,12 +80,12 @@ block content
   #checkout-header.bg-white.p-4
     a(href="/")
       img(src="/images/shop/logo_3.png", alt="ShopOH", title="ShopOH", width="50px")
-    span.text-danger THANH TOÁN
+    span.text-primary-v2 THANH TOÁN
   #checkout-main
     #checkout-address.bg-white
       .border-pro
       #checkout-address-main.p-3
-        .text-danger
+        .text-primary-v2
           i.fas.fa-map-marker-alt
           span  Địa Chỉ Nhận Hàng
         #address-choose.mt-3(style=`display: ${addrs.length <= 0 ? 'none' : 'block'}`)
@@ -107,7 +107,7 @@ block content
                 br
                 span= `${addr.nha}, ${addr.xa}, ${addr.huyen}, ${addr.tinh}`
           .mt-2
-            button#address-complete-btn.btn.btn-danger.mr-3(type="button") Hoàn thành
+            button#address-complete-btn.btn.btn-primary-v2.mr-3(type="button") Hoàn thành
             button#address-cancel.btn.btn-light(type="button") Trở Lại
     #checkout-product.bg-white.mt-3
       table.table.bg-white
@@ -131,7 +131,7 @@ block content
     #checkout-type-checkout.mt-3.bg-white.p-3
       div
         span Phương thức thanh toán: 
-        span.text-danger Thanh toán khi nhận hàng
+        span.text-primary-v2 Thanh toán khi nhận hàng
     #checkout-price.pt-4.bg-white.p-3
       .checkout-price-item.text-secondary.d-flex.justify-content-between
         span Tổng tiền hàng 
@@ -141,9 +141,9 @@ block content
         span ₫50000
       .checkout-price-item.text-secondary.d-flex.justify-content-between
         span Tổng số tiền: 
-        span.text-danger(style="font-size: 30px")= `₫${sumPrice + 50000}`
+        span.text-primary-v2(style="font-size: 30px")= `₫${sumPrice + 50000}`
     #checkout-OK.bg-white.p-3.text-right
-      button#checkout-btn.btn.btn-danger(type="button") Đặt Hàng
+      button#checkout-btn.btn.btn-primary-v2(type="button") Đặt Hàng
     
 
 append script

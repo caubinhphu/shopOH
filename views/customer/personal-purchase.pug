@@ -30,7 +30,7 @@ block main-personal
         each order in orders
           .order
             .status-order.text-right.py-2
-              span.text-danger= order.purchase.ten_trangthai.toUpperCase()
+              span.text-primary-v2= order.purchase.ten_trangthai.toUpperCase()
             a.order-list(href=`/account/purchase/order/${order.purchase.ma_dondathang}`)
               each item in order.items
                 .order-item.py-2.d-flex.align-items-center
@@ -45,12 +45,12 @@ block main-personal
                     if (item.khuyenmai > 0)
                       del= `₫${item.giaban * item.soluong}`
                       br
-                    span.text-danger= `₫${Math.round(item.giaban * (1 - item.khuyenmai / 100)) * item.soluong}`
+                    span.text-primary-v2= `₫${Math.round(item.giaban * (1 - item.khuyenmai / 100)) * item.soluong}`
             .order-price.pt-4.text-right
               span Tổng số tiền: 
-              span.text-danger= `₫${order.sumPrice + order.purchase.phi_vanchuyen}`
+              span.text-primary-v2= `₫${order.sumPrice + order.purchase.phi_vanchuyen}`
             .order-footer.text-right
-              //- button.m-1.btn.btn-danger(type="button") Mua lần nữa
+              //- button.m-1.btn.btn-primary-v2(type="button") Mua lần nữa
               a.m-1.btn.btn-light(role="button", href=`/account/purchase/order/${order.purchase.ma_dondathang}`) Xem chi tiết đơn hàng
 //- append script
 //-   script(src="/scripts/customer/personal-purchase.js")

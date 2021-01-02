@@ -4,61 +4,59 @@ append style
   link(rel="stylesheet", href="/styles/customer/same-product.css")
 
 block main
-  .main-same
-    .product-main.d-flex
-      .product-main-img.mr-5
-        a(href=`/product/${productMain.ma_sanpham}`)
-          img(src=`${productMain.hinhanh.split(',')[0]}`)
-      .product-main-content
-        .product-main-name
-          a(href=`/product/${productMain.ma_sanpham}`)= productMain.ten_sanpham
-        .product-like
-            span= `Đã bán (${productMain.daban})`
-        .product-main-price
-          if (productMain.khuyenmai > 0)
-            del.mr-2= `₫${productMain.giaban}`
-          span.text-danger= `₫${Math.round(productMain.giaban * (1 - productMain.khuyenmai / 100))}`
+  #main
+    .container.py-4
+      .product-main.row.align-items-center
+        .product-main-img.col-sm-5.col-lg-4
+          a(href=`/product/${productMain.ma_sanpham}`)
+            img(src=`${productMain.hinhanh.split(',')[0]}`)
+        .product-main-content.col-sm-7.col-lg-8
+          .product-main-name
+            h1
+              a(href=`/product/${productMain.ma_sanpham}`)= productMain.ten_sanpham
+          .product-like
+              span= `Đã bán (${productMain.daban})`
+          .product-main-price
+            if (productMain.khuyenmai > 0)
+              del.mr-2= `₫${productMain.giaban}`
+            span.text-primary-v2= `₫${Math.round(productMain.giaban * (1 - productMain.khuyenmai / 100))}`
+          a.btn.btn-primary-v2.mt-3(href=`/product/${productMain.ma_sanpham}`, role="button") Mua ngay
 
-        a.btn.btn-danger(href=`/product/${productMain.ma_sanpham}`, role="button") Mua ngay
-
-
-    #product-same-list.p-2.mt-4
-      #main-product-same-list-title
-        | SẢN PHẨM TƯƠNG TỰ
-      if (sameProducts.length > 0)
-        #main-product-same-list-list.d-flex.flex-wrap.justify-content-center
-          each product in sameProducts
-            .product-same
-              a(href=`/product/${product.ma_sanpham}`)
-                .bg-white
-                  .product-same-img
-                    img(src=`${product.hinhanh.split(',')[0]}`)
-                  .product-same-title.p-2
-                    span= product.ten_sanpham
-                  .product-same-price.p-2.d-flex.justify-content-between
-                    div
-                      small.text-danger ₫
-                      span.text-danger= Math.round(product.giaban * (1 - product.khuyenmai / 100))
-                    div
-                      span.text-dark= productMain.daban
-                      small.text-dark &nbsp;Đã bán
-      else
-        #main-product-same-list-list.text-center.my-3
-          img(src="/images/shop/62d2399b89039bd1dc90ca2d50d3e802.png", alt="noprodcut", width="120px")
-          big.d-block Không tìm thấy sản phẩm nào
-      input(type="hidden", name="page", value=page)
-      if (sumProductSame > productPerPage && sameProducts.length > 0)
-        nav.mt-4
-          ul.pagination.justify-content-center
-            li.page-item(class=page===1?'disabled':'')
-              a#page-prev.page-link
-                span &laquo;
-            each p in pageArr
-              li.page-item(class=p===page?'active':'')
-                a.page-main.page-link= p          
-            li.page-item(class=page===pageMax?'disabled':'')
-              a#page-next.page-link
-                span &raquo;
+      #product-same-list.p-2.mt-4
+        #list-product-title
+          b SẢN PHẨM TƯƠNG TỰ
+        if (sameProducts.length > 0)
+          #list-product.d-flex.flex-wrap.justify-content-center
+            each product in sameProducts
+              .product
+                a(href=`/product/${product.ma_sanpham}`)
+                  .bg-white
+                    .wrap-product-card
+                      .product-img.bg.lazy(data-src=`${product.hinhanh.split(',')[0]}`)
+                    .product-title.p-2
+                      span= product.ten_sanpham
+                    .product-price.p-2.d-flex.justify-content-between
+                      div
+                        small.text-primary-v2 ₫
+                        span.text-primary-v2= Math.round(product.giaban * (1 - product.khuyenmai / 100))
+                      div
+                        span.text-dark= productMain.daban
+                        small.text-dark &nbsp;Đã bán
+        else
+          include ./empty-product
+        input(type="hidden", name="page", value=page)
+        if (sumProductSame > productPerPage && sameProducts.length > 0)
+          nav.mt-4
+            ul.pagination.justify-content-center
+              li.page-item(class=page===1?'disabled':'')
+                a#page-prev.page-link
+                  span &laquo;
+              each p in pageArr
+                li.page-item(class=p===page?'active':'')
+                  a.page-main.page-link= p          
+              li.page-item(class=page===pageMax?'disabled':'')
+                a#page-next.page-link
+                  span &raquo;
 
 append script
   script(src="/scripts/customer/sameProduct.js")

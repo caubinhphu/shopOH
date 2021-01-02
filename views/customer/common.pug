@@ -51,7 +51,7 @@ block header
                   .popover__content.d-md-flex.flex-column.d-none
                     .text-center.flex-fill.d-flex.flex-column.justify-content-center.py-5
                       .popover__content__img.mx-auto(style='background-image: url("/images/shop/notification.png"); height: 100px')
-                      .text-danger Đăng nhập để xem thông báo
+                      .text-primary-v2 Đăng nhập để xem thông báo
                     .d-flex
                       //- button.btn.btn-light.flex-fill(type="button", data-toggle='modal', data-target='#header-dangky') Đăng ký
                       //- button.btn.btn-light.flex-fill(type="button", data-toggle='modal', data-target='#header-dangnhap') Đăng nhập
@@ -134,7 +134,7 @@ block header
                               small= `Loại: màu ${cartProduct[index].mausac}, size: ${cartProduct[index].size}`
                           .popover__content__main__cart__content__right
                             .popover__content__cart__price.text-right
-                              span.text-danger= `₫${Math.round(cartProduct[index].giaban * (1 - cartProduct[index].khuyenmai / 100))}`
+                              span.text-primary-v2= `₫${Math.round(cartProduct[index].giaban * (1 - cartProduct[index].khuyenmai / 100))}`
                               if (cartProduct[index].soluong > 1)
                                 small &nbsp;x&nbsp;
                                 span= cartProduct[index].soluong
@@ -143,7 +143,7 @@ block header
                       - index++
                   .text-right.p-2.d-flex.justify-content-between.align-items-center
                     small= `${cartNum.sl} loại sản phẩm trong giỏ`
-                    a.btn.btn-danger(href="/cart") Xem giỏ hàng
+                    a.btn.btn-primary-v2(href="/cart") Xem giỏ hàng
               
       #header-bottom
 
@@ -152,7 +152,7 @@ block header
       //-     .modal-content
       //-       .modal-header
       //-         h4#exampleModalLabel-dangky.modal-title Đăng ký
-      //-         p.text-danger(data-toggle='modal', data-target='#header-dangnhap' data-dismiss='modal') Đăng nhập
+      //-         p.text-primary-v2(data-toggle='modal', data-target='#header-dangnhap' data-dismiss='modal') Đăng nhập
       //-       .modal-body
       //-         form(action="/login/register", method="post")
       //-           .form-group
@@ -166,13 +166,13 @@ block header
       //-             input#password2-dangky.form-control(type="password" placeholder="Mật khẩu" name="password2" required)
       //-           .modal-footer
       //-             button.btn.btn-light(type='button', data-dismiss='modal') TRỞ LẠI
-      //-             button.btn.btn-danger(type='button') ĐĂNG KÝ
+      //-             button.btn.btn-primary-v2(type='button') ĐĂNG KÝ
       //- #header-dangnhap.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel-dangnhap', aria-hidden='true')
       //-   .modal-dialog(role='document')
       //-     .modal-content
       //-       .modal-header
       //-         h4#exampleModalLabel-dangnhap.modal-title Đăng nhập
-      //-         p.text-danger(data-toggle='modal', data-target='#header-dangky' data-dismiss='modal') Đăng ký
+      //-         p.text-primary-v2(data-toggle='modal', data-target='#header-dangky' data-dismiss='modal') Đăng ký
       //-       .modal-body
       //-         form(action="/login", method="POST", name="formLogin")
       //-           .form-group
@@ -183,7 +183,7 @@ block header
       //-             input#password-dangnhap.form-control(type="password" placeholder="password" name="password" required)
       //-           .modal-footer
       //-             button.btn.btn-light(type='button', data-dismiss='modal') TRỞ LẠI
-      //-             button.btn.btn-danger(type='submit') ĐĂNG NHẬP
+      //-             button.btn.btn-primary-v2(type='submit') ĐĂNG NHẬP
 block content
   block main
 
