@@ -1825,8 +1825,10 @@ begin
     where ma_khachhang = _iduser;
     
   -- lấy từng sản phẩm
-  select gh.ma_sanpham, sp.ten_sanpham, mausac, size, soluong, hinhanh, giaban, khuyenmai, sp.trangthai
+  select gh.ma_sanpham, sp.ten_sanpham, gh.mausac, gh.size, soluong, hinhanh, giaban,
+    khuyenmai, sp.trangthai, soluongton
   from giohang gh join sanpham sp on gh.ma_sanpham = sp.ma_sanpham
+                  join phanloaisanpham pl on (gh.ma_sanpham = pl.ma_sanpham and gh.mausac = pl.mausac and gh.size = pl.size)
 	where ma_khachhang = _iduser
   order by gh.ngaythem desc;
 end $$

@@ -71,17 +71,9 @@ function getSumPrice() {
 }
 
 soluongInput.forEach(input => {
-  input.addEventListener('input', function() {
-    if (+this.value < 1) {
-      this.value = 1;
-    } else if (+this.value > +this.getAttribute('max')) {
-      this.value = this.getAttribute('max');
-    }
-  });
-});
-
-soluongInput.forEach(input => {
-  input.addEventListener('change', function() {
+  $(input).on('change', function() {
+    const $parent = $(input).parents('.amount-order')
+    $parent.find('.change-amount').attr('disabled', 'disabled');
     axios
       .put('/cart', {
         info: this.dataset.product,
@@ -89,19 +81,23 @@ soluongInput.forEach(input => {
       })
       .then(res => {
         if (res.status === 200) {
-          let priceText = this.parentElement.nextElementSibling
-            .lastElementChild;
-          let donGia = this.parentElement.previousSibling.lastElementChild
-            .lastElementChild;
-          priceText.innerHTML = +donGia.innerHTML * +this.value;
+          const $parent = $(this).parents('tr')
+          $parent.find('.cart-price-item').html(+$parent.find('.cart-dongia').html() * +this.value);
           totalPrice.innerHTML = getSumPrice();
           let sumPro = getSumProduct();
           totalProCheck.innerHTML = `Tổng tiền hàng (${sumPro} sản phẩm):`;
           let numAll = soluongInput.reduce((acc, cur) => acc + +cur.value, 0);
           selectAllLabel.innerHTML = `Chọn tất cả (${numAll})`;
+          const id = setTimeout(() => {
+            $parent.find('.change-amount').removeAttr('disabled');
+            clearTimeout(id);
+          }, 100);
         }
       })
-      .catch(err => location.reload());
+      .catch(err => {
+        console.log(err);
+        // location.reload()
+      });
   });
 });
 
@@ -144,3 +140,43 @@ document.getElementById('sell-btn').addEventListener('click', function() {
       });
   }
 });
+
+changeAmount($('.amount-minus'), false)
+changeAmount($('.amount-plus'))
+addEventInput()
+
+function changeAmount($el, plus = true) {
+  $el.on('click', function() {
+    const $parent = $(this).parents('.amount-order')
+    const $input = $parent.find('input[name="soluong"]')
+    let val = +$input.val()
+    if (plus) {
+      if (val < +$input.attr('max')) {
+        $input.val(val + 1).trigger('change')
+      }
+    } else {
+      if (val > 1) {
+        $input.val(val - 1).trigger('change')
+      }
+    }
+  })
+}
+
+function addEventInput() {
+  const $input = $('input[name="soluong"]')
+  $input.on('focusin', function() {
+    $(this).data('val', $(this).val())
+  }).on('input', function() {
+    if (+$(this).val()) {
+      $(this).val(+$(this).val())
+      if (+$(this).val() < 1) {
+        $(this).val(1)
+      } else if (+$(this).val() > +$(this).attr('max')) {
+        $(this).val($(this).attr('max'))
+      }
+      $(this).data('val', $(this).val())
+    } else {
+      $(this).val($(this).data('val'))
+    }
+  })
+}

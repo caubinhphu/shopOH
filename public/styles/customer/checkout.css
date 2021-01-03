@@ -1,15 +1,9 @@
-*, ::after, ::before {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0 auto;
-}
-
 #checkout-header > span {
   font-size: 25px;
   padding-left: 10px;
   border-left: 1px solid #ea4d2b;
+  vertical-align: middle;
+  font-weight: 700;
 }
 
 #checkout-header > a {

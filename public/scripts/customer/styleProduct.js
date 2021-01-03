@@ -69,17 +69,19 @@ function createUrlPage(page) {
   return stringQuery.toString();
 }
 
-const pageInput = document.querySelector('input[name="page"]');
+if ($('.pagination').length) {
+  const pageInput = document.querySelector('input[name="page"]');
 
-document.querySelector('#page-prev').href =
-  urlPage + '?' + createUrlPage(+pageInput.value - 1);
+  document.querySelector('#page-prev').href =
+    urlPage + '?' + createUrlPage(+pageInput.value - 1);
 
-document.querySelector('#page-next').href =
-  urlPage + '?' + createUrlPage(+pageInput.value + 1);
+  document.querySelector('#page-next').href =
+    urlPage + '?' + createUrlPage(+pageInput.value + 1);
 
-document.querySelectorAll('.page-main').forEach(item => {
-  item.href = urlPage + '?' + createUrlPage(+item.innerHTML);
-});
+  document.querySelectorAll('.page-main').forEach(item => {
+    item.href = urlPage + '?' + createUrlPage(+item.innerHTML);
+  });
+}
 
 function validationRange() {
   if (+inputRanges[0].value > +inputRanges[1].value) {

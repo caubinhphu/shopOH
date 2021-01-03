@@ -1,0 +1,44 @@
+.custom-control-input:checked~.custom-control-label::before {
+  color: #fff;
+  border-color: #f6422e;
+  background-color: #f6422e;
+}
+.custom-control-input:focus~.custom-control-label::before {
+  box-shadow: 0 0 0 0.2rem #f6422e44;
+}
+.btn-primary-v2 {
+  color: white;
+  background-color: #f6422e;
+  border-color: #f53722;
+}
+.btn-primary-v2:hover,
+.btn-primary-v2:active {
+  color: white;
+  background-color: #eb3c29;
+  border-color:#e63e2c;
+}
+.btn-primary-v2:not(:disabled):not(.disabled):active:focus {
+  box-shadow: 0 0 0 0.2rem rgba(250, 87, 23, 0.5);
+}
+.border-primary-v2 {
+  border-color: #f6422e !important;
+}
+.text-primary-v2 {
+  color: #f6422e !important;
+}
+.ps-as {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+}
+.ps-rv {
+  position: relative;
+}
+.bg {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}

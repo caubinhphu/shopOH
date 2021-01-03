@@ -10,7 +10,7 @@ block main
         #main-content.row
           #filler.col-md-3.text-center
             div
-              i.fas.fa-filter
+              i.fas.fa-filter.text-primary-v2
               span &nbsp;BỘ LỌC TÌM KIẾM
             form(name="filterForm", method="GET")
               input(type="hidden", name="filterType1", value=`${query.filterType1}`)
@@ -19,17 +19,19 @@ block main
                 .filter-criteria.text-left
                   .filter-title.text-center Danh mục
                   - var typeList = query ? query.filterType2.split(',') : [''];
-                  each _type in filterType
-                    .custom-control.custom-checkbox
-                      input.custom-control-input(id=`filter-type-${_type.ma_loai2}`, type="checkbox", name="filterType2", value=`${_type.ma_loai2}`, checked=typeList.includes(_type.ma_loai2.toString())?true:false)
-                      label.custom-control-label(for=`filter-type-${_type.ma_loai2}`)= _type.ten_loai2
+                  .row
+                    each _type in filterType
+                      .custom-control.custom-checkbox.col-6.col-md-12
+                        input.custom-control-input(id=`filter-type-${_type.ma_loai2}`, type="checkbox", name="filterType2", value=`${_type.ma_loai2}`, checked=typeList.includes(_type.ma_loai2.toString())?true:false)
+                        label.custom-control-label(for=`filter-type-${_type.ma_loai2}`)= _type.ten_loai2
                 .filter-criteria.text-left
                   .filter-title.text-center Chất liệu
                   - var materialList = query ? query.filterMaterial.split(',') : [''];
-                  each _material in filterMaterial
-                    .custom-control.custom-checkbox
-                      input.custom-control-input(id=`filter-material-${_material.ma_chatlieu}`, type="checkbox", name="filterMaterial", value=`${_material.ma_chatlieu}`, checked=materialList.includes(_material.ma_chatlieu.toString())?true:false)
-                      label.custom-control-label(for=`filter-material-${_material.ma_chatlieu}`)= _material.ten_chatlieu
+                  .row
+                    each _material in filterMaterial
+                      .custom-control.custom-checkbox.col-6.col-md-12
+                        input.custom-control-input(id=`filter-material-${_material.ma_chatlieu}`, type="checkbox", name="filterMaterial", value=`${_material.ma_chatlieu}`, checked=materialList.includes(_material.ma_chatlieu.toString())?true:false)
+                        label.custom-control-label(for=`filter-material-${_material.ma_chatlieu}`)= _material.ten_chatlieu
                 .filter-criteria
                   .filter-title Khoảng giá
                   #range-price.py-1
@@ -39,11 +41,15 @@ block main
                       input.form-control.filter-price(type="number", placeholder="đ ĐẾN", name="maxPriceRange", value=query?query.maxPriceRange!==0?query.maxPriceRange:"":"")
                     em#err-range.text-primary-v2
                   .mt-2
-                    button#btn-submit-pricerange.btn.btn-primary-v2(type="button") ÁP DỤNG
-                button#btn-clear-filter.btn.btn-primary-v2.mt-2(type="button") XÓA BỘ LỌC
+                    button#btn-submit-pricerange.btn.btn-primary-v2.btn-sm(type="button") ÁP DỤNG
+                button#btn-clear-filter.btn.btn-primary-v2.mt-2.btn-sm(type="button") XÓA BỘ LỌC
           #product-list.col-md-9
             if (products.length > 0)
-              div= `Loại sản phẩm: ${products[0].ten_loai0} > ${products[0].ten_loai1}`
+              div
+                span Loại sản phẩm: 
+                span.text-primary-v2= products[0].ten_loai0
+                span  > 
+                span.text-primary-v2= products[0].ten_loai1
               #sort-product.d-flex.justyfy-content-center
                 button.btn.btn-light.mx-2.sort(type="button", data-sort="new") Mới nhất
                 button.btn.btn-light.mr-2.sort(type="button", data-sort="selling") Bán chạy

@@ -146,7 +146,7 @@ document.getElementById('sell-now-btn').addEventListener('click', function() {
   }
 });
 
-changeAmount($('#amount-minus', false))
+changeAmount($('#amount-minus'), false)
 changeAmount($('#amount-plus'))
 addEventInput()
 
