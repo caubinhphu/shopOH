@@ -408,3 +408,23 @@ body {
 .text-primary-v2 {
   color: #f6422e !important;
 }
+
+@media only screen and (max-width: 767px) {
+  h1,
+  .h1 {
+    font-size: 2rem;
+  }
+}
+.custom-control-input:checked~.custom-control-label::before {
+  color: #fff;
+  border-color: #f6422e;
+  background-color: #f6422e;
+}
+.custom-control-input:focus~.custom-control-label::before {
+  box-shadow: 0 0 0 0.2rem #f6422e44;
+}
+@media only screen and (max-width: 425px) {
+  .logo {
+    max-width: 65px;
+  }
+}

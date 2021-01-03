@@ -25,7 +25,7 @@ block header
                 a.d-flex(href='/account/notification?type=1')
                   .position-root
                     i.far.fa-bell
-                  span &nbsp;Thông báo
+                  span.d-none.d-sm-block &nbsp;Thông báo
                   .position-child
                     span.badge.badge-pill.badge-light= notifications?notifications.length:0
                 if (user)
@@ -60,7 +60,7 @@ block header
             li
               a.d-flex(href='#')
                 i.far.fa-question-circle
-                span Trợ giúp
+                span.d-none.d-sm-block Trợ giúp
             if (user)
               li
                 .popover__wrapper__user
@@ -87,7 +87,7 @@ block header
       #header-middle.d-flex.mt-3.py-2
         .mx-2
           a(href="/")
-            img(src="/images/shop/logo_3.png", title="ShopOH")
+            img.logo(src="/images/shop/logo_3.png", title="ShopOH")
         .flex-fill.mx-4.pt.d-flex.flex-column.justify-content-center
           form(action='/product/search', method="GET", name="formSearch")
             .input-group

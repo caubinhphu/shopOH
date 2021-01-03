@@ -59,15 +59,6 @@ inputTextAmount.addEventListener('input', function() {
   }
 });
 
-const imgProduct = document.getElementsByClassName('img-product')[0];
-const imgSubProduct = document.getElementsByClassName('img__sub');
-
-for (let i = 0; i < imgSubProduct.length; i++) {
-  imgSubProduct[i].addEventListener('mouseover', function() {
-    imgProduct.style.backgroundImage = this.style.backgroundImage;
-  });
-}
-
 const addToCartBtn = document.getElementById('add-to-cart-btn');
 const textErrorCart = document.getElementById('error-cart');
 const areaSelect = document.getElementById('selection-style-product');
@@ -191,3 +182,28 @@ function addEventInput() {
     }
   })
 }
+
+function addSlick() {
+  $('.product-img-block').slick({
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    infinite: false,
+    arrows: false,
+    fade: true,
+    asNavFor: '.img-sub-list',
+  })
+
+  $('.img-sub-list').slick({
+    rows: 0,
+    adaptiveHeight: true,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    infinite: false,
+    asNavFor: '.product-img-block',
+    focusOnSelect: true,
+    prevArrow: '<button type="button" class="slick-prev arrows"><i class="fas fa-chevron-left"></i></span></button>',
+    nextArrow: '<button type="button" class="slick-next arrows"><i class="fas fa-chevron-right"></i></span></button>',
+  })
+}
+
+addSlick()
