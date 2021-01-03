@@ -13,7 +13,7 @@
 }
 
 .category-img img{
-  max-width: 100px;
+  max-width: 70px;
   transition: all .3s;
   cursor: pointer;
 }
@@ -43,5 +43,5 @@
 }
 
 .slider-item {
-  height: 315px;
+  height: 210px;
 }

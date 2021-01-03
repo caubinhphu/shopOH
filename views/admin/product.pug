@@ -9,50 +9,50 @@ block main
     a.nav-pro-item(href="/admin/product?type=con", class=productActive==='con'?'nav-pro-active':'') Còn hàng
     a.nav-pro-item(href="/admin/product?type=het", class=productActive==='het'?'nav-pro-active':'') Hết hàng
     a.nav-pro-item(href="/admin/product?status=2", class=productActive==='hide'?'nav-pro-active':'') Đã ẩn
-  #filter.w-100
-    form.w-100.row(action="/admin/product", method="GET", name="formFilterSort")
+  #filter
+    form.d-flex.flex-wrap(action="/admin/product", method="GET", name="formFilterSort")
       input(type="hidden", name="status" value=statusPro)
       input(type="hidden", name="type" value=type)
-      .col-6.row
-        select.form-control.col-4(name="typeFilterName")
+      .col-6.d-flex.flex-wrap
+        select.form-control.col-4.form-control-sm(name="typeFilterName")
           option(value="name" selected=typeFilterName==='name'?true:false) Tên sản phẩm
           option(value="id" selected=typeFilterName==='id'?true:false) Mã sản phẩm
-        input.form-control.col-8(type="text", name="filterName" placeholder="Nhập vào" value=filterName!=='-1'?filterName:"")
+        input.form-control.col-8.form-control-sm(type="text", name="filterName" placeholder="Nhập vào" value=filterName!=='-1'?filterName:"")
         .d-flex.mt-2.align-items-center
           span Giá:&nbsp;&nbsp;&nbsp;&nbsp;
-          input.form-control.col(type="number", name="filterPriceMin" placeholder="min" value=filterPriceMin!==0?filterPriceMin:"")
+          input.form-control.col.form-control-sm(type="number", name="filterPriceMin" placeholder="min" value=filterPriceMin!==0?filterPriceMin:"")
           span &nbsp;-&nbsp;
-          input.form-control.col(type="number", name="filterPriceMax" placeholder="max" value=filterPriceMax!==0?filterPriceMax:"")
+          input.form-control.col.form-control-sm(type="number", name="filterPriceMax" placeholder="max" value=filterPriceMax!==0?filterPriceMax:"")
       .col-6
         .row
           span Danh mục: &nbsp;
-          select.form-control.col(name="loai0")
-          select.form-control.col(name="loai1")
-          select.form-control.col(name="loai2")
+          select.form-control.col.form-control-sm(name="loai0")
+          select.form-control.col.form-control-sm(name="loai1")
+          select.form-control.col.form-control-sm(name="loai2")
         .d-flex.mt-2.align-items-center
           span Đã bán:&nbsp;&nbsp;&nbsp;&nbsp;
-          input.form-control.col(type="number", name="filterSelledMin" placeholder="min",  value=filterSelledMin!==0?filterSelledMin:"")
+          input.form-control.col.form-control-sm(type="number", name="filterSelledMin" placeholder="min",  value=filterSelledMin!==0?filterSelledMin:"")
           span &nbsp;-&nbsp;
-          input.form-control.col(type="number", name="filterSelledMax" placeholder="max", value=filterSelledMax!==0?filterSelledMax:"")
+          input.form-control.col.form-control-sm(type="number", name="filterSelledMax" placeholder="max", value=filterSelledMax!==0?filterSelledMax:"")
       .mt-2
-        button.btn.btn-primary-v2(type="submit") Tìm
-        button#re-enter-btn.btn.btn-light.ml-2(type="button") Nhập lại
+        button.btn.btn-primary-v2.btn-sm(type="submit") Tìm
+        button#re-enter-btn.btn.btn-light.ml-2.btn-sm(type="button") Nhập lại
       #sort.col-12.mt-3
         //- form(action="/admin/product", method="GET")
         .row
-          select.form-control.col-2(name="sortType")
+          select.form-control.col-2.form-control-sm(name="sortType")
             option(value="time", selected=typeSort==='time'?true:false) Thời gian thêm
             option(value="price", selected=typeSort==='price'?true:false) Giá
             option(value="selled", selected=typeSort==='selled'?true:false) Đã bán
             option(value="like", selected=typeSort==='like'?true:false) Like
-          select.form-control.col-2(name="sortValue")
+          select.form-control.col-2.form-control-sm(name="sortValue")
             option(value="decrease", selected=valueSort==='decrease'?true:false) Giảm dần
             option(value="increase", selected=valueSort==='increase'?true:false) Tăng dần
-          button.btn.btn-light.ml-2(type="submit") Sort
+          button.btn.btn-light.ml-2.btn-sm(type="submit") Sort
     #product-area.mt-3
-      .d-flex.justify-content-between
+      .d-flex.justify-content-between.align-items-center
         h3= `${products.length} Sản Phẩm`
-        a.btn.btn-primary-v2(href="/admin/product/add", role="button") Thêm 1 sản phẩm mới
+        a.btn.btn-primary-v2.btn-sm(href="/admin/product/add", role="button") Thêm 1 sản phẩm mới
     if (successMgs)
       each sMgs in successMgs
         .alert.alert-success.alert-dismissible.fade.show.mx-auto.mt-1(role='alert')

@@ -1,3 +1,13 @@
+*, ::after, ::before {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0 auto;
+  overflow-x: hidden;
+  max-width: 2000px;
+}
+
 .custom-control-input:checked~.custom-control-label::before {
   color: #fff;
   border-color: #f6422e;
