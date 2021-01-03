@@ -26,7 +26,7 @@ block main
             .product-main-name
               h1= product.ten_sanpham
             input(type="hidden", name="idPro", value=product.ma_sanpham)
-            .product-info-like.d-flex.my-2.justify-content-center
+            .product-info-like.d-flex.my-2.justify-content-center.justify-content-md-start
               .product-like#product-like
                 i#product-like-icon.text-primary-v2.fa-heart(class=isLike.islike?'fas':'far')
                 span#product-like-text= ` Đã thích (${like.like})`
@@ -67,18 +67,17 @@ block main
                           label.custom-control-label(for=`size-${size.size}`)= size.size
                 .procudt-quantity.d-flex.align-items-center.flex-sm-row.flex-column
                   .product-select.label Số lượng
-
                   .product-select-content
-                    .d-flex.justify-content-center.justify-content-md-start
+                    .d-flex.justify-content-center.justify-content-md-start.align-items-center.flex-wrap
                       div
-                        .input-group.amount-order.mt-2
+                        .input-group.amount-order.mt-2.mt-md-0
                           .input-group-prepend
                             button#amount-minus.btn.btn-sm.btn-primary-v2.change-amount(type='button') -
                           input#input-amount.text-center.form-control.form-control-sm.border.border-primary-v2(type='text', name='amount', min='1', max=amount.sl, value='1')
                           .input-group-append
                             button#amount-plus.btn.btn-sm.btn-primary-v2.change-amount(type='button') +
-                    .product-quantity-rest.ml-2.d-inline-block
-                      span#text-sanphamton= `${amount.sl} sản phẩm có sẵn`
+                      .product-quantity-rest.ml-2.d-inline-block
+                        span#text-sanphamton= `${amount.sl} sản phẩm có sẵn`
 
                 .err.text-primary-v2.m-0
                   em#error-cart

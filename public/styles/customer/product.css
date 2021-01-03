@@ -121,7 +121,7 @@
 }
 
 .product-detail-label {
-  width: 20%;
+  min-width: 100px;
   color: rgba(0,0,0,.4);
 }
 
