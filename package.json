@@ -27,7 +27,7 @@
     "mysql": "^2.18.1",
     "pug": "^2.0.4",
     "uuid": "^7.0.2",
-    "xlsx": "^0.15.6"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
